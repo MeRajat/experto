@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 import './app_bar.dart' as appBar;
-import './signup_page.dart' as signup;
+import './signUpReq.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -26,14 +26,9 @@ class _LoginPage extends State<LoginPage> {
 }
 
 class CustomTextFormField extends StatelessWidget {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<FocusNode> nodes = [FocusNode(), FocusNode()];
-  final signup.Authenticate authenticate=new signup.Authenticate();
-
-
-  void random(String x){
-
-  }
+  final Authenticate authenticate=new Authenticate();
 
   @override
   Widget build(BuildContext context) {
@@ -45,15 +40,15 @@ class CustomTextFormField extends StatelessWidget {
               delegate: SliverChildListDelegate(
                 [
                   Form(
-                    key: formKey,
+                    key:_formKey,
                     child: Column(
                       children: <Widget>[
-                        signup.InputField(nodes[0], "Email", authenticate.getName ),
-                        signup.InputField(nodes[1], 'Password', authenticate.getPass,isPassword: true),
+                        InputField(nodes[0], "Email", authenticate.getName,inputType: TextInputType.text, ),
+                        InputField(nodes[1], 'Password', authenticate.getPass,isPassword: true,inputType: TextInputType.text,),
                         Padding(
                             padding: EdgeInsets.only(top:20),
                             child: RaisedButton(
-                              onPressed: (){authenticate.signIn(formKey,context);},
+                              onPressed: (){authenticate.signIn(_formKey,context);},
                               elevation: 3,
                               highlightElevation: 4,
                               color: Color.fromRGBO(84, 229, 121, 1),
