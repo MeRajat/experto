@@ -1,9 +1,9 @@
-import 'package:experto/user_authentication/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
 import "./home_page/home_page.dart";
 import "./user_authentication/signup_page.dart";
+import "./user_authentication/login_page.dart";
 import "./user_page/home_page.dart" as user;
 
 import './theme.dart';
@@ -17,10 +17,10 @@ class MyApp extends StatelessWidget {
       routes: {
         "/user_signup": (context) => SignupPage(),
         "/user_home": (context) => user.HomePage(),
-        '/user_login': (context)=> LoginPage(),
+        "/user_login": (context) => LoginPage(),
       },
-      darkTheme: theme.darkTheme(),
-      theme: theme.lightTheme(),
+      //darkTheme: theme.darkTheme(),
+      theme: theme.darkTheme(),
       home: HomePage(), 
     );
   }
