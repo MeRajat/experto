@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 
-import './app_bar.dart' as login_page_appbar;
+import './app_bar_signup.dart' as login_page_appbar;
 
 class SignupPage extends StatelessWidget {
   @override
@@ -10,20 +10,8 @@ class SignupPage extends StatelessWidget {
       body: CustomScrollView(
         physics: BouncingScrollPhysics(),
         slivers: <Widget>[
-          login_page_appbar.AppBar("Sign up"),
+          login_page_appbar.AppBar(),
           CustomFormField(),
-          SliverToBoxAdapter(
-            child: Container(
-              width:20,
-              padding: EdgeInsets.only(left: 23, bottom: 40,right:23),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/user_login');
-                },
-                child: Text("Already have an account?   Login",style:Theme.of(context).primaryTextTheme.body2.copyWith(fontSize: 13)),
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -36,13 +24,20 @@ class CustomFormField extends StatefulWidget {
 }
 
 class _CustomFormField extends State<CustomFormField> {
-  final List<FocusNode> nodes = [FocusNode(), FocusNode(), FocusNode(),FocusNode()];
+  //final _globalKey = GlobalKey<FormState>();
+  final List<FocusNode> nodes = [
+    FocusNode(),
+    FocusNode(),
+    FocusNode(),
+    FocusNode()
+  ];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final Authenticate authenticate=new Authenticate();
+  final Authenticate authenticate = new Authenticate();
 
   @override
   Widget build(BuildContext context) {
     return FormField(
+        //key: _globalKey,
         builder: (currentState) {
       return SliverPadding(
         padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
@@ -53,14 +48,17 @@ class _CustomFormField extends State<CustomFormField> {
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
-                    InputField(nodes[0], "Name",authenticate.getName),
-                    InputField(nodes[1], "Email",authenticate.getEmail),
-                    InputField(nodes[2], "City",authenticate.getCity),
-                    InputField(nodes[3], "Password",authenticate.getPass,isPassword: true),
+                    InputField(nodes[0], "Name", authenticate.getName),
+                    InputField(nodes[1], "Email", authenticate.getEmail),
+                    InputField(nodes[2], "City", authenticate.getCity),
+                    InputField(nodes[3], "Password", authenticate.getPass,
+                        isPassword: true),
                     Padding(
-                      padding: EdgeInsets.only(top:20),
+                      padding: EdgeInsets.only(top: 20),
                       child: RaisedButton(
-                        onPressed: (){authenticate.signUp(_formKey,context);},
+                        onPressed: () {
+                          authenticate.signUp(_formKey, context);
+                        },
                         elevation: 3,
                         highlightElevation: 4,
                         color: Color.fromRGBO(84, 229, 121, 1),
@@ -92,7 +90,8 @@ class InputField extends StatelessWidget {
   final bool isPassword;
   final void Function(String) fn;
 
-  InputField(this.node, this.hintText, this.fn,{this.inputType: TextInputType.text,this.isPassword: false});
+  InputField(this.node, this.hintText, this.fn,
+      {this.inputType: TextInputType.text, this.isPassword: false});
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +118,7 @@ class InputField extends StatelessWidget {
             //     print("form submitted");
             //   }
             // },
-            onSaved:(input)=>fn(input),
+            onSaved: (input) => fn(input),
             textInputAction: TextInputAction.next,
             keyboardType: inputType,
             decoration: InputDecoration(
@@ -142,30 +141,30 @@ class InputField extends StatelessWidget {
   }
 }
 
-class Authenticate{
+class Authenticate {
   FirebaseUser user;
   List<String> details;
   bool _isSignIn;
-  Authenticate(){
-    _isSignIn=false;
-    details=new List<String>();
+
+  Authenticate() {
+    _isSignIn = false;
+    details = new List<String>();
   }
 
-  getName(String x)=>
-      details.add(x);
-  getPass(String x)=>
-      details.add(x);
-  getCity(String x)=>
-      details.add(x);
-  getEmail(String x)=>
-      details.add(x);
+  getName(String x) => details.add(x);
 
-  Widget signInButton(String x){
-    if(_isSignIn)
-      return Center(child: CircularProgressIndicator());
+  getPass(String x) => details.add(x);
+
+  getCity(String x) => details.add(x);
+
+  getEmail(String x) => details.add(x);
+
+  Widget signInButton() {
+    if (_isSignIn)
+      return CircularProgressIndicator();
     else
       return Text(
-        x,
+        "Sign up",
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
@@ -174,28 +173,14 @@ class Authenticate{
       );
   }
 
-  Future<void> signUp(GlobalKey<FormState> _formKey,BuildContext context) async {
+  Future<void> signUp(
+      GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       formState.save();
       try {
-        _isSignIn=true;
-        user = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: details[1], password: details[3]);
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
-        formState.reset();
-      } catch (e) {
-        print(e.message);
-      }
-    }
-  }
-  Future<void> signIn(GlobalKey<FormState> _formKey,BuildContext context) async{
-    FormState formState = _formKey.currentState;
-    if (formState.validate()) {
-      formState.save();
-      try {
-        FirebaseAuth.instance.signInWithEmailAndPassword(email: details[0], password: details[1]);
+        user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: details[1], password: details[3]);
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
