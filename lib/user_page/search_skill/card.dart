@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
+import './expert_list.dart';
+
+class CustomCard extends StatelessWidget {
+  final String name;
+  final Icon icon;
+  CustomCard(this.name, this.icon);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return ExpertList();
+              },
+            ),
+          );
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 5, right: 5, bottom: 12, top: 5),
+          child: Row(
+            children: <Widget>[
+              icon,
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                width: 200,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 5),
+                      child: Text(
+                        name,
+                        style: Theme.of(context)
+                            .textTheme
+                            .title
+                            .copyWith(fontWeight: FontWeight.bold),
+                        textScaleFactor: .85,
+                      ),
+                    ),
+                    Text(
+                      "Breif Skill Description adf Overflow Testing",
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .body2
+                          .copyWith(fontSize:12),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
