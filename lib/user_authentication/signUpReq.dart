@@ -64,10 +64,32 @@ class Authenticate{
   QuerySnapshot userSnapshot;
   List<String> details;
   bool _isSignIn;
+  Future<void> Function(BuildContext context) fn;
+
   Authenticate(){
     _isSignIn=false;
     details=new List<String>();
     getUser();
+  }
+
+  Future<void> _ackAlert(BuildContext context,String title, String content) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   getUser() async{
@@ -104,13 +126,13 @@ class Authenticate{
         _isSignIn=true;
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: details[1], password: details[3]);
-        userReference.add({'City':details[2],'Name':details[0],'emailID':details[1]});
+        await userReference.add({'City':details[2],'Name':details[0],'emailID':details[1]});
         userSnapshot=await userReference.where('emailID',isEqualTo: details[1]).getDocuments();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
-        print(e.message);
+        _ackAlert(context, "SignUp Failed!", "Incorrect details");
       }
     }
   }
@@ -120,12 +142,12 @@ class Authenticate{
       formState.save();
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: details[0], password: details[1]);
-        userSnapshot=await userReference.where('emailID',isEqualTo: details[1]).getDocuments();
+        userSnapshot=await userReference.where('emailID',isEqualTo: details[0]).getDocuments();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
-        print(e.message);
+        _ackAlert(context, "Login Failed!", "Username or password is Incorrect");
       }
     }
   }
