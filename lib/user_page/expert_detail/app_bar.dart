@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
+import "package:url_launcher/url_launcher.dart";
 import "../app_bar.dart";
 
 class AppBar extends StatelessWidget {
@@ -80,31 +81,61 @@ class ContactExpert extends StatelessWidget {
   final String expertSkypeUsername;
 
   ContactExpert(this.expertSkypeUsername);
-  
-  void _launchSkype(String skypeUsername, String serviceType) async {
+
+  void _showDialog(context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Skype Required",
+              style: Theme.of(context).primaryTextTheme.title),
+          content: new Text(
+            "Skype is Required to use this service",
+            style: Theme.of(context).primaryTextTheme.body2,
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _launchSkype(
+      BuildContext context, String skypeUsername, String serviceType) async {
     final url = "skype:$skypeUsername?$serviceType";
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not launch $url';
+      _showDialog(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         InkWell(
           onTap: () {
-            _launchSkype(expertSkypeUsername, "call");
+            _launchSkype(context, expertSkypeUsername, "call");
           },
           child: Icon(Icons.video_call),
         ),
-        InkWell(
-          onTap: () {
-            _launchSkype(expertSkypeUsername, "chat");
-          },
-          child: Icon(Icons.chat),
+        Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: InkWell(
+            onTap: () {
+              _launchSkype(context, expertSkypeUsername, "chat");
+            },
+            child: Icon(Icons.chat),
+          ),
         ),
       ],
     );

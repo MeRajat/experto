@@ -10,6 +10,13 @@ class Theme {
       fontFamily: 'Ubuntu',
       primaryColor: Color(0xFFF2F4ED),
       bottomAppBarColor: Color(0xFFfcfffe),
+      dialogTheme: DialogTheme(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+      ),
       buttonTheme: ButtonThemeData(
         height: 45,
         shape: RoundedRectangleBorder(
@@ -78,6 +85,13 @@ class Theme {
     return ThemeData(
       brightness: Brightness.dark,
       canvasColor: Color.fromRGBO(50, 50, 50, 1),
+      dialogTheme: DialogTheme(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+      ),
       primaryTextTheme: TextTheme(
         title: TextStyle(color: textColor),
         subtitle: TextStyle(color: textColor),
@@ -107,8 +121,8 @@ class Theme {
           ),
       cardTheme: CardTheme(
         margin: EdgeInsets.only(
-          right: 13,
-          left: 13,
+          right: 15,
+          left: 15,
           top: 10,
         ),
         color: Color.fromRGBO(45, 45, 45, 1),
