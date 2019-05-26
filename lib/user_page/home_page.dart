@@ -4,7 +4,7 @@ import "package:flutter/cupertino.dart";
 import "./search_skill/search_skill.dart";
 import "./search_expert/search_expert.dart";
 import "./user_home/user_home.dart";
-import "feedback.dart";
+//import "feedback.dart";
 import "navigation_bar_items.dart";
 
 class HomePage extends StatefulWidget {
@@ -17,14 +17,14 @@ class _HomePage extends State<HomePage> {
     UserHome(),
     SearchSkill(),
     SearchExpert(),
-    FeedBack(),
+    //FeedBack(),
   ];
 
   final List<GlobalKey<NavigatorState>> keys = [
     GlobalKey(debugLabel: 'home page'),
     GlobalKey(debugLabel: 'skill page'),
     GlobalKey(debugLabel: 'expert page'),
-    GlobalKey(debugLabel: 'feedback page'),
+    //GlobalKey(debugLabel: 'feedback page'),
   ];
 
   Future<bool> overrideBack(index) {

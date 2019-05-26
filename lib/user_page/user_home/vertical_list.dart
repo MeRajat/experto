@@ -62,16 +62,6 @@ class VerticalList extends StatelessWidget {
                             },
                           ),
                         ),
-                        SizedBox(
-                          height: 30,
-                          width: 110,
-                          child: FlatButton(
-                            child: Text("feedback",
-                                style: Theme.of(context).primaryTextTheme.body2),
-                            padding: EdgeInsets.all(0),
-                            onPressed: () {},
-                          ),
-                        )
                       ],
                     )
                   ],
