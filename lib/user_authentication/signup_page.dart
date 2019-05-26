@@ -29,6 +29,7 @@ class _CustomFormField extends State<CustomFormField> {
     FocusNode(),
     FocusNode(),
     FocusNode(),
+    FocusNode(),
     FocusNode()
   ];
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -46,7 +47,8 @@ class _CustomFormField extends State<CustomFormField> {
               InputField(nodes[0], "Name", authenticate.getName),
               InputField(nodes[1], "Email", authenticate.getEmail),
               InputField(nodes[2], "City", authenticate.getCity),
-              InputField(nodes[3], "Password", authenticate.getPass,
+              InputField(nodes[3], "Mobile", authenticate.getMobile,inputType: TextInputType.number),
+              InputField(nodes[4], "Password", authenticate.getPass,
                   isPassword: true),
               Padding(
                 padding: EdgeInsets.only(top: 20),

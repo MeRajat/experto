@@ -101,6 +101,8 @@ class Authenticate{
       details.add(x);
   getCity(String x)=>
       details.add(x);
+  getMobile(String x)=>
+      details.add(x);
   getEmail(String x)=>
       details.add(x);
 
@@ -126,7 +128,7 @@ class Authenticate{
         _isSignIn=true;
         await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: details[1], password: details[3]);
-        await userReference.add({'City':details[2],'Name':details[0],'emailID':details[1]});
+        await userReference.add({'City':details[2],'Name':details[0],'emailID':details[1],'Mobile':details[3]});
         userSnapshot=await userReference.where('emailID',isEqualTo: details[1]).getDocuments();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
