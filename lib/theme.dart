@@ -11,6 +11,7 @@ class Theme {
       primaryColor: Color(0xFFF2F4ED),
       bottomAppBarColor: Color(0xFFfcfffe),
       dialogTheme: DialogTheme(
+        backgroundColor: Color.fromRGBO(250,250,250,1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(5),
@@ -86,6 +87,7 @@ class Theme {
       brightness: Brightness.dark,
       canvasColor: Color.fromRGBO(50, 50, 50, 1),
       dialogTheme: DialogTheme(
+        backgroundColor: Color.fromRGBO(45,45,45,1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(5),
