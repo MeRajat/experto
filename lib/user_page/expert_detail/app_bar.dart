@@ -67,10 +67,6 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
               ],
             ),
           ),
-          // Icon(
-          //   Icons.check_circle,
-          //   size: 25,
-          // ),
         ],
       ),
     );
@@ -94,7 +90,6 @@ class ContactExpert extends StatelessWidget {
             style: Theme.of(context).primaryTextTheme.body2,
           ),
           actions: <Widget>[
-            // usually buttons at the bottom of the dialog
             new FlatButton(
               child: new Text("Close"),
               onPressed: () {
