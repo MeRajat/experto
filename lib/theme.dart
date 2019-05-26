@@ -13,7 +13,7 @@ class Theme {
       dialogTheme: DialogTheme(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(5),
           ),
         ),
       ),
@@ -88,7 +88,7 @@ class Theme {
       dialogTheme: DialogTheme(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(5),
           ),
         ),
       ),
