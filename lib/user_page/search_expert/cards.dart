@@ -43,7 +43,7 @@ class _Cards extends State<Cards> {
     getExpert();
     Future.delayed(Duration(seconds: 10), () {
       setState(() {
-        loading=Text("No results!",style: Theme.of(context).textTheme.title,
+        loading=Text("Timed Out!",style: Theme.of(context).textTheme.title,
           textScaleFactor: 1.2,);
       });
     });
@@ -83,7 +83,8 @@ class _Cards extends State<Cards> {
     });
     if (flag == 0) {
       setState(() {
-        results = [];
+        loading=Text("No Results!",style: Theme.of(context).textTheme.title,
+          textScaleFactor: 1.2,);
       });
     }
   }
@@ -93,11 +94,12 @@ class _Cards extends State<Cards> {
       searchingStatus = 1;
       loading=CircularProgressIndicator();
       search(searchQuery);
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(Duration(seconds: 10), () {
+        if(searchSnapshot==null){
         setState(() {
-          loading=Text("No results!",style: Theme.of(context).textTheme.title,
+          loading=Text("Timed Out!",style: Theme.of(context).textTheme.title,
             textScaleFactor: 1.2,);
-        });
+        });}
       });
     });
   }
