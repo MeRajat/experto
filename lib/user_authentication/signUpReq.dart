@@ -1,3 +1,4 @@
+import 'package:experto/user_authentication/userAdd.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -127,8 +128,11 @@ class Authenticate{
       try {
         _isSignIn=true;
         await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: details[1], password: details[3]);
-        await userReference.add({'City':details[2],'Name':details[0],'emailID':details[1],'Mobile':details[3]});
+            .createUserWithEmailAndPassword(email: details[1], password: details[4]);
+        user=new Users(email: details[1],city: details[2],name: details[0],m: details[3]);
+        Firestore.instance.runTransaction((Transaction t) async{
+         await userReference.add(user.toJson());
+        });
         userSnapshot=await userReference.where('emailID',isEqualTo: details[1]).getDocuments();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
