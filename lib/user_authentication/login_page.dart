@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import './app_bar.dart' as appBar;
 import './signUpReq.dart';
+import '../user_page/bloc/is_loading.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -62,13 +63,30 @@ class _CustomForm extends State<CustomForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<FocusNode> _nodes = [FocusNode(), FocusNode()];
   final Authenticate authenticate = new Authenticate();
+  bool loading = false;
 
-  void fn(){
-    setState(() {});
+  @override
+  void dispose(){
+    isLoadingLogin.dispose();
+    super.dispose();
+  }
+  
+  void checkLoadingStatus() async {
+    isLoadingLogin.getStatus.listen((status){
+      setState((){
+        loading=status;
+      });
+    });
+    
+  }
+
+  void startAuthentication() {
+    authenticate.signIn(_formKey, context);
   }
 
   @override
   Widget build(BuildContext context) {
+    checkLoadingStatus();
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
@@ -84,9 +102,7 @@ class _CustomForm extends State<CustomForm> {
                 child: SizedBox(
                   width: double.infinity,
                   child: RaisedButton(
-                    onPressed: () {
-                      authenticate.signIn(_formKey, context);
-                    },
+                    onPressed: (loading)?null:startAuthentication,
                     elevation: 3,
                     highlightElevation: 4,
                     color: Color.fromRGBO(84, 229, 121, 1),

@@ -2,6 +2,8 @@ import 'package:experto/user_authentication/userAdd.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../user_page/bloc/is_loading.dart';
+
 class InputField extends StatelessWidget {
   final FocusNode node;
   final String hintText;
@@ -10,7 +12,8 @@ class InputField extends StatelessWidget {
   final void Function(String) fn;
   //CollectionReference user;
 
-  InputField(this.node, this.hintText, this.fn,{this.inputType: TextInputType.text,this.isPassword: false});
+  InputField(this.node, this.hintText, this.fn,
+      {this.inputType: TextInputType.text, this.isPassword: false});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class InputField extends StatelessWidget {
                 return 'please enter this field';
               }
             },
-            onSaved:(input)=>fn(input),
+            onSaved: (input) => fn(input),
             textInputAction: TextInputAction.next,
             keyboardType: inputType,
             decoration: InputDecoration(
@@ -52,20 +55,20 @@ class InputField extends StatelessWidget {
   }
 }
 
-class Authenticate{
+class Authenticate {
   CollectionReference userReference;
   QuerySnapshot userSnapshot;
   List<String> details;
   bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
 
-  Authenticate(){
-    _isSignIn=false;
-    details=new List<String>();
+  Authenticate() {
+    _isSignIn = false;
+    details = new List<String>();
     getUser();
   }
 
-  Future<void> _ackAlert(BuildContext context,String title, String content) {
+  Future<void> _ackAlert(BuildContext context, String title, String content) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -85,22 +88,18 @@ class Authenticate{
     );
   }
 
-  getUser() async{
-    userReference=Firestore.instance.collection("Users");
+  getUser() async {
+    userReference = Firestore.instance.collection("Users");
   }
-  getName(String x)=>
-      details.add(x);
-  getPass(String x)=>
-      details.add(x);
-  getCity(String x)=>
-      details.add(x);
-  getMobile(String x)=>
-      details.add(x);
-  getEmail(String x)=>
-      details.add(x);
 
-  Widget signInButton(String x){
-    if(_isSignIn)
+  getName(String x) => details.add(x);
+  getPass(String x) => details.add(x);
+  getCity(String x) => details.add(x);
+  getMobile(String x) => details.add(x);
+  getEmail(String x) => details.add(x);
+
+  Widget signInButton(String x) {
+    if (_isSignIn)
       return Center(child: CircularProgressIndicator());
     else
       return Text(
@@ -113,39 +112,59 @@ class Authenticate{
       );
   }
 
-  Future<void> signUp(GlobalKey<FormState> _formKey,BuildContext context) async {
+  Future<void> signUp(
+      GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       formState.save();
       try {
-        _isSignIn=true;
-        await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: details[1], password: details[4]);
-        user=new Users(email: details[1],city: details[2],name: details[0],m: details[3]);
-        Firestore.instance.runTransaction((Transaction t) async{
-         await userReference.add(user.toJson());
+        isLoadingSignup.updateStatus(true);
+        _isSignIn = true;
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: details[1], password: details[4]);
+        user = new Users(
+            email: details[1],
+            city: details[2],
+            name: details[0],
+            m: details[3]);
+        Firestore.instance.runTransaction((Transaction t) async {
+          await userReference.add(user.toJson());
         });
-        userSnapshot=await userReference.where('emailID',isEqualTo: details[1]).getDocuments();
+        userSnapshot = await userReference
+            .where('emailID', isEqualTo: details[1])
+            .getDocuments();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
+        _isSignIn = false;
+        isLoadingSignup.updateStatus(false);
         _ackAlert(context, "SignUp Failed!", "Incorrect details");
       }
     }
   }
-  Future<void> signIn(GlobalKey<FormState> _formKey,BuildContext context) async{
+
+  Future<void> signIn(
+      GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
+      isLoadingLogin.updateStatus(true);
+      _isSignIn = true;
       formState.save();
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: details[0], password: details[1]);
-        userSnapshot=await userReference.where('emailID',isEqualTo: details[0]).getDocuments();
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: details[0], password: details[1]);
+        userSnapshot = await userReference
+            .where('emailID', isEqualTo: details[0])
+            .getDocuments();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
-        _ackAlert(context, "Login Failed!", "Username or password is Incorrect");
+        _isSignIn = false;
+        isLoadingLogin.updateStatus(false);
+        _ackAlert(
+            context, "Login Failed!", "Username or password is Incorrect");
       }
     }
   }
