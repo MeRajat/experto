@@ -1,6 +1,5 @@
 import 'package:experto/user_authentication/signUpReq.dart';
 import "package:flutter/material.dart";
-import 'package:firebase_auth/firebase_auth.dart';
 
 import './app_bar.dart' as login_page_appbar;
 
@@ -61,14 +60,7 @@ class _CustomFormField extends State<CustomFormField> {
                     elevation: 3,
                     highlightElevation: 4,
                     color: Color.fromRGBO(84, 229, 121, 1),
-                    child: Text(
-                      "Sign up",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
+                    child: authenticate.signInButton("Sign Up")
                   ),
                 ),
               ),
