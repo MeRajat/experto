@@ -1,3 +1,4 @@
+import 'package:experto/user_authentication/signUpReq.dart';
 import "package:flutter/material.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,36 +13,6 @@ class SignupPage extends StatelessWidget {
         slivers: <Widget>[
           login_page_appbar.AppBar("Sign up"),
           CustomFormField(),
-          SliverToBoxAdapter(
-            child: Container(
-              width: 20,
-              padding: EdgeInsets.only(left: 23, bottom: 40, right: 23),
-              child: Row(
-                children: <Widget>[
-                  Text("Already have an account?",
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .body2
-                          .copyWith(fontSize: 13)),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/user_login');
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        "Login",
-                        style: Theme.of(context)
-                            .primaryTextTheme
-                            .body2
-                            .copyWith(fontSize: 13),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -154,51 +125,5 @@ class InputField extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class Authenticate {
-  FirebaseUser user;
-  List<String> details;
-  bool _isSignIn;
-  Authenticate() {
-    _isSignIn = false;
-    details = new List<String>();
-  }
-
-  getName(String x) => details.add(x);
-  getPass(String x) => details.add(x);
-  getCity(String x) => details.add(x);
-  getEmail(String x) => details.add(x);
-
-  Widget signInButton() {
-    if (_isSignIn)
-      return CircularProgressIndicator();
-    else
-      return Text(
-        "Sign up",
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      );
-  }
-
-  Future<void> signUp(
-      GlobalKey<FormState> formKey, BuildContext context) async {
-    FormState formState = formKey.currentState;
-    if (formState.validate()) {
-      formState.save();
-      try {
-        user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: details[1], password: details[3]);
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
-        formState.reset();
-      } catch (e) {
-        print(e.message);
-      }
-    }
   }
 }

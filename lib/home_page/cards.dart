@@ -11,13 +11,13 @@ class Cards extends StatelessWidget {
   final List<CardInfo> card = [
     CardInfo(
       Icon(Icons.person, size: 100),
-      'Join As User',
+      'User',
       'sub text welcome gret',
-      '/user_signup',
+      '/user_login',
     ),
     CardInfo(
       Icon(CupertinoIcons.person_solid, size: 100),
-      'Join As Expert',
+      'Expert',
       'sub text welcome gret',
       '/expert_signup',
     )

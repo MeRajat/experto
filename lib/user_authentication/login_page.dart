@@ -18,6 +18,36 @@ class _LoginPage extends State<LoginPage> {
         slivers: <Widget>[
           appBar.AppBar("Login"),
           CustomForm(),
+          SliverToBoxAdapter(
+            child: Container(
+              width: 20,
+              padding: EdgeInsets.only(left: 23, bottom: 40, right: 23),
+              child: Row(
+                children: <Widget>[
+                  Text("Already have an account?",
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .body2
+                          .copyWith(fontSize: 13)),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/user_signup');
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        "Login",
+                        style: Theme.of(context)
+                            .primaryTextTheme
+                            .body2
+                            .copyWith(fontSize: 13),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
