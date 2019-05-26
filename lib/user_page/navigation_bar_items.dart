@@ -24,12 +24,12 @@ List<BottomNavigationBarItem> navigationBarItems() {
       ),
       title: Text('Expert'),
     ),
-    BottomNavigationBarItem(
-      icon: Icon(
-        CupertinoIcons.news,
-        size: 25,
-      ),
-      title: Text("Feedback"),
-    )
+    //BottomNavigationBarItem(
+    //  icon: Icon(
+    //    CupertinoIcons.news,
+    //    size: 25,
+    //  ),
+    //  title: Text("Feedback"),
+    //)
   ];
 }
