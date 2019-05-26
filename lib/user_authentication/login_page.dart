@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 
 import './app_bar.dart' as appBar;
 import './signUpReq.dart';
-import './signUpReq.dart' as signupReq;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -77,8 +76,8 @@ class _CustomForm extends State<CustomForm> {
           key: _formKey,
           child: Column(
             children: <Widget>[
-              signupReq.InputField(_nodes[0], "Email", authenticate.getName),
-              signupReq.InputField(_nodes[1], "Password", authenticate.getPass,
+              InputField(_nodes[0], "Email", authenticate.getName),
+              InputField(_nodes[1], "Password", authenticate.getPass,
                   isPassword: true),
               Padding(
                 padding: EdgeInsets.only(top: 20),

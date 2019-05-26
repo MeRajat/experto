@@ -2,7 +2,6 @@ import 'package:experto/user_authentication/signUpReq.dart';
 import "package:flutter/material.dart";
 
 import './app_bar.dart' as login_page_appbar;
-import './signUpReq.dart';
 
 class SignupPage extends StatelessWidget {
   @override
