@@ -24,15 +24,6 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
 
   CustomFlexibleSpaceBar(this.expertName);
 
-  // void _launchHangouts() async {
-  //   const url = "skype:+1234567890?call";
-  //   if (await canLaunch(url)) {
-  //     await launch(url);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
-  
   @override
   Widget build(BuildContext context) {
     return FlexibleSpaceBar(
@@ -71,10 +62,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 8),
-                  child: InkWell(
-                    onTap: (){},
-                    child: Icon(Icons.check_circle),
-                  ),
+                  child: ContactExpert("s.ganjoo96"),
                 )
               ],
             ),
@@ -85,6 +73,41 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
           // ),
         ],
       ),
+    );
+  }
+}
+
+class ContactExpert extends StatelessWidget {
+  final String expertSkypeUsername;
+
+  ContactExpert(this.expertSkypeUsername);
+  
+  void _launchSkype(String skypeUsername, String serviceType) async {
+    final url = "skype:$skypeUsername?$serviceType";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        InkWell(
+          onTap: () {
+            _launchSkype(expertSkypeUsername, "call");
+          },
+          child: Icon(Icons.video_call),
+        ),
+        InkWell(
+          onTap: () {
+            _launchSkype(expertSkypeUsername, "chat");
+          },
+          child: Icon(Icons.chat),
+        ),
+      ],
     );
   }
 }
