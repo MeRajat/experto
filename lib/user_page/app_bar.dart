@@ -5,8 +5,9 @@ class CustomAppBar extends StatelessWidget {
   final double expandedHeight;
   final String title;
   final Widget flexibleSpaceWidget;
+  final bool isFloating;
 
-  CustomAppBar(this.expandedHeight, this.title, this.flexibleSpaceWidget);
+  CustomAppBar(this.expandedHeight, this.title, this.flexibleSpaceWidget,{this.isFloating:false});
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +15,7 @@ class CustomAppBar extends StatelessWidget {
       titleSpacing: 0,
       expandedHeight: expandedHeight,
       pinned: true,
+      floating: isFloating,
       leading: Icon(CupertinoIcons.book_solid, size: 30),
       title: Text(
         title,

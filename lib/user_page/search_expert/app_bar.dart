@@ -31,6 +31,7 @@ class AppBar extends StatelessWidget {
       130,
       'Expert',
       CustomFlexibleSpace(),
+      isFloating:true,
     );
   }
 }
