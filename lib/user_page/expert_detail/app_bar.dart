@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
+import "package:url_launcher/url_launcher.dart";
 
 import "../app_bar.dart";
 
@@ -23,11 +24,21 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
 
   CustomFlexibleSpaceBar(this.expertName);
 
+  // void _launchHangouts() async {
+  //   const url = "skype:+1234567890?call";
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
+  
   @override
   Widget build(BuildContext context) {
     return FlexibleSpaceBar(
       titlePadding: EdgeInsets.all(0),
       background: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(left: 10, top: 80),
@@ -58,9 +69,20 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                         fontSize: 12,
                       ),
                 ),
+                Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: InkWell(
+                    onTap: (){},
+                    child: Icon(Icons.check_circle),
+                  ),
+                )
               ],
             ),
           ),
+          // Icon(
+          //   Icons.check_circle,
+          //   size: 25,
+          // ),
         ],
       ),
     );
