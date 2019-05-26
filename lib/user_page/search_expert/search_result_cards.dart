@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import './card.dart';
 
 class SearchResults extends StatelessWidget {
-  final List results;
+  final QuerySnapshot results;
   final String headerText;
   SearchResults(this.results, this.headerText);
 
@@ -29,14 +30,14 @@ class SearchResults extends StatelessWidget {
                           .copyWith(fontSize: 15),
                     ),
                   ),
-                  CustomCard(results[index]),
+                  CustomCard(results.documents[index]["Name"]),
                 ],
               );
             } else {
-              return CustomCard(results[index]);
+              return CustomCard(results.documents[index]["Name"]);
             }
           },
-          childCount: results.length,
+          childCount: results.documents.length,
         ),
       ),
     );

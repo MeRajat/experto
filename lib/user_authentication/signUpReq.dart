@@ -31,7 +31,6 @@ class InputField extends StatelessWidget {
                 return 'please enter this field';
               }
             },
-<<<<<<< HEAD
             // onFieldSubmitted: (text) {
             //   if (index <= nodes.length - 1) {
             //     FocusScope.of(context)
@@ -43,11 +42,8 @@ class InputField extends StatelessWidget {
             onSaved:(input)=>fn(input),
             //textInputAction: TextInputAction.next,
             //keyboardType: inputType,
-=======
-            onSaved: (input) => fn(input),
             textInputAction: TextInputAction.next,
             keyboardType: inputType,
->>>>>>> 2256c8d34ff9f9d5b5c859e8ae8b1ab0415302c1
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(0),
               filled: true,
@@ -151,6 +147,9 @@ class Authenticate {
         formState.reset();
       } catch (e) {
         _isSignIn = false;
+        formState.reset();
+        details.clear();
+        user=null;
         isLoadingSignup.updateStatus(false);
         _ackAlert(context, "SignUp Failed!", "Incorrect details");
       }
@@ -175,6 +174,8 @@ class Authenticate {
         formState.reset();
       } catch (e) {
         _isSignIn = false;
+        //formState.reset();
+        details.clear();
         isLoadingLogin.updateStatus(false);
         _ackAlert(
             context, "Login Failed!", "Username or password is Incorrect");
