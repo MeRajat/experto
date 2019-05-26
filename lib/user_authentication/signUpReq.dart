@@ -7,7 +7,7 @@ class InputField extends StatelessWidget {
   final TextInputType inputType;
   final bool isPassword;
   final void Function(String) fn;
-  CollectionReference user;
+  //CollectionReference user;
 
   InputField(this.node, this.hintText, this.fn,{this.inputType: TextInputType.text,this.isPassword: false});
 
@@ -37,7 +37,7 @@ class InputField extends StatelessWidget {
             //   }
             // },
             onSaved:(input)=>fn(input),
-            //textInputAction: TextInputAction.next,
+            //textInputAcNametion: TextInputAction.next,
             //keyboardType: inputType,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(0),
