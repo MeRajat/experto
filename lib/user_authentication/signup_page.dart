@@ -1,5 +1,6 @@
 import 'package:experto/user_authentication/signUpReq.dart';
 import "package:flutter/material.dart";
+import '../user_page/bloc/is_loading.dart';
 
 import './app_bar.dart' as login_page_appbar;
 
@@ -33,9 +34,30 @@ class _CustomFormField extends State<CustomFormField> {
   ];
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final Authenticate authenticate = new Authenticate();
+  bool loading = false;
+
+  @override
+  void dispose(){
+    isLoadingSignup.dispose();
+    super.dispose();
+  }
+  
+  void checkLoadingStatus() async {
+    isLoadingSignup.getStatus.listen((status){
+      setState((){
+        loading=status;
+      });
+    });
+    
+  }
+
+  void startAuthentication() {
+    authenticate.signUp(formKey, context);
+  }
 
   @override
   Widget build(BuildContext context) {
+    checkLoadingStatus();
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 10),
@@ -54,9 +76,7 @@ class _CustomFormField extends State<CustomFormField> {
                 child: SizedBox(
                   width:double.infinity,
                   child: RaisedButton(
-                    onPressed: () {
-                      authenticate.signUp(formKey, context);
-                    },
+                    onPressed: (loading) ? null : startAuthentication,
                     elevation: 3,
                     highlightElevation: 4,
                     color: Color.fromRGBO(84, 229, 121, 1),
@@ -65,56 +85,6 @@ class _CustomFormField extends State<CustomFormField> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class InputField extends StatelessWidget {
-  final FocusNode node;
-  final String hintText;
-  final TextInputType inputType;
-  final bool isPassword;
-  final void Function(String) fn;
-
-  InputField(this.node, this.hintText, this.fn,
-      {this.inputType: TextInputType.text, this.isPassword: false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      child: Material(
-        elevation: 3,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
-          child: TextFormField(
-            focusNode: node,
-            obscureText: isPassword,
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'please enter this field';
-              }
-            },
-            onSaved: (input) => fn(input),
-            textInputAction: TextInputAction.next,
-            keyboardType: inputType,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(0),
-              filled: true,
-              hintText: hintText,
-              hintStyle: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
           ),
         ),
       ),
