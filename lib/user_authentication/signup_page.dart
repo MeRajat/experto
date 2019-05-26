@@ -52,7 +52,7 @@ class _CustomFormField extends State<CustomFormField> {
   }
 
   void startAuthentication() {
-    authenticate.signIn(formKey, context);
+    authenticate.signUp(formKey, context);
   }
 
   @override
