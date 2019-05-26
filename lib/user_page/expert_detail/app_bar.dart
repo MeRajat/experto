@@ -33,9 +33,12 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(left: 10, top: 80),
-            child: Icon(
-              Icons.person,
-              size: 110,
+            child: Hero(
+              tag: expert["emailID"],
+              child: Icon(
+                Icons.person,
+                size: 110,
+              ),
             ),
           ),
           Padding(

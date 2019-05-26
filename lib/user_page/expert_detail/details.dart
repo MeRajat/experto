@@ -9,8 +9,12 @@ class Detail extends StatelessWidget {
     ["Work Experience1", "Work Experience2", "Work Experience3"],
     ["Achivement1", "Achivement2", "Achivement3"],
   ];
+  CollectionReference spl;
+  QuerySnapshot speaciality;
+  Detail({@required this.expert}){
+    //getData();
+  }
 
-  Detail({@required this.expert});
 
   @override
   Widget build(BuildContext context) {

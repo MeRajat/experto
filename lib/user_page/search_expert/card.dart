@@ -26,9 +26,12 @@ class CustomCard extends StatelessWidget {
           padding: EdgeInsets.only(left: 5, right: 5, bottom: 12, top: 5),
           child: Row(
             children: <Widget>[
-              Icon(
-                CupertinoIcons.person_solid,
-                size: 70,
+              Hero(
+                tag:expert["emailID"],
+                child: Icon(
+                  CupertinoIcons.person_solid,
+                  size: 60,
+                ),
               ),
               Container(
                 padding: EdgeInsets.only(left: 5),

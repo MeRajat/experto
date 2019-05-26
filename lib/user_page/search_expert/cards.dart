@@ -39,7 +39,14 @@ class _Cards extends State<Cards> {
 
   @override
   void initState() {
+    loading=CircularProgressIndicator();
     getExpert();
+    Future.delayed(Duration(seconds: 10), () {
+      setState(() {
+        loading=Text("No results!",style: Theme.of(context).textTheme.title,
+          textScaleFactor: 1.2,);
+      });
+    });
     super.initState();
   }
 
@@ -88,7 +95,7 @@ class _Cards extends State<Cards> {
       search(searchQuery);
       Future.delayed(Duration(seconds: 2), () {
         setState(() {
-          loading=Text("No results",style: Theme.of(context).textTheme.title,
+          loading=Text("No results!",style: Theme.of(context).textTheme.title,
             textScaleFactor: 1.2,);
         });
       });
@@ -112,7 +119,7 @@ class _Cards extends State<Cards> {
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: loading,
                   );
                 },
                 childCount: 1,
