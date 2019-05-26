@@ -64,6 +64,10 @@ class _CustomForm extends State<CustomForm> {
   final List<FocusNode> _nodes = [FocusNode(), FocusNode()];
   final Authenticate authenticate = new Authenticate();
 
+  void fn(){
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -87,14 +91,7 @@ class _CustomForm extends State<CustomForm> {
                     elevation: 3,
                     highlightElevation: 4,
                     color: Color.fromRGBO(84, 229, 121, 1),
-                    child: Text(
-                      "Sign in",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
+                    child: authenticate.signInButton("Sign In"),
                   ),
                 ),
               ),
