@@ -1,11 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../expert_detail/expert_detail.dart';
 
 class CustomCard extends StatelessWidget {
-  final String name;
-  CustomCard(this.name);
+  final DocumentSnapshot expert;
+  CustomCard({@required this.expert});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class CustomCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return ExpertDetail(name);
+                return ExpertDetail(expert);
               },
             ),
           );
@@ -38,7 +39,7 @@ class CustomCard extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(bottom: 5),
                       child: Text(
-                        name,
+                        expert["Name"],
                         style: Theme.of(context)
                             .textTheme
                             .title

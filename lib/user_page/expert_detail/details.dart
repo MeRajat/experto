@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 
 class Detail extends StatelessWidget {
+  final DocumentSnapshot expert;
   final List classes = ["Speciality", "Work Experience", "Achivement"];
   final List<List> detail = [
     ["Speciality1", "Speciality1", "Speciality1"],
     ["Work Experience1", "Work Experience2", "Work Experience3"],
     ["Achivement1", "Achivement2", "Achivement3"],
   ];
+
+  Detail({@required this.expert});
 
   @override
   Widget build(BuildContext context) {

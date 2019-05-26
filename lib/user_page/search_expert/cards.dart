@@ -28,6 +28,7 @@ class _Cards extends State<Cards> {
   int searchingStatus = 0;
   CollectionReference expert;
   QuerySnapshot expertSnapshot,searchSnapshot;
+  Widget loading;
 
   @override
   void dispose() {
@@ -83,7 +84,14 @@ class _Cards extends State<Cards> {
   void getSearch() async {
     expertSearchBloc.value.listen((searchQuery) {
       searchingStatus = 1;
+      loading=CircularProgressIndicator();
       search(searchQuery);
+      Future.delayed(Duration(seconds: 2), () {
+        setState(() {
+          loading=Text("No results",style: Theme.of(context).textTheme.title,
+            textScaleFactor: 1.2,);
+        });
+      });
     });
   }
 
@@ -121,7 +129,7 @@ class _Cards extends State<Cards> {
               delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: loading,
                   );
                 },
                 childCount: 1,

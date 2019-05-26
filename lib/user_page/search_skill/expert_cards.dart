@@ -11,7 +11,7 @@ class Cards extends StatelessWidget {
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            return CustomCard("Expert $index");
+            return CircularProgressIndicator();
           },
           childCount: 10,
         ),

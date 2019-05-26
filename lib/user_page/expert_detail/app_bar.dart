@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
@@ -5,24 +6,23 @@ import "package:url_launcher/url_launcher.dart";
 import "../app_bar.dart";
 
 class AppBar extends StatelessWidget {
-  final String expertName;
-
-  AppBar(this.expertName);
+  final DocumentSnapshot expert;
+  AppBar(this.expert);
 
   @override
   Widget build(BuildContext context) {
     return CustomAppBar(
       250,
       'Detail',
-      CustomFlexibleSpaceBar(expertName),
+      CustomFlexibleSpaceBar(expert),
     );
   }
 }
 
 class CustomFlexibleSpaceBar extends StatelessWidget {
-  final String expertName;
+  final DocumentSnapshot expert;
 
-  CustomFlexibleSpaceBar(this.expertName);
+  CustomFlexibleSpaceBar(this.expert);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  expertName,
+                  expert["Name"],
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
@@ -54,7 +54,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                       ),
                 ),
                 Text(
-                  "something@gmail.com",
+                  expert["emailID"],
                   style: Theme.of(context).primaryTextTheme.body1.copyWith(
                         fontStyle: FontStyle.italic,
                         fontSize: 12,
