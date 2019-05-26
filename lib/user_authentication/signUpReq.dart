@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 class InputField extends StatelessWidget {
   final FocusNode node;
@@ -6,6 +7,7 @@ class InputField extends StatelessWidget {
   final TextInputType inputType;
   final bool isPassword;
   final void Function(String) fn;
+  CollectionReference user;
 
   InputField(this.node, this.hintText, this.fn,{this.inputType: TextInputType.text,this.isPassword: false});
 
@@ -58,14 +60,19 @@ class InputField extends StatelessWidget {
 }
 
 class Authenticate{
-  FirebaseUser user;
+  CollectionReference userReference;
+  QuerySnapshot userSnapshot;
   List<String> details;
   bool _isSignIn;
   Authenticate(){
     _isSignIn=false;
     details=new List<String>();
+    getUser();
   }
 
+  getUser() async{
+    userReference=Firestore.instance.collection("Users");
+  }
   getName(String x)=>
       details.add(x);
   getPass(String x)=>
@@ -95,8 +102,10 @@ class Authenticate{
       formState.save();
       try {
         _isSignIn=true;
-        user = await FirebaseAuth.instance
+        await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: details[1], password: details[3]);
+        userReference.add({'City':details[2],'Name':details[0],'emailID':details[1]});
+        userSnapshot=await userReference.where('emailID',isEqualTo: details[1]).getDocuments();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
@@ -110,7 +119,8 @@ class Authenticate{
     if (formState.validate()) {
       formState.save();
       try {
-        FirebaseAuth.instance.signInWithEmailAndPassword(email: details[0], password: details[1]);
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: details[0], password: details[1]);
+        userSnapshot=await userReference.where('emailID',isEqualTo: details[1]).getDocuments();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
