@@ -31,6 +31,7 @@ class AppBar extends StatelessWidget {
       130,
       'Skill',
       CustomFlexibleSpace(),
+      isFloating:true,
     );
   }
 }
