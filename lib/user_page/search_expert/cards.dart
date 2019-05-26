@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
@@ -25,12 +26,26 @@ class _Cards extends State<Cards> {
   List results = [];
   List allExperts;
   int searchingStatus = 0;
+  CollectionReference expert;
+  QuerySnapshot expertSnapshot;
 
   @override
   void dispose() {
     expertSearchBloc.dispose();
     isSearchingExpert.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    getExpert();
+    super.initState();
+  }
+
+  Future<void> getExpert() async {
+    expert = Firestore.instance.collection("Experts");
+    expertSnapshot = await expert.getDocuments();
+    setState(() {});
   }
 
   void getSearchingStatus() async {
@@ -46,16 +61,16 @@ class _Cards extends State<Cards> {
     int flag = 0;
     widget.allExperts.forEach((expert) {
       if (expert.toLowerCase().contains(searchQuery)) {
-        flag = 1 ;
+        flag = 1;
         tempResultList.add(expert);
         setState(() {
           results = tempResultList;
         });
       }
     });
-    if(flag==0){
+    if (flag == 0) {
       setState(() {
-        results=[];
+        results = [];
       });
     }
   }
@@ -75,9 +90,39 @@ class _Cards extends State<Cards> {
       String allExpertHeaderText = "All Experts";
       String searchHeaderText = "Results";
       if (searchingStatus == 0) {
-        return SearchResults(widget.allExperts, allExpertHeaderText);
+        if (expertSnapshot != null)
+          return SearchResults(expertSnapshot, allExpertHeaderText);
+        else
+          return SliverPadding(
+            padding: EdgeInsets.all(20.0),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+                childCount: 1,
+              ),
+            ),
+          );
       } else {
-        return SearchResults(results, searchHeaderText);
+        if (expertSnapshot != null)
+          return SearchResults(expertSnapshot, allExpertHeaderText);
+        else
+          return SliverPadding(
+            padding: EdgeInsets.all(20.0),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+                childCount: 1,
+              ),
+            ),
+          );
       }
     }
   }
