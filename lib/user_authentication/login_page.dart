@@ -24,7 +24,7 @@ class _LoginPage extends State<LoginPage> {
               padding: EdgeInsets.only(left: 23, bottom: 40, right: 23),
               child: Row(
                 children: <Widget>[
-                  Text("Already have an account?",
+                  Text("Don't have an account?",
                       style: Theme.of(context)
                           .primaryTextTheme
                           .body2
@@ -36,7 +36,7 @@ class _LoginPage extends State<LoginPage> {
                     child: Padding(
                       padding: EdgeInsets.all(10),
                       child: Text(
-                        "Login",
+                        "SignUp",
                         style: Theme.of(context)
                             .primaryTextTheme
                             .body2
