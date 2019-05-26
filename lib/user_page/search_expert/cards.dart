@@ -27,7 +27,7 @@ class _Cards extends State<Cards> {
   List allExperts;
   int searchingStatus = 0;
   CollectionReference expert;
-  QuerySnapshot expertSnapshot;
+  QuerySnapshot expertSnapshot,searchSnapshot;
 
   @override
   void dispose() {
@@ -56,17 +56,22 @@ class _Cards extends State<Cards> {
     });
   }
 
-  void search(searchQuery) {
-    List tempResultList = [];
+  Future<void> search(searchQuery) async{
     int flag = 0;
-    widget.allExperts.forEach((expert) {
-      if (expert.toLowerCase().contains(searchQuery)) {
-        flag = 1;
-        tempResultList.add(expert);
-        setState(() {
-          results = tempResultList;
-        });
-      }
+    searchSnapshot=null;
+    setState(() {
+
+    });
+    searchSnapshot=await expert.where("Name",isEqualTo: searchQuery).getDocuments();
+    searchSnapshot.documents.clear();
+    expertSnapshot.documents.forEach((expert){
+      if(expert["Name"].toLowerCase().contains(searchQuery))
+        {
+          flag=1;
+          setState(() {
+            searchSnapshot.documents.add(expert);
+          });
+        }
     });
     if (flag == 0) {
       setState(() {
@@ -107,8 +112,8 @@ class _Cards extends State<Cards> {
             ),
           );
       } else {
-        if (expertSnapshot != null)
-          return SearchResults(expertSnapshot, allExpertHeaderText);
+        if (searchSnapshot != null&&searchSnapshot.documents.length!=0)
+          return SearchResults(searchSnapshot, searchHeaderText);
         else
           return SliverPadding(
             padding: EdgeInsets.all(20.0),
