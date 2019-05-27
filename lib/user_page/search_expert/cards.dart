@@ -8,23 +8,11 @@ import '../bloc/search_bloc.dart';
 import '../bloc/is_searching.dart';
 
 class Cards extends StatefulWidget {
-  final List allExperts = [
-    'Pravin Gupta',
-    'Rahul Saini',
-    'Anand Panwal',
-    'Himanshu Pandey',
-    'Nihal Sharma',
-    'Rahul Gupta',
-    'Dhruv Khosla',
-  ];
-
   @override
   _Cards createState() => _Cards();
 }
 
 class _Cards extends State<Cards> {
-  List results = [];
-  List allExperts;
   int searchingStatus = 0;
   CollectionReference expert;
   QuerySnapshot expertSnapshot,searchSnapshot;
@@ -70,6 +58,7 @@ class _Cards extends State<Cards> {
     setState(() {
 
     });
+
     searchSnapshot=await expert.where("Name",isEqualTo: searchQuery).getDocuments();
     searchSnapshot.documents.clear();
     expertSnapshot.documents.forEach((expert){

@@ -142,6 +142,7 @@ class Authenticate {
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[1])
             .getDocuments();
+        currentUser=userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
@@ -169,6 +170,8 @@ class Authenticate {
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[0])
             .getDocuments();
+        //print(userSnapshot.documents[0]["emailID"]);
+        currentUser=userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
