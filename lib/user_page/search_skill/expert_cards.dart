@@ -36,7 +36,19 @@ class _CardsState extends State<Cards> {
 
   @override
   Widget build(BuildContext context) {
-    if (expert == null || expert.documents.length == 0)
+    if(!load)
+      return SliverPadding(
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+              return Center(child: CircularProgressIndicator());
+            },
+            childCount: 1,
+          ),
+        ),
+        padding: EdgeInsets.only(top: 20, bottom: 80),
+      );
+    else if (expert == null || expert.documents.length == 0)
       return SliverPadding(
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
@@ -56,18 +68,6 @@ class _CardsState extends State<Cards> {
               return CustomCard(expert: expert.documents[index]);
             },
             childCount: expert.documents.length,
-          ),
-        ),
-        padding: EdgeInsets.only(top: 20, bottom: 80),
-      );
-    else
-      return SliverPadding(
-        sliver: SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return Center(child: CircularProgressIndicator());
-            },
-            childCount: 1,
           ),
         ),
         padding: EdgeInsets.only(top: 20, bottom: 80),
