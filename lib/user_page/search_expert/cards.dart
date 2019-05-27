@@ -6,16 +6,31 @@ import 'package:flutter/widgets.dart';
 import './search_result_cards.dart';
 import '../bloc/search_bloc.dart';
 import '../bloc/is_searching.dart';
+import './no_result.dart';
+import './timed_out.dart';
 
 class Cards extends StatefulWidget {
+  final List allExperts = [
+    'Pravin Gupta',
+    'Rahul Saini',
+    'Anand Panwal',
+    'Himanshu Pandey',
+    'Nihal Sharma',
+    'Rahul Gupta',
+    'Dhruv Khosla',
+  ];
+
   @override
   _Cards createState() => _Cards();
 }
 
 class _Cards extends State<Cards> {
+  List results = [];
+  List allExperts;
   int searchingStatus = 0;
+  bool timedOut = false;
   CollectionReference expert;
-  QuerySnapshot expertSnapshot,searchSnapshot;
+  QuerySnapshot expertSnapshot, searchSnapshot;
   Widget loading;
 
   @override
@@ -27,53 +42,52 @@ class _Cards extends State<Cards> {
 
   @override
   void initState() {
-    loading=CircularProgressIndicator();
+    timedOut = false;
+    loading = CircularProgressIndicator();
     getExpert();
-    Future.delayed(Duration(seconds: 10), () {
-      setState(() {
-        loading=Text("Timed Out!",style: Theme.of(context).textTheme.title,
-          textScaleFactor: 1.2,);
-      });
-    });
     super.initState();
   }
 
   Future<void> getExpert() async {
     expert = Firestore.instance.collection("Experts");
-    expertSnapshot = await expert.getDocuments();
+    expertSnapshot = await expert.getDocuments().timeout(Duration(seconds: 10),
+        onTimeout: () {
+      timedOut = true;
+    });
     setState(() {});
   }
 
   void getSearchingStatus() async {
     isSearchingExpert.getStatus.listen((result) {
       setState(() {
+        timedOut = false;
         searchingStatus = result;
       });
     });
   }
 
-  Future<void> search(searchQuery) async{
+  Future<void> search(searchQuery) async {
     int flag = 0;
-    searchSnapshot=null;
-    setState(() {
-
+    searchSnapshot = null;
+    setState(() {});
+    searchSnapshot = await expert
+        .where("Name", isEqualTo: searchQuery)
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {
+      timedOut = true;
     });
-
-    searchSnapshot=await expert.where("Name",isEqualTo: searchQuery).getDocuments();
     searchSnapshot.documents.clear();
-    expertSnapshot.documents.forEach((expert){
-      if(expert["Name"].toLowerCase().contains(searchQuery))
-        {
-          flag=1;
-          setState(() {
-            searchSnapshot.documents.add(expert);
-          });
-        }
+    expertSnapshot.documents.forEach((expert) {
+      if (expert["Name"].toLowerCase().contains(searchQuery)) {
+        flag = 1;
+        setState(() {
+          searchSnapshot.documents.add(expert);
+        });
+      }
     });
     if (flag == 0) {
       setState(() {
-        loading=Text("No Results!",style: Theme.of(context).textTheme.title,
-          textScaleFactor: 1.2,);
+        loading = NoResultCard();
       });
     }
   }
@@ -81,15 +95,9 @@ class _Cards extends State<Cards> {
   void getSearch() async {
     expertSearchBloc.value.listen((searchQuery) {
       searchingStatus = 1;
-      loading=CircularProgressIndicator();
+      timedOut = false;
+      loading = CircularProgressIndicator();
       search(searchQuery);
-      Future.delayed(Duration(seconds: 10), () {
-        if(searchSnapshot==null){
-        setState(() {
-          loading=Text("Timed Out!",style: Theme.of(context).textTheme.title,
-            textScaleFactor: 1.2,);
-        });}
-      });
     });
   }
 
@@ -100,6 +108,9 @@ class _Cards extends State<Cards> {
       getSearch();
       String allExpertHeaderText = "All Experts";
       String searchHeaderText = "Results";
+      if (timedOut) {
+        return SliverToBoxAdapter(child: TimedOut());
+      }
       if (searchingStatus == 0) {
         if (expertSnapshot != null)
           return SearchResults(expertSnapshot, allExpertHeaderText);
@@ -118,14 +129,14 @@ class _Cards extends State<Cards> {
             ),
           );
       } else {
-        if (searchSnapshot != null&&searchSnapshot.documents.length!=0)
+        if (searchSnapshot != null && searchSnapshot.documents.length != 0)
           return SearchResults(searchSnapshot, searchHeaderText);
         else
           return SliverPadding(
             padding: EdgeInsets.all(20.0),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
+                (BuildContext context, int index) {
                   return Center(
                     child: loading,
                   );
