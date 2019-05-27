@@ -1,11 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:experto/user_authentication/userAdd.dart';
 import 'package:flutter/material.dart';
 import '../expert_detail/expert_detail.dart';
 
-class VerticalList extends StatelessWidget {
+class VerticalList extends StatefulWidget {
+
+
+  @override
+  _VerticalListState createState() => _VerticalListState();
+}
+
+class _VerticalListState extends State<VerticalList> {
   final List<List> activeSessions = [
     ["Yoga", "Rahul saini"],
     ["Dieting", "Nihal Sharma"]
   ];
+
+  CollectionReference interaction,expert;
+  QuerySnapshot interactionSnapshot,experts;
+
+  @override
+  void initState(){
+    expert=Firestore.instance.collection("Experts");
+    interaction=Firestore.instance.collection("Interactions");
+    getInteraction();
+    super.initState();
+  }
+  Future<void> getInteraction() async{
+    interactionSnapshot=await interaction.where("user",isEqualTo: currentUser["emailID"]).getDocuments();
+    experts=await expert.getDocuments();
+    experts.documents.clear();
+    List.from(interactionSnapshot.documents).forEach((i){
+      expert.where("emailID",isEqualTo: i["expert"]).getDocuments().then((QuerySnapshot q){
+        experts.documents.add(q.documents[0]);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
@@ -34,7 +65,8 @@ class VerticalList extends StatelessWidget {
                           Text("Your Expert : ",
                               style: Theme.of(context).primaryTextTheme.body2),
                           Text(
-                            activeSessions[index][1],
+                            "name",
+                            //experts.documents[index]["Name"],
                             style: Theme.of(context).primaryTextTheme.body2,
                           ),
                         ],
