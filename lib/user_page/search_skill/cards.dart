@@ -8,18 +8,17 @@ import '../bloc/is_searching.dart';
 
 class Cards extends StatefulWidget {
   final List recommendedSkills = [
-    'Data Science',
-    'Web Development',
-    'Flutter',
+    "Fashion",
+        "Mathematics",
+        "Data science"
   ];
 
   final List skills = [
-    'Data Science',
-    'dieting',
-    'Yoga',
-    'Personal Trainer',
-    'Web Development',
-    'Flutter',
+    "Fashion",
+        "Mathematics",
+        "Data science",
+        "OS",
+        "DS and Algorithms"
   ];
 
 
