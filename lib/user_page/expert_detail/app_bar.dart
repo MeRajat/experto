@@ -8,6 +8,7 @@ import "../app_bar.dart";
 
 class AppBar extends StatelessWidget {
   final DocumentSnapshot expert;
+
   AppBar(this.expert);
 
   @override
@@ -51,18 +52,26 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
               children: <Widget>[
                 Text(
                   expert["Name"],
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        letterSpacing: -.5,
-                      ),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .title
+                      .copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    letterSpacing: -.5,
+                  ),
                 ),
                 Text(
                   expert["emailID"],
-                  style: Theme.of(context).primaryTextTheme.body1.copyWith(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 12,
-                      ),
+                  style: Theme
+                      .of(context)
+                      .primaryTextTheme
+                      .body1
+                      .copyWith(
+                    fontStyle: FontStyle.italic,
+                    fontSize: 12,
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 8),
@@ -81,32 +90,72 @@ class ContactExpert extends StatelessWidget {
   final DocumentSnapshot expert;
   CollectionReference interaction;
 
-  ContactExpert(this.expert){
+  ContactExpert(this.expert) {
     getInteraction();
   }
-  void getInteraction()
-  {
-    interaction=Firestore.instance.collection("Interactions");
+
+  void getInteraction() {
+    interaction = Firestore.instance.collection("Interactions");
   }
-  Future<void> updateInteraction() async{
+
+  Future<void> updateInteraction() async {
     int id;
-    CollectionReference temp= Firestore.instance.collection("Users");
+    QuerySnapshot tempsnap;
+    CollectionReference temp = Firestore.instance.collection("Users");
+    try {
+      for(int i=0;i<currentUser["interactionID"].length();i++) {
+        tempsnap = await interaction.where(
+            "id", isEqualTo: i).getDocuments();
+        QuerySnapshot q= await interaction.where("id",isEqualTo: i).getDocuments();
+        if(q.documents[0]["expert"]==expert["emailID"])
+          break;
+        else
+          tempsnap=null;
+      }
+    }
+    catch(e){
+
+    }
     Firestore.instance.runTransaction((Transaction t) async {
-      await interaction.getDocuments().then((QuerySnapshot snapshot){id=snapshot.documents.length+1;});
-      await temp.document(currentUser.documentID).updateData({"interactionID":FieldValue.arrayUnion([id])});
-      await interaction.add({'expert':expert["emailID"],'user':currentUser["emailID"],'id':id,'startTime':DateTime.now().toString()});
+      await interaction.getDocuments().then((QuerySnapshot snapshot) {
+        id = snapshot.documents.length;
+      });
+      if(tempsnap!=null){
+        await interaction.document(tempsnap.documents[0].documentID).updateData(
+            {"interactionTime": FieldValue.arrayUnion([DateTime.now()])});
+      }
+      else{
+        await temp.document(currentUser.documentID).updateData(
+            {"interactionID": FieldValue.arrayUnion([id])});
+        await interaction.add({
+          'expert': expert["emailID"],
+          'user': currentUser["emailID"],
+          'id': id,
+          'interactionTime': FieldValue.arrayUnion([DateTime.now()])
+        });
+        await temp.where("emailID",isEqualTo: currentUser["emailID"]).getDocuments().then((QuerySnapshot q){
+          currentUser=q.documents[0];
+        });
+      }
     });
   }
+
   void _showDialog(context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: new Text("Skype Required",
-              style: Theme.of(context).primaryTextTheme.title),
+              style: Theme
+                  .of(context)
+                  .primaryTextTheme
+                  .title),
           content: new Text(
             "Skype is Required to use this service",
-            style: Theme.of(context).primaryTextTheme.body2,
+            style: Theme
+                .of(context)
+                .primaryTextTheme
+                .body2,
           ),
           actions: <Widget>[
             new FlatButton(
@@ -121,8 +170,8 @@ class ContactExpert extends StatelessWidget {
     );
   }
 
-  void _launchSkype(
-      BuildContext context, String skypeUsername, String serviceType) async {
+  void _launchSkype(BuildContext context, String skypeUsername,
+      String serviceType) async {
     final url = "skype:$skypeUsername?$serviceType";
     if (await canLaunch(url)) {
       await updateInteraction();
