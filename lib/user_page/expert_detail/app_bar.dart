@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:experto/user_authentication/userAdd.dart';
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
@@ -65,7 +66,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 8),
-                  child: ContactExpert("s.ganjoo96"),
+                  child: ContactExpert(expert),
                 )
               ],
             ),
@@ -77,10 +78,25 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
 }
 
 class ContactExpert extends StatelessWidget {
-  final String expertSkypeUsername;
+  final DocumentSnapshot expert;
+  CollectionReference interaction;
 
-  ContactExpert(this.expertSkypeUsername);
-
+  ContactExpert(this.expert){
+    getInteraction();
+  }
+  void getInteraction()
+  {
+    interaction=Firestore.instance.collection("Interactions");
+  }
+  Future<void> updateInteraction() async{
+    int id;
+    CollectionReference temp= Firestore.instance.collection("Users");
+    Firestore.instance.runTransaction((Transaction t) async {
+      await interaction.getDocuments().then((QuerySnapshot snapshot){id=snapshot.documents.length+1;});
+      await temp.document(currentUser.documentID).updateData({"interactionID":FieldValue.arrayUnion([id])});
+      await interaction.add({'expert':expert["emailID"],'user':currentUser["emailID"],'id':id,'startTime':DateTime.now().toString()});
+    });
+  }
   void _showDialog(context) {
     showDialog(
       context: context,
@@ -109,6 +125,7 @@ class ContactExpert extends StatelessWidget {
       BuildContext context, String skypeUsername, String serviceType) async {
     final url = "skype:$skypeUsername?$serviceType";
     if (await canLaunch(url)) {
+      await updateInteraction();
       await launch(url);
     } else {
       _showDialog(context);
@@ -122,7 +139,7 @@ class ContactExpert extends StatelessWidget {
       children: <Widget>[
         InkWell(
           onTap: () {
-            _launchSkype(context, expertSkypeUsername, "call");
+            _launchSkype(context, expert["SkypeUser"], "call");
           },
           child: Icon(Icons.video_call),
         ),
@@ -130,7 +147,7 @@ class ContactExpert extends StatelessWidget {
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
             onTap: () {
-              _launchSkype(context, expertSkypeUsername, "chat");
+              _launchSkype(context, expert["SkypeUser"], "chat");
             },
             child: Icon(Icons.chat),
           ),
