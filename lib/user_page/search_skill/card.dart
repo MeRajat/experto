@@ -17,7 +17,7 @@ class CustomCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return ExpertList();
+                return ExpertList(name:name);
               },
             ),
           );

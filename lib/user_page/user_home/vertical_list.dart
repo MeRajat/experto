@@ -17,11 +17,14 @@ class _VerticalListState extends State<VerticalList> {
   QuerySnapshot interactionSnapshot;
   List<DocumentSnapshot> experts;
   CollectionReference interaction, expert;
-  Widget loading;
+  bool timedout,load;
+
   void initState() {
     expert = Firestore.instance.collection("Experts");
     interaction = Firestore.instance.collection("Interactions");
     experts = new List<DocumentSnapshot>();
+    timedout=false;
+    load=false;
     getInteraction();
     super.initState();
   }
@@ -29,15 +32,23 @@ class _VerticalListState extends State<VerticalList> {
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
         .where("user", isEqualTo: currentUser["emailID"])
-        .getDocuments();
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {
+      setState(() {
+        timedout = true;
+      });
+    });
     experts.clear();
-    for(int i=0;i<interactionSnapshot.documents.length;i++){
-      QuerySnapshot q =
-          await expert.where("emailID", isEqualTo: interactionSnapshot.documents[i]["expert"]).getDocuments();
+    for (int i = 0; i < interactionSnapshot.documents.length; i++) {
+      QuerySnapshot q = await expert
+          .where("emailID",
+              isEqualTo: interactionSnapshot.documents[i]["expert"])
+          .getDocuments();
       experts.add(q.documents[0]);
     }
-    print(experts.length);
-    setState(() {});
+    setState(() {
+      load=true;
+    });
   }
 
   @override
@@ -109,16 +120,47 @@ class _VerticalListState extends State<VerticalList> {
           ),
         ),
       );
-    else {
+    else if (load&& experts.length == 0) {
       return SliverPadding(
-        padding: EdgeInsets.all(20),
-        sliver: SliverList(delegate: SliverChildBuilderDelegate(
-        (BuildContext context,int index){
-          return Center(child: loading);
-    },
-          childCount: 1,
-        ),
-      ));
+          padding: EdgeInsets.all(20),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Center(child: Text("No interacctions yet!",
+                  style: Theme.of(context)
+                      .primaryTextTheme
+                      .body2
+                      .copyWith(fontSize: 13),));
+              },
+              childCount: 1,
+            ),
+          ));
+    } else if (timedout) {
+      return SliverPadding(
+          padding: EdgeInsets.all(20),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Center(child: Text("Connection Timed out!",
+                  style: Theme.of(context)
+                      .primaryTextTheme
+                      .body2
+                      .copyWith(fontSize: 13),));
+              },
+              childCount: 1,
+            ),
+          ));
+    } else {
+      return SliverPadding(
+          padding: EdgeInsets.all(20),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Center(child: CircularProgressIndicator());
+              },
+              childCount: 1,
+            ),
+          ));
     }
   }
 }

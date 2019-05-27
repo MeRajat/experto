@@ -5,6 +5,8 @@ import './expert_app_bar.dart';
 import './expert_cards.dart';
 
 class ExpertList extends StatelessWidget {
+  String name;
+  ExpertList({this.name});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +14,7 @@ class ExpertList extends StatelessWidget {
         physics: BouncingScrollPhysics(),
         slivers: <Widget>[
           Appbar(),
-          Cards(),
+          Cards(name:name),
         ],
       ),
     );

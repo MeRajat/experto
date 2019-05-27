@@ -19,7 +19,7 @@ class CuostomFlexibleSpace extends StatelessWidget {
               bottom: 30,
             ),
             child: Text(
-              "Active Sessions",
+              "Interactions",
               style: Theme.of(context).textTheme.title.copyWith(
                     fontSize: 31,
                     letterSpacing: -1.2,
