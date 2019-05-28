@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
 class Cards extends StatefulWidget {
-  String name;
+  final String name;
 
   Cards({this.name});
 

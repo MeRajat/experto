@@ -116,7 +116,7 @@ class Authenticate {
     if (formState.validate()) {
       formState.save();
       try {
-        isLoadingSignup.updateStatus(true);
+        isLoadingSignupExpert.updateStatus(true);
         _isSignIn = true;
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
@@ -133,14 +133,14 @@ class Authenticate {
             .getDocuments();
         currentUser=userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+            context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
         _isSignIn = false;
         formState.reset();
         details.clear();
         user=null;
-        isLoadingSignup.updateStatus(false);
+        isLoadingSignupExpert.updateStatus(false);
         _ackAlert(context, "SignUp Failed!", "Incorrect details");
       }
     }
@@ -150,7 +150,7 @@ class Authenticate {
       GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
-      isLoadingLogin.updateStatus(true);
+      isLoadingLoginExpert.updateStatus(true);
       _isSignIn = true;
       formState.save();
       try {
@@ -162,13 +162,13 @@ class Authenticate {
         //print(userSnapshot.documents[0]["emailID"]);
         currentUser=userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+            context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
         _isSignIn = false;
         //formState.reset();
         details.clear();
-        isLoadingLogin.updateStatus(false);
+        isLoadingLoginExpert.updateStatus(false);
         _ackAlert(
             context, "Login Failed!", "Username or password is Incorrect");
       }

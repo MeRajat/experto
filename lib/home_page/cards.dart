@@ -19,7 +19,7 @@ class Cards extends StatelessWidget {
       Icon(CupertinoIcons.person_solid, size: 100),
       'Expert',
       'sub text welcome gret',
-      '/expert_signup',
+      '/expert_login',
     )
   ];
 

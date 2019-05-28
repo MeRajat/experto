@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
-import "./search_skill/search_skill.dart";
-import "./search_expert/search_expert.dart";
-import "./user_home/user_home.dart";
-import "navigation_bar_items.dart";
+//import "./search_skill/search_skill.dart";
+//import "./search_expert/search_expert.dart";
+import "./expert_home/expert_home.dart";
+import "./navigation_bar_items.dart";
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,16 +13,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> {
   final List<Widget> pages = [
-    UserHome(),
-    SearchSkill(),
-    SearchExpert(),
+    ExpertHome(),
+    //SearchSkill(),
+    //SearchExpert(),
     //FeedBack(),
   ];
 
   final List<GlobalKey<NavigatorState>> keys = [
-    GlobalKey(debugLabel: 'home page'),
-    GlobalKey(debugLabel: 'skill page'),
-    GlobalKey(debugLabel: 'expert page'),
+    GlobalKey(debugLabel: 'expert home page'),
+    //GlobalKey(debugLabel: 'expert skill page'),
+    //GlobalKey(debugLabel: 'expert page'),
     //GlobalKey(debugLabel: 'feedback page'),
   ];
 

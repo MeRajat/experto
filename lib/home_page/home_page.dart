@@ -12,33 +12,6 @@ class HomePage extends StatelessWidget {
         slivers: <Widget>[
           Appbar(),
           Cards(),
-    
-    //       SliverToBoxAdapter(
-    //         child: Container(
-    //           color: Theme.of(context).appBarTheme.color,
-    //           height: MediaQuery.of(context).size.height * .7,
-    //           child: Align(
-    //             child: RaisedButton(
-    //               child: Text("User Signup"),
-    //               onPressed: () {
-    //                 Navigator.pushNamed(context,'/user_signup');
-    //               },
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //       SliverToBoxAdapter(
-    //         child: Container(
-    //           color: Theme.of(context).scaffoldBackgroundColor,
-    //           height: MediaQuery.of(context).size.height * .7,
-    //           child: Align(
-    //             child: RaisedButton(
-    //               child: Text("Expert Signup"),
-    //               onPressed: () {},
-    //             ),
-    //           ),
-    //         ),
-    //       ),
          ],
       ),
     );
