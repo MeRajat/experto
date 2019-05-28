@@ -36,11 +36,11 @@ class _CardsState extends State<Cards> {
 
   @override
   Widget build(BuildContext context) {
-    if(!load)
+    if (!load)
       return SliverPadding(
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
+            (BuildContext context, int index) {
               return Center(child: CircularProgressIndicator());
             },
             childCount: 1,
@@ -53,14 +53,26 @@ class _CardsState extends State<Cards> {
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              return Center(child: Text("No expert!"));
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 30, bottom: 10),
+                    child: Icon(Icons.error, size: 130),
+                  ),
+                  Text(
+                    "No Experts Found",
+                    style: Theme.of(context).primaryTextTheme.body2,
+                  ),
+                ],
+              );
             },
             childCount: 1,
           ),
         ),
         padding: EdgeInsets.only(top: 20, bottom: 80),
       );
-    else if (load)
+    else
       return SliverPadding(
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(

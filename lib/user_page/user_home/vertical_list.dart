@@ -125,7 +125,7 @@ class _VerticalListState extends State<VerticalList> {
           children: <Widget>[
             Padding(
               child: Icon(
-                Icons.error,
+                Icons.question_answer,
                 size: 130,
               ),
               padding: EdgeInsets.only(top:70,bottom:20),

@@ -5,7 +5,7 @@ import './expert_app_bar.dart';
 import './expert_cards.dart';
 
 class ExpertList extends StatelessWidget {
-  String name;
+  final String name;
   ExpertList({this.name});
   @override
   Widget build(BuildContext context) {
