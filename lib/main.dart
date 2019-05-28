@@ -5,6 +5,8 @@ import "./home_page/home_page.dart";
 import "./user_authentication/signup_page.dart";
 import "./user_authentication/login_page.dart";
 import "./user_page/home_page.dart" as user;
+import "./expert_authentication.dart/login.dart" as expertLogin;
+import "./expert_authentication.dart/signup.dart" as expertSignup;
 
 import './theme.dart';
 
@@ -18,10 +20,12 @@ class MyApp extends StatelessWidget {
         "/user_signup": (context) => SignupPage(),
         "/user_home": (context) => user.HomePage(),
         "/user_login": (context) => LoginPage(),
+        "/expert_login": (context) => expertLogin.LoginPage(),
+        "/expert_signup": (context) => expertSignup.SignupPage()
       },
       //darkTheme: theme.darkTheme(),
       theme: theme.darkTheme(),
-      home: HomePage(), 
+      home: HomePage(),
     );
   }
 }

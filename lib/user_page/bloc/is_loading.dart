@@ -16,3 +16,5 @@ class IsLoading{
 
 final IsLoading isLoadingLogin = IsLoading();
 final IsLoading isLoadingSignup = IsLoading();
+final IsLoading isLoadingSignupExpert = IsLoading();
+final IsLoading isLoadingLoginExpert = IsLoading();

@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import './app_bar.dart' as appBar;
 import './signUpReq.dart';
+
 import '../user_page/bloc/is_loading.dart';
 
 class LoginPage extends StatefulWidget {
@@ -31,7 +32,7 @@ class _LoginPage extends State<LoginPage> {
                           .copyWith(fontSize: 13)),
                   InkWell(
                     onTap: () {
-                      Navigator.pushNamed(context, '/user_signup');
+                      Navigator.pushNamed(context, '/expert_signup');
                     },
                     child: Padding(
                       padding: EdgeInsets.all(10),
@@ -60,27 +61,26 @@ class CustomForm extends StatefulWidget {
 }
 
 class _CustomForm extends State<CustomForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyExpert = GlobalKey<FormState>();
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
 
   @override
-  void dispose(){
-    isLoadingLogin.dispose();
+  void dispose() {
+    isLoadingLoginExpert.dispose();
     super.dispose();
   }
-  
+
   void checkLoadingStatus() async {
-    isLoadingLogin.getStatus.listen((status){
-      setState((){
-        loading=status;
+    isLoadingLoginExpert.getStatus.listen((status) {
+      setState(() {
+        loading = status;
       });
     });
-    
   }
 
   void startAuthentication() {
-    authenticate.signIn(_formKey, context);
+    authenticate.signIn(_formKeyExpert, context);
   }
 
   @override
@@ -90,18 +90,17 @@ class _CustomForm extends State<CustomForm> {
       child: Padding(
         padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
         child: Form(
-          key: _formKey,
+          key: _formKeyExpert,
           child: Column(
             children: <Widget>[
-              InputField("Email", authenticate.getName),
-              InputField("Password", authenticate.getPass,
-                  isPassword: true),
+              InputField("Username", authenticate.getName),
+              InputField("Password", authenticate.getPass, isPassword: true),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: SizedBox(
                   width: double.infinity,
                   child: RaisedButton(
-                    onPressed: (loading)?null:startAuthentication,
+                    onPressed: (loading) ? null : startAuthentication,
                     elevation: 3,
                     highlightElevation: 4,
                     color: Color.fromRGBO(84, 229, 121, 1),
