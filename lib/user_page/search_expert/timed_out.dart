@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 class TimedOut extends StatelessWidget {
+  final double iconSize;
+  final String text;
+  
+  TimedOut({this.iconSize:200,this.text:"Your search timed out"});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -11,14 +15,14 @@ class TimedOut extends StatelessWidget {
         children: <Widget>[
           Icon(
             Icons.timer,
-            size: 200,
+            size: iconSize,
           ),
           Align(
             alignment: Alignment.center,
             child: Padding(
               padding:EdgeInsets.only(top:20),
               child:Text(
-              "Your search timed out",
+              text,
               style: Theme.of(context)
                   .primaryTextTheme
                   .body2
