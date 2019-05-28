@@ -148,22 +148,25 @@ class Authenticate {
 
   Future<void> signIn(
       GlobalKey<FormState> _formKey, BuildContext context) async {
+    String _email;
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       isLoadingLoginExpert.updateStatus(true);
       _isSignIn = true;
       formState.save();
       try {
-        
+        await Firestore.instance.collection("Experts").where("userID",isEqualTo: details[0]).getDocuments().then((QuerySnapshot q){
+          _email=q.documents[0]["emailID"];
+        });
         await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: details[0], password: details[1]);
+            email: _email, password: details[1]);
         expertSnapshot = await expertReference
-            .where('emailID', isEqualTo: details[0])
+            .where('emailID', isEqualTo: _email)
             .getDocuments();
         //print(expertSnapshot.documents[0]["emailID"]);
         currentExpert=expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/expert_home', ModalRoute.withName(':'));
+            context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
         _isSignIn = false;
