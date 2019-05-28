@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
-DocumentSnapshot currentUser;
+DocumentSnapshot currentExpert;
 
-class Users {
+class Experts {
 
   final String name,email,city,m;
   int mobile;
 
-  Users({
+  Experts({
     @required this.name,
     @required this.email,
     @required this.city,
@@ -25,4 +25,4 @@ class Users {
         'Mobile':mobile,
       };
 
-}var user;
+}var expert;
