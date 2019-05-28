@@ -3,28 +3,25 @@ import 'package:experto/user_authentication/userAdd.dart';
 import 'package:flutter/material.dart';
 import '../expert_detail/expert_detail.dart';
 
+import '../search_expert/timed_out.dart';
+
 class VerticalList extends StatefulWidget {
   @override
   _VerticalListState createState() => _VerticalListState();
 }
 
 class _VerticalListState extends State<VerticalList> {
-  final List<List> activeSessions = [
-    ["Yoga", "Rahul saini"],
-    ["Dieting", "Nihal Sharma"]
-  ];
-
   QuerySnapshot interactionSnapshot;
   List<DocumentSnapshot> experts;
   CollectionReference interaction, expert;
-  bool timedout,load;
+  bool timedout, load;
 
   void initState() {
     expert = Firestore.instance.collection("Experts");
     interaction = Firestore.instance.collection("Interactions");
     experts = new List<DocumentSnapshot>();
-    timedout=false;
-    load=false;
+    timedout = false;
+    load = false;
     getInteraction();
     super.initState();
   }
@@ -47,7 +44,7 @@ class _VerticalListState extends State<VerticalList> {
       experts.add(q.documents[0]);
     }
     setState(() {
-      load=true;
+      load = true;
     });
   }
 
@@ -120,36 +117,31 @@ class _VerticalListState extends State<VerticalList> {
           ),
         ),
       );
-    else if (load&& experts.length == 0) {
-      return SliverPadding(
-          padding: EdgeInsets.all(20),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Center(child: Text("No interacctions yet!",
-                  style: Theme.of(context)
-                      .primaryTextTheme
-                      .body2
-                      .copyWith(fontSize: 13),));
-              },
-              childCount: 1,
+    else if (load && experts.length == 0) {
+      return SliverToBoxAdapter(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Padding(
+              child: Icon(
+                Icons.error,
+                size: 130,
+              ),
+              padding: EdgeInsets.only(top:70,bottom:20),
             ),
-          ));
+            Text("No Interactions Yet",
+                style: Theme.of(context).primaryTextTheme.body2),
+          ],
+        ),
+      );
     } else if (timedout) {
-      return SliverPadding(
-          padding: EdgeInsets.all(20),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Center(child: Text("Connection Timed out!",
-                  style: Theme.of(context)
-                      .primaryTextTheme
-                      .body2
-                      .copyWith(fontSize: 13),));
-              },
-              childCount: 1,
-            ),
-          ));
+      return SliverToBoxAdapter(
+        child: TimedOut(
+          iconSize: 130,
+          text: "timedOut",
+        ),
+      );
     } else {
       return SliverPadding(
           padding: EdgeInsets.all(20),

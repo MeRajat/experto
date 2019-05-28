@@ -31,17 +31,8 @@ class InputField extends StatelessWidget {
                 return 'please enter this field';
               }
             },
-            // onFieldSubmitted: (text) {
-            //   if (index <= nodes.length - 1) {
-            //     FocusScope.of(context)
-            //         .requestFocus(nodes[index + 1]);
-            //   } else {
-            //     print("form submitted");
-            //   }
-            // },
+            
             onSaved:(input)=>fn(input),
-            //textInputAction: TextInputAction.next,
-            //keyboardType: inputType,
             textInputAction: TextInputAction.next,
             keyboardType: inputType,
             decoration: InputDecoration(
