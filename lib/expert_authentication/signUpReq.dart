@@ -1,4 +1,4 @@
-import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/expert_authentication/expertAdd.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -54,8 +54,8 @@ class InputField extends StatelessWidget {
 }
 
 class Authenticate {
-  CollectionReference userReference;
-  QuerySnapshot userSnapshot;
+  CollectionReference expertReference;
+  QuerySnapshot expertSnapshot;
   List<String> details;
   bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
@@ -63,7 +63,7 @@ class Authenticate {
   Authenticate() {
     _isSignIn = false;
     details = new List<String>();
-    getUser();
+    getExpert();
   }
 
   Future<void> _ackAlert(BuildContext context, String title, String content) {
@@ -86,8 +86,8 @@ class Authenticate {
     );
   }
 
-  getUser() async {
-    userReference = Firestore.instance.collection("Users");
+  getExpert() async {
+    expertReference = Firestore.instance.collection("Experts");
   }
 
   getName(String x) => details.add(x);
@@ -120,18 +120,18 @@ class Authenticate {
         _isSignIn = true;
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
-        user = new Users(
+        expert = new Experts(
             email: details[1],
             city: details[2],
             name: details[0],
             m: details[3]);
         Firestore.instance.runTransaction((Transaction t) async {
-          await userReference.add(user.toJson());
+          await expertReference.add(expert.toJson());
         });
-        userSnapshot = await userReference
+        expertSnapshot = await expertReference
             .where('emailID', isEqualTo: details[1])
             .getDocuments();
-        currentUser=userSnapshot.documents[0];
+        currentExpert=expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
@@ -139,7 +139,7 @@ class Authenticate {
         _isSignIn = false;
         formState.reset();
         details.clear();
-        user=null;
+        expert=null;
         isLoadingSignupExpert.updateStatus(false);
         _ackAlert(context, "SignUp Failed!", "Incorrect details");
       }
@@ -154,13 +154,14 @@ class Authenticate {
       _isSignIn = true;
       formState.save();
       try {
+        
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: details[0], password: details[1]);
-        userSnapshot = await userReference
+        expertSnapshot = await expertReference
             .where('emailID', isEqualTo: details[0])
             .getDocuments();
-        //print(userSnapshot.documents[0]["emailID"]);
-        currentUser=userSnapshot.documents[0];
+        //print(expertSnapshot.documents[0]["emailID"]);
+        currentExpert=expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
@@ -170,7 +171,7 @@ class Authenticate {
         details.clear();
         isLoadingLoginExpert.updateStatus(false);
         _ackAlert(
-            context, "Login Failed!", "Username or password is Incorrect");
+            context, "Login Failed!", "Expertname or password is Incorrect");
       }
     }
   }

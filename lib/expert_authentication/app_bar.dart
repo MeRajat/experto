@@ -26,7 +26,11 @@ class CustomFlexibleSpace extends StatelessWidget {
                   style: Theme.of(context).textTheme.title,
                   textScaleFactor: 1.8,
                 ),
-                Container(
+                Padding(
+                  padding: EdgeInsets.only(right: 10, left: 10, top: 5, bottom: 5),
+                  child: Icon(Icons.star,color: Color.fromRGBO(84, 229, 121, 1),),
+                ),
+                /*Container(
                   margin: EdgeInsets.only(right: 20),
                   padding:
                       EdgeInsets.only(right: 10, left: 10, top: 5, bottom: 5),
@@ -34,8 +38,8 @@ class CustomFlexibleSpace extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                     color: Colors.blue,
                   ),
-                  child: Text('Expert',style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.black)),
-                )
+                  child: Text('E',style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.black)),
+                )*/
               ],
             ),
           ),
