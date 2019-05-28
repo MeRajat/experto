@@ -5,8 +5,8 @@ import "./home_page/home_page.dart";
 import "./user_authentication/signup_page.dart";
 import "./user_authentication/login_page.dart";
 import "./user_page/home_page.dart" as user;
-import "./expert_authentication.dart/login.dart" as expertLogin;
-import "./expert_authentication.dart/signup.dart" as expertSignup;
+import "./expert_authentication/login.dart" as expertLogin;
+import "./expert_authentication/signup.dart" as expertSignup;
 
 import './theme.dart';
 

@@ -118,32 +118,35 @@ class _CustomFormField extends State<CustomFormField> {
           child: Column(
             children: <Widget>[
               (page == 1) ? page1Entries() : page2Entries(),
-              Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: RaisedButton(
-                    onPressed: () {
-                      if (page == 1) {
-                        setState(() {
-                          page = 2;
-                        });
-                      }
-                      if (page == 2) {
-                        return (loading) ? null : startAuthentication;
-                      }
-                    },
-                    elevation: 3,
-                    highlightElevation: 4,
-                    color: Color.fromRGBO(84, 229, 121, 1),
-                    child: (page == 2)
-                        ? authenticate.signInButton("Sign Up")
-                        : Text(
-                            "next",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
+              Hero(
+                tag:"expertbuttonhero",
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: RaisedButton(
+                      onPressed: () {
+                        if (page == 1) {
+                          setState(() {
+                            page = 2;
+                          });
+                        }
+                        if (page == 2) {
+                          return (loading) ? null : startAuthentication;
+                        }
+                      },
+                      elevation: 3,
+                      highlightElevation: 4,
+                      color: Color.fromRGBO(84, 229, 121, 1),
+                      child: (page == 2)
+                          ? authenticate.signInButton("Sign Up")
+                          : Text(
+                              "next",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                    ),
                   ),
                 ),
               ),
