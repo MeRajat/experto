@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 import './search_result_cards.dart';
 import '../bloc/search_bloc.dart';
+import '../bloc/reload.dart';
 import '../bloc/is_searching.dart';
 import './no_result.dart';
 import './timed_out.dart';
@@ -30,6 +31,20 @@ class _Cards extends State<Cards> {
     super.dispose();
   }
 
+  void listenReload() async { 
+    userSearchExpert.getStatus.listen((value){
+      if (value == true){
+        setState(() {
+          timedOut = false;
+          expert = null;
+          expertSnapshot = null;
+          searchSnapshot = null;
+          getExpert();
+        });
+      }
+  });
+  }
+
   @override
   void initState() {
     timedOut = false;
@@ -50,6 +65,7 @@ class _Cards extends State<Cards> {
   void getSearchingStatus() async {
     isSearchingExpert.getStatus.listen((result) {
       setState(() {
+        getExpert();
         timedOut = false;
         searchingStatus = result;
       });
@@ -96,6 +112,7 @@ class _Cards extends State<Cards> {
     {
       getSearchingStatus();
       getSearch();
+      listenReload();
       String allExpertHeaderText = "All Experts";
       String searchHeaderText = "Results";
       if (timedOut) {

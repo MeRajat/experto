@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_page/search_expert/card.dart';
+import 'package:experto/user_page/search_expert/timed_out.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+
+import '../bloc/reload.dart';
 
 class Cards extends StatefulWidget {
   final String name;
@@ -21,8 +24,21 @@ class _CardsState extends State<Cards> {
   void initState() {
     experts = Firestore.instance.collection("Experts");
     load = false;
+    reload();
     getExperts();
     super.initState();
+  }
+
+  void reload() async {
+    userSearchSkillExpertList.getStatus.listen((value) {
+      if (value == true) {
+        setState(() {
+          expert = null;
+          load = false;
+          getExperts();
+        });
+      }
+    });
   }
 
   Future<void> getExperts() async {

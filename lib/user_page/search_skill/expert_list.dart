@@ -3,6 +3,7 @@ import "package:flutter/cupertino.dart";
 
 import './expert_app_bar.dart';
 import './expert_cards.dart';
+import '../bloc/reload.dart';
 
 class ExpertList extends StatelessWidget {
   final String name;
@@ -11,10 +12,18 @@ class ExpertList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: BouncingScrollPhysics(parent:AlwaysScrollableScrollPhysics()),
         slivers: <Widget>[
           Appbar(),
-          Cards(name:name),
+          CupertinoSliverRefreshControl(
+            onRefresh: () {
+              userSearchSkillExpertList.updateStatus(true);
+              return Future.delayed(
+                Duration(seconds: 1),
+              );
+            },
+          ),
+          Cards(name: name),
         ],
       ),
     );

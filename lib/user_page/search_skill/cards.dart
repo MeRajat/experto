@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import './search_result_cards.dart';
 import '../bloc/search_bloc.dart';
 import '../bloc/is_searching.dart';
+import '../bloc/reload.dart';
 
 class Cards extends StatefulWidget {
   final List recommendedSkills = [
@@ -38,6 +39,16 @@ class _Cards extends State<Cards> {
     super.dispose();
   }
 
+  void reload() async {
+    userSearchSkill.getStatus.listen((value){
+      if(value == true){
+        setState(() {
+          
+        });
+      }
+    });
+  }
+  
   void getSearchingStatus() async {
     isSearching.getStatus.listen((result) {
       setState((){
@@ -77,6 +88,7 @@ class _Cards extends State<Cards> {
   @override
   Widget build(BuildContext context) {
     {
+      reload();
       getSearchingStatus();
       getSearch();
       String recommendationHeaderText = "Top Skills";

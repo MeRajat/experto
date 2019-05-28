@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../expert_detail/expert_detail.dart';
 
 import '../search_expert/timed_out.dart';
+import '../bloc/reload.dart';
 
 class VerticalList extends StatefulWidget {
   @override
@@ -23,7 +24,22 @@ class _VerticalListState extends State<VerticalList> {
     timedout = false;
     load = false;
     getInteraction();
+    reload();
     super.initState();
+  }
+
+  void reload() async {
+    userInteractions.getStatus.listen((value){
+      if(value == true){
+        setState(() {
+          interactionSnapshot = null;
+          experts = [];
+          load = false;
+          timedout= false;
+          getInteraction();
+        });
+      }
+    });
   }
 
   Future<void> getInteraction() async {
