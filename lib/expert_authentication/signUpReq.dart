@@ -57,6 +57,7 @@ class Authenticate {
   CollectionReference expertReference;
   QuerySnapshot expertSnapshot;
   List<String> details;
+  String userName;
   bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
 
@@ -93,6 +94,7 @@ class Authenticate {
   getName(String x) => details.add(x);
   getPass(String x) => details.add(x);
   getCity(String x) => details.add(x);
+  getSkype(String x) => details.add(x);
   getMobile(String x) => details.add(x);
   getEmail(String x) => details.add(x);
 
@@ -118,13 +120,16 @@ class Authenticate {
       try {
         isLoadingSignupExpert.updateStatus(true);
         _isSignIn = true;
+        userName="expert_"+details[0];
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: details[1], password: details[4]);
+            email: details[1], password: details[5]);
         expert = new Experts(
             email: details[1],
-            city: details[2],
+            city: details[3],
             name: details[0],
-            m: details[3]);
+            skype: details[2],
+            userId: userName,
+            m: details[4]);
         Firestore.instance.runTransaction((Transaction t) async {
           await expertReference.add(expert.toJson());
         });
@@ -133,7 +138,7 @@ class Authenticate {
             .getDocuments();
         currentExpert=expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/expert_home', ModalRoute.withName(':'));
+            context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
         _isSignIn = false;
