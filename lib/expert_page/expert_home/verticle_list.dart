@@ -12,14 +12,14 @@ class VerticalList extends StatefulWidget {
 
 class _VerticalListState extends State<VerticalList> {
   QuerySnapshot interactionSnapshot;
-  List<DocumentSnapshot> experts;
-  CollectionReference interaction, expert;
+  List<DocumentSnapshot> users;
+  CollectionReference interaction, user;
   bool timedout, load;
 
   void initState() {
-    expert = Firestore.instance.collection("Experts");
+    user = Firestore.instance.collection("Users");
     interaction = Firestore.instance.collection("Interactions");
-    experts = new List<DocumentSnapshot>();
+    users = new List<DocumentSnapshot>();
     timedout = false;
     load = false;
     getInteraction();
@@ -32,7 +32,7 @@ class _VerticalListState extends State<VerticalList> {
       if(value == true){
         setState(() {
           interactionSnapshot = null;
-          experts = [];
+          users = [];
           load = false;
           timedout= false;
           getInteraction();
@@ -43,20 +43,21 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("user", isEqualTo: currentExpert["emailID"])
+        .where("expert", isEqualTo: currentExpert["emailID"])
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {
         timedout = true;
       });
     });
-    experts.clear();
+    users.clear();
+    print(interactionSnapshot.documents.length);
     for (int i = 0; i < interactionSnapshot.documents.length; i++) {
-      QuerySnapshot q = await expert
+      QuerySnapshot q = await user
           .where("emailID",
-              isEqualTo: interactionSnapshot.documents[i]["expert"])
+              isEqualTo: interactionSnapshot.documents[0]["user"])
           .getDocuments();
-      experts.add(q.documents[0]);
+      users.add(q.documents[0]);
     }
     setState(() {
       load = true;
@@ -65,7 +66,7 @@ class _VerticalListState extends State<VerticalList> {
 
   @override
   Widget build(BuildContext context) {
-    if (experts != null && experts.length > 0)
+    if (users != null && users.length > 0)
       return SliverPadding(
         padding: EdgeInsets.only(top: 20, bottom: 20),
         sliver: SliverList(
@@ -93,7 +94,7 @@ class _VerticalListState extends State<VerticalList> {
                                 style:
                                     Theme.of(context).primaryTextTheme.body2),
                             Text(
-                              experts[index]["Name"],
+                              users[index]["Name"],
                               style: Theme.of(context).primaryTextTheme.body2,
                             ),
                           ],
@@ -128,11 +129,11 @@ class _VerticalListState extends State<VerticalList> {
                 ),
               );
             },
-            childCount: experts.length,
+            childCount: users.length,
           ),
         ),
       );
-    else if (load && experts.length == 0) {
+    else if (load && users.length == 0) {
       return SliverToBoxAdapter(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
