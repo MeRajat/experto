@@ -139,7 +139,7 @@ class Authenticate {
             .getDocuments();
         currentExpert=expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+            context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
         _isSignIn = false;
@@ -174,7 +174,7 @@ class Authenticate {
         //print(expertSnapshot.documents[0]["emailID"]);
         currentExpert=expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+            context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
         _isSignIn = false;
