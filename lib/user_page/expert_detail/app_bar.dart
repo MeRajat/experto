@@ -101,7 +101,7 @@ class ContactExpert extends StatelessWidget {
   Future<void> updateInteraction() async {
     int id;
     QuerySnapshot tempsnap;
-    CollectionReference temp = Firestore.instance.collection("Users");
+    CollectionReference temp = Firestore.instance.collection("Users"),temp2 = Firestore.instance.collection("Experts");
     try {
       for(int i=0;i<currentUser["interactionID"].length();i++) {
         tempsnap = await interaction.where(
@@ -126,6 +126,8 @@ class ContactExpert extends StatelessWidget {
       }
       else{
         await temp.document(currentUser.documentID).updateData(
+            {"interactionID": FieldValue.arrayUnion([id])});
+        await temp2.document(expert.documentID).updateData(
             {"interactionID": FieldValue.arrayUnion([id])});
         await interaction.add({
           'expert': expert["emailID"],

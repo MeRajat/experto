@@ -52,11 +52,14 @@ class _VerticalListState extends State<VerticalList> {
       });
     });
     experts.clear();
+    print(interactionSnapshot.documents.length);
     for (int i = 0; i < interactionSnapshot.documents.length; i++) {
+
       QuerySnapshot q = await expert
           .where("emailID",
               isEqualTo: interactionSnapshot.documents[i]["expert"])
           .getDocuments();
+      print(i);
       experts.add(q.documents[0]);
     }
     setState(() {
@@ -155,7 +158,7 @@ class _VerticalListState extends State<VerticalList> {
       return SliverToBoxAdapter(
         child: TimedOut(
           iconSize: 130,
-          text: "timedOut",
+          text: "TimedOut",
         ),
       );
     } else {
