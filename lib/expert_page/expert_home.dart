@@ -37,21 +37,11 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        items: navigationBarItems(),
-      ),
-      tabBuilder: (BuildContext context, int index) {
-        return WillPopScope(
-          onWillPop: () => overrideBack(index),
-          child: CupertinoTabView(
-            navigatorKey: keys[index],
-            builder: (BuildContext context) {
-              return pages[index];
-            },
-          ),
-        );
-      },
+    return Scaffold(
+      //tabBar: CupertinoTabBar(
+      //  items: navigationBarItems(),
+      //),
+      body: pages[0],
     );
   }
 }
