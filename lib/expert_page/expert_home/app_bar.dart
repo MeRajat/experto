@@ -1,28 +1,28 @@
-import "package:flutter/material.dart";
-import "package:flutter/cupertino.dart";
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
-import "../user_page/app_bar.dart";
+import "../../user_page/app_bar.dart";
 
-class CustomFlexibleSpace extends StatelessWidget {
-  final String flexibleSpaceText;
-
-  CustomFlexibleSpace(this.flexibleSpaceText);
-
+class CuostomFlexibleSpace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlexibleSpaceBar(
-      titlePadding: EdgeInsets.all(20),
+      centerTitle: true,
+      titlePadding: EdgeInsets.only(left: 0, bottom: 20),
       background: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(left: 20, bottom: 15),
-            child: Row(
+            padding: EdgeInsets.only(
+              left: 20,
+              bottom: 30,
+            ),
+            child:Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  flexibleSpaceText,
+                  "Interactions",
                   style: Theme.of(context).textTheme.title,
                   textScaleFactor: 1.8,
                 ),
@@ -39,13 +39,13 @@ class CustomFlexibleSpace extends StatelessWidget {
   }
 }
 
-class AppBar extends StatelessWidget {
-  final String flexibleSpaceText;
-
-  AppBar(this.flexibleSpaceText);
-
+class Appbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CustomAppBar(250, "Experto", CustomFlexibleSpace(flexibleSpaceText));
+    return CustomAppBar(
+      250,
+      "Home Page",
+      CuostomFlexibleSpace(),
+    );
   }
 }

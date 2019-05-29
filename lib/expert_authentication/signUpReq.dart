@@ -141,7 +141,7 @@ class Authenticate {
         if(!currentExpert["Status"])
           throw("Not Active");
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+            context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
         _isSignIn = false;
@@ -149,7 +149,7 @@ class Authenticate {
         details.clear();
         expert=null;
         isLoadingSignupExpert.updateStatus(false);
-        _ackAlert(context, "SignUp Failed!", e=="Not Active"?e,"Incorrect Details");
+        _ackAlert(context, "SignUp Failed!", (e=="Not Active") ? e: "Incorrect Details");
       }
     }
   }
@@ -174,7 +174,7 @@ class Authenticate {
         //print(expertSnapshot.documents[0]["emailID"]);
         currentExpert=expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+            context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
         _isSignIn = false;
