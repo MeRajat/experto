@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_page/search_expert/card.dart';
-import 'package:experto/user_page/search_expert/timed_out.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 

@@ -1,10 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
-
-//import "./search_skill/search_skill.dart";
-//import "./search_expert/search_expert.dart";
 import "./expert_home/expert_home.dart";
-import "./navigation_bar_items.dart";
 
 class HomePage extends StatefulWidget {
   @override
