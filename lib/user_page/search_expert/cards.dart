@@ -55,7 +55,7 @@ class _Cards extends State<Cards> {
 
   Future<void> getExpert() async {
     expert = Firestore.instance.collection("Experts");
-    expertSnapshot = await expert.where("status",isEqualTo: true).getDocuments().timeout(Duration(seconds: 10),
+    expertSnapshot = await expert.where("Status",isEqualTo: true).getDocuments().timeout(Duration(seconds: 10),
         onTimeout: () {
       timedOut = true;
     });
