@@ -147,7 +147,7 @@ class Authenticate {
         details.clear();
         expert=null;
         isLoadingSignupExpert.updateStatus(false);
-        _ackAlert(context, "Incorrect Details");
+        _ackAlert(context,"SignUp failed", "Incorrect Details");
       }
     }
   }
@@ -163,14 +163,14 @@ class Authenticate {
       try {
         await Firestore.instance.collection("Experts").where("userID",isEqualTo: details[0]).getDocuments().then((QuerySnapshot q){
           _email=q.documents[0]["emailID"];
-          if(!q["Status"])
-            throw("Not Active");
         });
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: _email, password: details[1]);
         expertSnapshot = await expertReference
             .where('emailID', isEqualTo: _email)
             .getDocuments();
+        if(expertSnapshot.documents[0]["Status"]==false)
+          throw("Not Active");
         //print(expertSnapshot.documents[0]["emailID"]);
         currentExpert=expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
