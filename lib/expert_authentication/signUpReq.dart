@@ -129,6 +129,7 @@ class Authenticate {
             name: details[0],
             skype: details[2],
             userId: userName,
+            status: false,
             m: details[4]);
         Firestore.instance.runTransaction((Transaction t) async {
           await expertReference.add(expert.toJson());
@@ -137,6 +138,8 @@ class Authenticate {
             .where('emailID', isEqualTo: details[1])
             .getDocuments();
         currentExpert=expertSnapshot.documents[0];
+        if(!currentExpert["Status"])
+          throw("Not Active");
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
@@ -146,7 +149,7 @@ class Authenticate {
         details.clear();
         expert=null;
         isLoadingSignupExpert.updateStatus(false);
-        _ackAlert(context, "SignUp Failed!", "Incorrect details");
+        _ackAlert(context, "SignUp Failed!", e=="Not Active"?e,"Incorrect Details");
       }
     }
   }

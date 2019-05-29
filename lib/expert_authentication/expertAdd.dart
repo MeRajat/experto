@@ -5,6 +5,7 @@ DocumentSnapshot currentExpert;
 class Experts {
 
   final String name,email,city,m,userId,skype;
+  bool status;
   int mobile;
 
   Experts({
@@ -14,6 +15,7 @@ class Experts {
     @required this.m,
     @required this.userId,
     @required this.skype,
+    @required this.status,
     this.mobile=0,
   }){
     mobile=int.parse(m);
@@ -27,6 +29,7 @@ class Experts {
         'SkypeUser':skype,
         'City':city,
         'Mobile':mobile,
+        'Status':status,
       };
 
 }var expert;
