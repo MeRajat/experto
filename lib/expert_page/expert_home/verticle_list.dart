@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/expert_authentication/expertAdd.dart';
 import 'package:flutter/material.dart';
 
 import '../../user_page/search_expert/timed_out.dart';
@@ -43,7 +43,7 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("user", isEqualTo: currentUser["emailID"])
+        .where("user", isEqualTo: currentExpert["emailID"])
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {
