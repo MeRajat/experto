@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:283102533604:android:585652e2bd0e39ca",
+        "mobilesdk_app_id": "1:283102533604:android:cbeaacd333bd88f5",
         "android_client_info": {
-          "package_name": "tech.maddybcorp.experto"
+          "package_name": "com.example.expert_credential_check"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "283102533604-qkhh6hlp0769gdoe1if3ijp6dkm74er3.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "tech.maddybcorp.experto",
-            "certificate_hash": "4235a6284645b68db8d3e29fefc5f310cfc1bfda"
-          }
-        },
         {
           "client_id": "283102533604-8kqq8kulg2oc53mjuphq13pppoeo9onf.apps.googleusercontent.com",
           "client_type": 3
@@ -38,6 +30,13 @@
             {
               "client_id": "283102533604-8kqq8kulg2oc53mjuphq13pppoeo9onf.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "283102533604-rtmg32j2lhpbk42j37u6o2b7umj83t40.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dfdsf"
+              }
             }
           ]
         }
@@ -75,6 +74,57 @@
             {
               "client_id": "283102533604-8kqq8kulg2oc53mjuphq13pppoeo9onf.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "283102533604-rtmg32j2lhpbk42j37u6o2b7umj83t40.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dfdsf"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283102533604:android:257a2c348bb9ab71",
+        "android_client_info": {
+          "package_name": "tech.maddybcorp.experto2.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "283102533604-21gkrok8put3hp7pn9l3n9hrde41gl2p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.maddybcorp.experto2.debug",
+            "certificate_hash": "4235a6284645b68db8d3e29fefc5f310cfc1bfda"
+          }
+        },
+        {
+          "client_id": "283102533604-8kqq8kulg2oc53mjuphq13pppoeo9onf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFr2NXrTjpgqOv97CsCu-_zZp__2R_V-o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "283102533604-8kqq8kulg2oc53mjuphq13pppoeo9onf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "283102533604-rtmg32j2lhpbk42j37u6o2b7umj83t40.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dfdsf"
+              }
             }
           ]
         }

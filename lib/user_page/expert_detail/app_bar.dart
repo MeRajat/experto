@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/user_page/bloc/reload.dart';
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
@@ -103,20 +104,22 @@ class ContactExpert extends StatelessWidget {
     QuerySnapshot tempsnap;
     CollectionReference temp = Firestore.instance.collection("Users"),temp2 = Firestore.instance.collection("Experts");
     try {
-      for(int i=0;i<currentUser["interactionID"].length();i++) {
+      for(int i=0;i<currentUser["interactionID"].length;i++) {
         tempsnap = await interaction.where(
-            "id", isEqualTo: i).getDocuments();
-        QuerySnapshot q= await interaction.where("id",isEqualTo: i).getDocuments();
-        if(q.documents[0]["expert"]==expert["emailID"])
+            "id", isEqualTo: currentUser["interactionID"][i]).getDocuments();
+        if(tempsnap.documents[0]["expert"]==expert["emailID"])
           break;
         else
           tempsnap=null;
       }
     }
     catch(e){
+      tempsnap=null;
+      print("doesnt exist");
 
     }
-    Firestore.instance.runTransaction((Transaction t) async {
+
+    await Firestore.instance.runTransaction((Transaction t) async {
       await interaction.getDocuments().then((QuerySnapshot snapshot) {
         id = snapshot.documents.length;
       });
@@ -127,6 +130,7 @@ class ContactExpert extends StatelessWidget {
       else{
         await temp.document(currentUser.documentID).updateData(
             {"interactionID": FieldValue.arrayUnion([id])});
+        print(expert["emailID"]);
         await temp2.document(expert.documentID).updateData(
             {"interactionID": FieldValue.arrayUnion([id])});
         await interaction.add({
@@ -135,11 +139,12 @@ class ContactExpert extends StatelessWidget {
           'id': id,
           'interactionTime': FieldValue.arrayUnion([DateTime.now()])
         });
-        await temp.where("emailID",isEqualTo: currentUser["emailID"]).getDocuments().then((QuerySnapshot q){
-          currentUser=q.documents[0];
-        });
       }
+      await temp.where("emailID",isEqualTo: currentUser["emailID"]).getDocuments().then((QuerySnapshot q){
+        currentUser=q.documents[0];
+      });
     });
+    userSearchExpert.updateStatus(true);
   }
 
   void _showDialog(context) {
