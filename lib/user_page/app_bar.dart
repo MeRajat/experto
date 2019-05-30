@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget {
       expandedHeight: expandedHeight,
       pinned: true,
       floating: isFloating,
-      leading: Icon(CupertinoIcons.book_solid, size: 30),
+      leading: Hero(tag:"logo",child: Icon(CupertinoIcons.book_solid, size: 30)),
       title: Text(
         title,
         style: Theme.of(context).textTheme.title.copyWith(letterSpacing: -.7),
