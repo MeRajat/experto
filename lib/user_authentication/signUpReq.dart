@@ -29,7 +29,7 @@ class InputField extends StatelessWidget {
                 return 'please enter this field';
               }
             },
-            
+
             onSaved:(input)=>fn(input),
             textInputAction: TextInputAction.next,
             keyboardType: inputType,
@@ -56,14 +56,18 @@ class InputField extends StatelessWidget {
 class Authenticate {
   CollectionReference userReference;
   QuerySnapshot userSnapshot;
+  AuthException exception;
+  FirebaseUser usr;
   List<String> details;
   bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
+  String msg;
 
   Authenticate() {
     _isSignIn = false;
     details = new List<String>();
     getUser();
+    msg="Invalid details";
   }
 
   Future<void> _ackAlert(BuildContext context, String title, String content) {
@@ -118,8 +122,9 @@ class Authenticate {
       try {
         isLoadingSignup.updateStatus(true);
         _isSignIn = true;
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        usr=await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
+
         user = new Users(
             email: details[1],
             city: details[2],
@@ -137,11 +142,12 @@ class Authenticate {
         formState.reset();
       } catch (e) {
         _isSignIn = false;
-        formState.reset();
+        print (e);
+        //formState.reset();
         details.clear();
         user=null;
         isLoadingSignup.updateStatus(false);
-        _ackAlert(context, "SignUp Failed!", "Incorrect details");
+        _ackAlert(context, "SignUp Failed!", e.toString().split(',')[1]);
       }
     }
   }
@@ -170,7 +176,7 @@ class Authenticate {
         details.clear();
         isLoadingLogin.updateStatus(false);
         _ackAlert(
-            context, "Login Failed!", "Username or password is Incorrect");
+            context, "Login Failed!", e.toString().split(',')[1]);
       }
     }
   }

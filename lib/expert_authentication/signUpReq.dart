@@ -120,7 +120,7 @@ class Authenticate {
       try {
         isLoadingSignupExpert.updateStatus(true);
         _isSignIn = true;
-        userName="expert_"+details[0];
+        userName="expert_"+details[0].split(" ")[0];
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[5]);
         expert = new Experts(
@@ -147,23 +147,27 @@ class Authenticate {
         details.clear();
         expert=null;
         isLoadingSignupExpert.updateStatus(false);
-        _ackAlert(context,"SignUp failed", "Incorrect Details");
+        _ackAlert(context,"SignUp failed",e.toString().split(',')[1]);
       }
     }
   }
 
   Future<void> signIn(
       GlobalKey<FormState> _formKey, BuildContext context) async {
-    String _email;
+    String _email=null;
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       isLoadingLoginExpert.updateStatus(true);
       _isSignIn = true;
       formState.save();
       try {
-        await Firestore.instance.collection("Experts").where("userID",isEqualTo: details[0]).getDocuments().then((QuerySnapshot q){
-          _email=q.documents[0]["emailID"];
-        });
+          await Firestore.instance.collection("Experts").where(
+              "userID", isEqualTo: details[0]).getDocuments().then((
+              QuerySnapshot q) {
+            _email = q.documents[0]["emailID"];
+          }).catchError((e){_email=null;});
+          if(_email==null)
+            throw("User not found!");
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: _email, password: details[1]);
         expertSnapshot = await expertReference
@@ -182,7 +186,7 @@ class Authenticate {
         details.clear();
         isLoadingLoginExpert.updateStatus(false);
         _ackAlert(
-            context, "Login Failed!", e=="Not Active"?e:"Expertname or password is Incorrect");
+            context, "Login Failed!", e=="Not Active"||e=="User not found!"?e:e.toString().split(',')[1]);
       }
     }
   }

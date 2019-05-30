@@ -34,6 +34,7 @@ class _VerticalListState extends State<VerticalList> {
         setState(() {
           interactionSnapshot = null;
           experts = [];
+
           load = false;
           timedout= false;
           getInteraction();
@@ -45,7 +46,7 @@ class _VerticalListState extends State<VerticalList> {
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
         .where("user", isEqualTo: currentUser["emailID"])
-        .getDocuments()
+        .orderBy("interactionTime",descending: true).getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {
         timedout = true;
