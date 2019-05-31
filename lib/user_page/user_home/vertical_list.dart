@@ -28,25 +28,27 @@ class _VerticalListState extends State<VerticalList> {
     super.initState();
   }
 
-  void reload() async {
+  void listenReload() async {
     userInteractions.getStatus.listen((value) {
       if (value == true) {
-        setState(() {
-          interactionSnapshot = null;
-          experts = [];
-
-          load = false;
-          timedout = false;
-          getInteraction();
-        });
+        reload();
       }
     });
   }
 
+  void reload() {
+    setState(() {
+      interactionSnapshot = null;
+      experts = [];
+
+      load = false;
+      timedout = false;
+      getInteraction();
+    });
+  }
+
   void retry() {
-    load = false;
-    timedout = false;
-    getInteraction();
+    reload();
   }
 
   Future<void> getInteraction() async {
@@ -60,13 +62,13 @@ class _VerticalListState extends State<VerticalList> {
       });
     });
     experts.clear();
-    print(interactionSnapshot.documents.length);
+    //print(interactionSnapshot.documents.length);
     for (int i = 0; i < interactionSnapshot.documents.length; i++) {
       QuerySnapshot q = await expert
           .where("emailID",
               isEqualTo: interactionSnapshot.documents[i]["expert"])
           .getDocuments();
-      print(i);
+      //print(i);
       experts.add(q.documents[0]);
     }
     setState(() {
