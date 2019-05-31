@@ -19,7 +19,7 @@ class _Cards extends State<Cards> {
   List results = [];
   List allExperts;
   int searchingStatus = 0;
-  bool timedOut = false;
+  bool timedOut = false, resultAvailable =false;
   CollectionReference expert;
   QuerySnapshot expertSnapshot, searchSnapshot;
   Widget loading;
@@ -36,6 +36,7 @@ class _Cards extends State<Cards> {
       if (value == true){
         setState(() {
           timedOut = false;
+          searchingStatus = 0;
           expert = null;
           expertSnapshot = null;
           searchSnapshot = null;
@@ -87,13 +88,14 @@ class _Cards extends State<Cards> {
       if (expert["Name"].toLowerCase().contains(searchQuery)) {
         flag = 1;
         setState(() {
+          resultAvailable = true;
           searchSnapshot.documents.add(expert);
         });
       }
     });
     if (flag == 0) {
       setState(() {
-        loading = NoResultCard();
+        resultAvailable = false;
       });
     }
   }
@@ -138,6 +140,9 @@ class _Cards extends State<Cards> {
       } else {
         if (searchSnapshot != null && searchSnapshot.documents.length != 0)
           return SearchResults(searchSnapshot, searchHeaderText);
+        else if(searchSnapshot != null && resultAvailable==false){
+          return SliverToBoxAdapter(child:NoResultCard());
+        }
         else
           return SliverPadding(
             padding: EdgeInsets.all(20.0),

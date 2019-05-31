@@ -69,6 +69,7 @@ class _SkillTextField extends State<SkillTextField> {
       controller: _controller,
       textInputAction: TextInputAction.search,
       onChanged: search,
+      onSubmitted: search,
       style: TextStyle(fontSize: 17),
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.search, size: 20),
