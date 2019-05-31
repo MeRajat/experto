@@ -24,7 +24,7 @@ class _VerticalListState extends State<VerticalList> {
     timedout = false;
     load = false;
     getInteraction();
-    reload();
+    listenReload();
     super.initState();
   }
 
