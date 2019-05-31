@@ -28,6 +28,7 @@ class _Cards extends State<Cards> {
   List results = [];
   List recommendedSkills;
   int searchingStatus = 0;
+  String searchString;
   bool resultAvailable = false, timedOut = false;
 
   @override
@@ -47,6 +48,12 @@ class _Cards extends State<Cards> {
     });
   }
 
+  void retrySearch(){
+    timedOut = false;
+    searchingStatus = 1;
+    search(searchString);
+  }
+  
   void getSearchingStatus() async {
     isSearching.getStatus.listen((result) {
       setState(() {
@@ -76,6 +83,7 @@ class _Cards extends State<Cards> {
 
   void getSearch() async {
     searchBloc.value.listen((searchQuery) {
+      searchString = searchQuery;
       searchingStatus = 1;
       search(searchQuery);
     });
@@ -90,7 +98,7 @@ class _Cards extends State<Cards> {
       String recommendationHeaderText = "Top Skills";
       String searchHeaderText = "Results";
       if (timedOut) {
-        return SliverToBoxAdapter(child: TimedOut());
+        return SliverToBoxAdapter(child: TimedOut(retrySearch));
       }
       if (searchingStatus == 0) {
         return SearchResults(

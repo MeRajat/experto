@@ -19,6 +19,7 @@ class _Cards extends State<Cards> {
   List results = [];
   List allExperts;
   int searchingStatus = 0;
+  String searchString;
   bool timedOut = false, resultAvailable =false;
   CollectionReference expert;
   QuerySnapshot expertSnapshot, searchSnapshot;
@@ -100,9 +101,17 @@ class _Cards extends State<Cards> {
     }
   }
 
+  void retrySearch(){
+    timedOut = false;
+    searchingStatus = 1;
+    print(searchString);
+    search(searchString);
+  } 
+
   void getSearch() async {
     expertSearchBloc.value.listen((searchQuery) {
       searchingStatus = 1;
+      searchString = searchQuery;
       timedOut = false;
       loading = CircularProgressIndicator();
       search(searchQuery);
@@ -118,7 +127,7 @@ class _Cards extends State<Cards> {
       String allExpertHeaderText = "All Experts";
       String searchHeaderText = "Results";
       if (timedOut) {
-        return SliverToBoxAdapter(child: TimedOut());
+        return SliverToBoxAdapter(child: TimedOut(retrySearch));
       }
       if (searchingStatus == 0) {
         if (expertSnapshot != null)

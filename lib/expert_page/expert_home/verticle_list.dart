@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/expert_authentication/expertAdd.dart';
-import 'package:experto/user_page/bloc/is_searching.dart';
+//import 'package:experto/user_page/bloc/is_searching.dart';
 import 'package:flutter/material.dart';
 
 import '../../user_page/search_expert/timed_out.dart';
@@ -40,6 +40,12 @@ class _VerticalListState extends State<VerticalList> {
         });
       }
     });
+  }
+
+  void retry(){
+    timedout = false;
+    load = false;
+    getInteraction();
   }
 
   Future<void> getInteraction() async {
@@ -101,30 +107,6 @@ class _VerticalListState extends State<VerticalList> {
                           ],
                         ),
                       ),
-                      //Row(
-                      //  children: <Widget>[
-                      //    SizedBox(
-                      //      height: 30,
-                      //      width: 75,
-                      //      child: FlatButton(
-                      //        child: Text("view detail",
-                      //            style:
-                      //                Theme.of(context).primaryTextTheme.body2),
-                      //        padding: EdgeInsets.all(0),
-                      //        onPressed: () {
-                      //          Navigator.push(
-                      //            context,
-                      //            MaterialPageRoute(
-                      //              builder: (BuildContext context) {
-                      //                return ExpertDetail(experts[index]);
-                      //              },
-                      //            ),
-                      //          );
-                      //        },
-                      //      ),
-                      //    ),
-                      //  ],
-                      //)
                     ],
                   ),
                 ),
@@ -155,6 +137,7 @@ class _VerticalListState extends State<VerticalList> {
     } else if (timedout) {
       return SliverToBoxAdapter(
         child: TimedOut(
+          retry,
           iconSize: 130,
           text: "timedOut",
         ),
