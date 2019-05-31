@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
 import '../bloc/reload.dart';
+import '../search_expert/timed_out.dart';
 
 class Cards extends StatefulWidget {
   final String name;
@@ -17,33 +18,40 @@ class Cards extends StatefulWidget {
 class _CardsState extends State<Cards> {
   QuerySnapshot expert;
   CollectionReference experts;
-  bool load;
+  bool load, timedOut = false;
 
   @override
   void initState() {
     experts = Firestore.instance.collection("Experts");
     load = false;
-    reload();
+    listenReload();
     getExperts();
     super.initState();
   }
 
-  void reload() async {
+  void listenReload() async {
     userSearchSkillExpertList.getStatus.listen((value) {
       if (value == true) {
-        setState(() {
-          expert = null;
-          load = false;
-          getExperts();
-        });
+        reload();
       }
+    });
+  }
+
+  void reload() {
+    setState(() {
+      expert = null;
+      load = false;
+      getExperts();
     });
   }
 
   Future<void> getExperts() async {
     expert = await experts
         .where("Skills", arrayContains: widget.name)
-        .getDocuments();
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {
+      timedOut = true;
+    });
     setState(() {
       load = true;
     });
@@ -51,6 +59,9 @@ class _CardsState extends State<Cards> {
 
   @override
   Widget build(BuildContext context) {
+    if (timedOut == true) {
+      return TimedOut(reload, text: "Timed Out", iconSize: 130);
+    }
     if (!load)
       return SliverPadding(
         sliver: SliverList(
