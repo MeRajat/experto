@@ -29,24 +29,31 @@ class _VerticalListState extends State<VerticalList> {
   }
 
   void reload() async {
-    userInteractions.getStatus.listen((value){
-      if(value == true){
+    userInteractions.getStatus.listen((value) {
+      if (value == true) {
         setState(() {
           interactionSnapshot = null;
           experts = [];
 
           load = false;
-          timedout= false;
+          timedout = false;
           getInteraction();
         });
       }
     });
   }
 
+  void retry() {
+    load = false;
+    timedout = false;
+    getInteraction();
+  }
+
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
         .where("user", isEqualTo: currentUser["emailID"])
-        .orderBy("interactionTime",descending: true).getDocuments()
+        .orderBy("interactionTime", descending: true)
+        .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {
         timedout = true;
@@ -55,7 +62,6 @@ class _VerticalListState extends State<VerticalList> {
     experts.clear();
     print(interactionSnapshot.documents.length);
     for (int i = 0; i < interactionSnapshot.documents.length; i++) {
-
       QuerySnapshot q = await expert
           .where("emailID",
               isEqualTo: interactionSnapshot.documents[i]["expert"])
@@ -148,7 +154,7 @@ class _VerticalListState extends State<VerticalList> {
                 Icons.question_answer,
                 size: 130,
               ),
-              padding: EdgeInsets.only(top:70,bottom:20),
+              padding: EdgeInsets.only(top: 70, bottom: 20),
             ),
             Text("No Interactions Yet",
                 style: Theme.of(context).primaryTextTheme.body2),
@@ -158,6 +164,7 @@ class _VerticalListState extends State<VerticalList> {
     } else if (timedout) {
       return SliverToBoxAdapter(
         child: TimedOut(
+          retry,
           iconSize: 130,
           text: "TimedOut",
         ),

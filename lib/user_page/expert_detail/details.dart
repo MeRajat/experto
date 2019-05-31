@@ -11,9 +11,9 @@ class Detail extends StatelessWidget {
   ];
   CollectionReference spl;
   QuerySnapshot speaciality;
-  Detail({@required this.expert}){
+  Detail({@required this.expert});//{
     //getData();
-  }
+  //}
 
 
   @override
