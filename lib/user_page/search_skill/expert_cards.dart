@@ -25,6 +25,7 @@ class _CardsState extends State<Cards> {
     experts = Firestore.instance.collection("Experts");
     load = false;
     listenReload();
+    timedOut = false;
     getExperts();
     super.initState();
   }
@@ -40,17 +41,21 @@ class _CardsState extends State<Cards> {
   void reload() {
     setState(() {
       expert = null;
+      timedOut=false;
       load = false;
       getExperts();
     });
   }
 
   Future<void> getExperts() async {
+    timedOut = false;
     expert = await experts
         .where("Skills", arrayContains: widget.name)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
-      timedOut = true;
+      setState(() {
+        timedOut = true;
+      });
     });
     setState(() {
       load = true;
@@ -60,7 +65,9 @@ class _CardsState extends State<Cards> {
   @override
   Widget build(BuildContext context) {
     if (timedOut == true) {
-      return TimedOut(reload, text: "Timed Out", iconSize: 130);
+      return SliverToBoxAdapter(
+        child: TimedOut(reload, text: "Timed Out", iconSize: 130),
+      );
     }
     if (!load)
       return SliverPadding(

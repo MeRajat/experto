@@ -37,7 +37,7 @@ class TimedOut extends StatelessWidget {
             child: GestureDetector(
               onTap:retry,
               child: Padding(
-                padding: EdgeInsets.only(top: 40),
+                padding: EdgeInsets.only(top: 30),
                 child: Text(
                   "Retry",
                   style: Theme.of(context).primaryTextTheme.body2.copyWith(

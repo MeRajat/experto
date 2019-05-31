@@ -31,57 +31,49 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlexibleSpaceBar(
       titlePadding: EdgeInsets.all(0),
-      background: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(left: 10, top: 80),
-            child: Hero(
-              tag: expert["emailID"],
+      background: Hero(
+        tag: expert['emailID'],
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 10, top: 80),
               child: Icon(
                 Icons.person,
                 size: 110,
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 10, top: 80),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  expert["Name"],
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .title
-                      .copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                    letterSpacing: -.5,
+            Padding(
+              padding: EdgeInsets.only(left: 10, top: 80),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    expert["Name"],
+                    style: Theme.of(context).textTheme.title.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          letterSpacing: -.5,
+                        ),
                   ),
-                ),
-                Text(
-                  expert["emailID"],
-                  style: Theme
-                      .of(context)
-                      .primaryTextTheme
-                      .body1
-                      .copyWith(
-                    fontStyle: FontStyle.italic,
-                    fontSize: 12,
+                  Text(
+                    expert["emailID"],
+                    style: Theme.of(context).primaryTextTheme.body1.copyWith(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12,
+                        ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 8),
-                  child: ContactExpert(expert),
-                )
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(top: 8),
+                    child: ContactExpert(expert),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -102,37 +94,41 @@ class ContactExpert extends StatelessWidget {
   Future<void> updateInteraction() async {
     int id;
     QuerySnapshot tempsnap;
-    CollectionReference temp = Firestore.instance.collection("Users"),temp2 = Firestore.instance.collection("Experts");
+    CollectionReference temp = Firestore.instance.collection("Users"),
+        temp2 = Firestore.instance.collection("Experts");
     try {
-      for(int i=0;i<currentUser["interactionID"].length;i++) {
-        tempsnap = await interaction.where(
-            "id", isEqualTo: currentUser["interactionID"][i]).getDocuments();
-        if(tempsnap.documents[0]["expert"]==expert["emailID"])
+      for (int i = 0; i < currentUser["interactionID"].length; i++) {
+        tempsnap = await interaction
+            .where("id", isEqualTo: currentUser["interactionID"][i])
+            .getDocuments();
+        if (tempsnap.documents[0]["expert"] == expert["emailID"])
           break;
         else
-          tempsnap=null;
+          tempsnap = null;
       }
-    }
-    catch(e){
-      tempsnap=null;
+    } catch (e) {
+      tempsnap = null;
       print("doesnt exist");
-
     }
 
     await Firestore.instance.runTransaction((Transaction t) async {
       await interaction.getDocuments().then((QuerySnapshot snapshot) {
         id = snapshot.documents.length;
       });
-      if(tempsnap!=null){
-        await interaction.document(tempsnap.documents[0].documentID).updateData(
-            {"interactionTime": FieldValue.arrayUnion([DateTime.now()])});
-      }
-      else{
-        await temp.document(currentUser.documentID).updateData(
-            {"interactionID": FieldValue.arrayUnion([id])});
+      if (tempsnap != null) {
+        await interaction
+            .document(tempsnap.documents[0].documentID)
+            .updateData({
+          "interactionTime": FieldValue.arrayUnion([DateTime.now()])
+        });
+      } else {
+        await temp.document(currentUser.documentID).updateData({
+          "interactionID": FieldValue.arrayUnion([id])
+        });
         print(expert["emailID"]);
-        await temp2.document(expert.documentID).updateData(
-            {"interactionID": FieldValue.arrayUnion([id])});
+        await temp2.document(expert.documentID).updateData({
+          "interactionID": FieldValue.arrayUnion([id])
+        });
         await interaction.add({
           'expert': expert["emailID"],
           'user': currentUser["emailID"],
@@ -140,8 +136,11 @@ class ContactExpert extends StatelessWidget {
           'interactionTime': FieldValue.arrayUnion([DateTime.now()])
         });
       }
-      await temp.where("emailID",isEqualTo: currentUser["emailID"]).getDocuments().then((QuerySnapshot q){
-        currentUser=q.documents[0];
+      await temp
+          .where("emailID", isEqualTo: currentUser["emailID"])
+          .getDocuments()
+          .then((QuerySnapshot q) {
+        currentUser = q.documents[0];
       });
     });
     userSearchExpert.updateStatus(true);
@@ -153,16 +152,10 @@ class ContactExpert extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: new Text("Skype Required",
-              style: Theme
-                  .of(context)
-                  .primaryTextTheme
-                  .title),
+              style: Theme.of(context).primaryTextTheme.title),
           content: new Text(
             "Skype is Required to use this service",
-            style: Theme
-                .of(context)
-                .primaryTextTheme
-                .body2,
+            style: Theme.of(context).primaryTextTheme.body2,
           ),
           actions: <Widget>[
             new FlatButton(
@@ -177,8 +170,8 @@ class ContactExpert extends StatelessWidget {
     );
   }
 
-  void _launchSkype(BuildContext context, String skypeUsername,
-      String serviceType) async {
+  void _launchSkype(
+      BuildContext context, String skypeUsername, String serviceType) async {
     final url = "skype:$skypeUsername?$serviceType";
     if (await canLaunch(url)) {
       await updateInteraction();
