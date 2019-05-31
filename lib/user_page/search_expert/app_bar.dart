@@ -80,6 +80,7 @@ class _ExpertTextField extends State<ExpertTextField> {
       textInputAction: TextInputAction.search,
       onChanged: search,
       style: TextStyle(fontSize: 17),
+      onSubmitted: search,
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.search, size: 20,),
         hintText: 'search by name',

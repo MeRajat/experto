@@ -5,7 +5,7 @@ class NoResultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 5, right: 5, bottom: 12, top: 5),
+      padding: EdgeInsets.only(left: 5, right: 5, bottom: 12, top: 70),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
