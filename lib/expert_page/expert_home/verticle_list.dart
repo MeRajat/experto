@@ -28,21 +28,25 @@ class _VerticalListState extends State<VerticalList> {
     super.initState();
   }
 
-  void reload() async {
-    expertInteractions.getStatus.listen((value){
-      if(value == true){
-        setState(() {
-          interactionSnapshot = null;
-          users = [];
-          load = false;
-          timedout= false;
-          getInteraction();
-        });
+  void listenReload() async {
+    expertInteractions.getStatus.listen((value) {
+      if (value == true) {
+        reload();
       }
     });
   }
 
-  void retry(){
+  void reload() {
+    setState(() {
+      interactionSnapshot = null;
+      users = [];
+      load = false;
+      timedout = false;
+      getInteraction();
+    });
+  }
+
+  void retry() {
     timedout = false;
     load = false;
     getInteraction();
@@ -61,8 +65,7 @@ class _VerticalListState extends State<VerticalList> {
     //print(interactionSnapshot.documents.length);
     for (int i = 0; i < interactionSnapshot.documents.length; i++) {
       QuerySnapshot q = await user
-          .where("emailID",
-              isEqualTo: interactionSnapshot.documents[0]["user"])
+          .where("emailID", isEqualTo: interactionSnapshot.documents[0]["user"])
           .getDocuments();
       users.add(q.documents[0]);
     }
@@ -127,7 +130,7 @@ class _VerticalListState extends State<VerticalList> {
                 Icons.question_answer,
                 size: 130,
               ),
-              padding: EdgeInsets.only(top:70,bottom:20),
+              padding: EdgeInsets.only(top: 70, bottom: 20),
             ),
             Text("No Interactions Yet",
                 style: Theme.of(context).primaryTextTheme.body2),
