@@ -20,7 +20,7 @@ class _Cards extends State<Cards> {
   List allExperts;
   int searchingStatus = 0;
   String searchString;
-  bool timedOut = false, resultAvailable =false;
+  bool timedOut = false, resultAvailable = false;
   CollectionReference expert;
   QuerySnapshot expertSnapshot, searchSnapshot;
   Widget loading;
@@ -32,19 +32,23 @@ class _Cards extends State<Cards> {
     super.dispose();
   }
 
-  void listenReload() async { 
-    userSearchExpert.getStatus.listen((value){
-      if (value == true){
-        setState(() {
-          timedOut = false;
-          searchingStatus = 0;
-          expert = null;
-          expertSnapshot = null;
-          searchSnapshot = null;
-          getExpert();
-        });
+  void listenReload() async {
+    userSearchExpert.getStatus.listen((value) {
+      if (value == true) {
+        reload();
       }
-  });
+    });
+  }
+
+  void reload() {
+    setState(() {
+      timedOut = false;
+      searchingStatus = 0;
+      expert = null;
+      expertSnapshot = null;
+      searchSnapshot = null;
+      getExpert();
+    });
   }
 
   @override
@@ -57,8 +61,10 @@ class _Cards extends State<Cards> {
 
   Future<void> getExpert() async {
     expert = Firestore.instance.collection("Experts");
-    expertSnapshot = await expert.where("Status",isEqualTo: true).getDocuments().timeout(Duration(seconds: 10),
-        onTimeout: () {
+    expertSnapshot = await expert
+        .where("Status", isEqualTo: true)
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {
       timedOut = true;
     });
     setState(() {});
@@ -78,14 +84,19 @@ class _Cards extends State<Cards> {
     int flag = 0;
     searchSnapshot = null;
     setState(() {});
+    //if(expertSnapshot == null){
+    //  await getExpert();
+    //}
     searchSnapshot = await expert
         .where("Name", isEqualTo: searchQuery)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
-      timedOut = true;
+      setState(() {
+        timedOut = true;
+      });
     });
-    searchSnapshot.documents.clear();
-    expertSnapshot.documents.forEach((expert) {
+    //searchSnapshot.documents.clear();
+    searchSnapshot.documents.forEach((expert) {
       if (expert["Name"].toLowerCase().contains(searchQuery)) {
         flag = 1;
         setState(() {
@@ -101,12 +112,14 @@ class _Cards extends State<Cards> {
     }
   }
 
-  void retrySearch(){
+  void retrySearch() async {
     timedOut = false;
-    searchingStatus = 1;
-    print(searchString);
-    search(searchString);
-  } 
+    if (searchingStatus == 0) {
+      reload();
+    } else {
+      search(searchString);
+    }
+  }
 
   void getSearch() async {
     expertSearchBloc.value.listen((searchQuery) {
@@ -149,10 +162,9 @@ class _Cards extends State<Cards> {
       } else {
         if (searchSnapshot != null && searchSnapshot.documents.length != 0)
           return SearchResults(searchSnapshot, searchHeaderText);
-        else if(searchSnapshot != null && resultAvailable==false){
-          return SliverToBoxAdapter(child:NoResultCard());
-        }
-        else
+        else if (searchSnapshot != null && resultAvailable == false) {
+          return SliverToBoxAdapter(child: NoResultCard());
+        } else
           return SliverPadding(
             padding: EdgeInsets.all(20.0),
             sliver: SliverList(
