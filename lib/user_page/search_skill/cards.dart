@@ -48,12 +48,12 @@ class _Cards extends State<Cards> {
     });
   }
 
-  void retrySearch(){
+  void retrySearch() {
     timedOut = false;
     searchingStatus = 1;
     search(searchString);
   }
-  
+
   void getSearchingStatus() async {
     isSearching.getStatus.listen((result) {
       setState(() {
@@ -70,12 +70,14 @@ class _Cards extends State<Cards> {
         flag = 1;
         tempResultList.add(expert);
         setState(() {
+          resultAvailable = true;
           results = tempResultList;
         });
       }
     });
     if (flag == 0) {
       setState(() {
+        resultAvailable = false;
         results = [];
       });
     }
