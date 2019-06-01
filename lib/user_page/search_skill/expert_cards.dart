@@ -3,8 +3,8 @@ import 'package:experto/user_page/search_expert/card.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
-import '../bloc/reload.dart';
-import '../search_expert/timed_out.dart';
+import "package:experto/utils/bloc/reload.dart";
+import 'package:experto/utils/timed_out.dart';
 
 class Cards extends StatefulWidget {
   final String name;
@@ -41,7 +41,7 @@ class _CardsState extends State<Cards> {
   void reload() {
     setState(() {
       expert = null;
-      timedOut=false;
+      timedOut = false;
       load = false;
       getExperts();
     });

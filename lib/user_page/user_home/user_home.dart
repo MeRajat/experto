@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import './vertical_list.dart';
 import './app_bar.dart';
-import '../bloc/reload.dart';
+import "package:experto/utils/bloc/reload.dart";
 
 class UserHome extends StatelessWidget {
   @override

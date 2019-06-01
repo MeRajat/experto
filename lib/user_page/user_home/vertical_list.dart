@@ -3,8 +3,8 @@ import 'package:experto/user_authentication/userAdd.dart';
 import 'package:flutter/material.dart';
 import '../expert_detail/expert_detail.dart';
 
-import '../search_expert/timed_out.dart';
-import '../bloc/reload.dart';
+import 'package:experto/utils/timed_out.dart';
+import "package:experto/utils/bloc/reload.dart";
 
 class VerticalList extends StatefulWidget {
   @override

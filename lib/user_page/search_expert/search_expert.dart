@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import './app_bar.dart' as search_app_bar;
 import './cards.dart';
-import '../bloc/reload.dart';
+import "package:experto/utils/bloc/reload.dart";
 
 class SearchExpert extends StatelessWidget {
   @override
