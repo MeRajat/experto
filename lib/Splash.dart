@@ -27,7 +27,7 @@ class SplashState extends State<Splash> {
         padding: const EdgeInsets.all(50.0),
         child: new Center(
           child:
-          Hero(tag: "logo", child:  Icon(CupertinoIcons.book_solid, size: 250)),
+          Hero(tag: "logo", child:  Image.asset("assets/logo.png",color: Color.fromRGBO(234, 206, 180, 100),)),
         ),
       ),
       // )

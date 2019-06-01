@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
 import "package:url_launcher/url_launcher.dart";
-import "../app_bar.dart";
+import "package:experto/global_app_bar.dart";
 
 class AppBar extends StatelessWidget {
   final DocumentSnapshot expert;
