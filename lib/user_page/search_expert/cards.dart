@@ -78,7 +78,6 @@ class _Cards extends State<Cards> {
         timedOut = false;
         if (result == 0) {
           searchString = '';
-          querySetResult = [];
         }
         searchingStatus = result;
       });
@@ -124,6 +123,7 @@ class _Cards extends State<Cards> {
     searchSnapshot = null;
     tempResult = [];
     if (querySetResult.length == 0 || searchQuery.length == 1) {
+      querySetResult = [];
       getQuerySet(searchQuery);
     } else {
       getTempSet(searchQuery);
