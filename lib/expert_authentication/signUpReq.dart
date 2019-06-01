@@ -122,6 +122,7 @@ class Authenticate {
         isLoadingSignupExpert.updateStatus(true);
         _isSignIn = true;
         userName="expert_"+details[0].split(" ")[0];
+        String index = details[0].substring(0,1).toUpperCase();
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[5]);
         expert = new Experts(
@@ -131,7 +132,8 @@ class Authenticate {
             skype: details[2],
             userId: userName,
             status: false,
-            m: details[4]);
+            m: details[4],
+            index: index);
         Firestore.instance.runTransaction((Transaction t) async {
           await expertReference.add(expert.toJson());
         });
