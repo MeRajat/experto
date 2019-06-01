@@ -9,7 +9,6 @@ import "package:experto/utils/bloc/reload.dart";
 import "package:experto/utils/bloc/is_searching.dart";
 import 'package:experto/utils/no_result.dart';
 import 'package:experto/utils/timed_out.dart';
-import 'package:experto/utils/indexed_search.dart' as indexSearch;
 
 class Cards extends StatefulWidget {
   @override
@@ -79,7 +78,7 @@ class _Cards extends State<Cards> {
         timedOut = false;
         if (result == 0) {
           searchString = '';
-          getExpert();
+          querySetResult = [];
         }
         searchingStatus = result;
       });
@@ -87,7 +86,15 @@ class _Cards extends State<Cards> {
   }
 
   void getQuerySet(String searchQuery) async {
-    await indexSearch.getQuerySet(expert, searchQuery, querySetResult, tempResult);
+    QuerySnapshot searchSnapshot = await expert
+        .where("Index", isEqualTo: searchQuery.toUpperCase())
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {});
+
+    searchSnapshot.documents.forEach((snapshot) {
+      querySetResult.add(snapshot);
+      tempResult.add(snapshot);
+    });
 
     (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
 
@@ -96,7 +103,7 @@ class _Cards extends State<Cards> {
     });
   }
 
-  void getTempSet(String searchQuery) {
+  void getTempSet(String searchQuery) async {
     querySetResult.forEach((snapshot) {
       if (snapshot['Name'].toLowerCase().contains(searchQuery.toLowerCase())) {
         tempResult.add(snapshot);
@@ -116,8 +123,7 @@ class _Cards extends State<Cards> {
     });
     searchSnapshot = null;
     tempResult = [];
-    if (searchQuery.length == 1) {
-      querySetResult = [];
+    if (querySetResult.length == 0 || searchQuery.length == 1) {
       getQuerySet(searchQuery);
     } else {
       getTempSet(searchQuery);
