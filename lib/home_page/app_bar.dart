@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 
-import "../user_page/app_bar.dart";
+import "package:experto/global_app_bar.dart";
 
 class CustomFlexibleSpace extends StatelessWidget {
   @override
