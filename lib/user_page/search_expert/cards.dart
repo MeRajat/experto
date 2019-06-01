@@ -96,7 +96,7 @@ class _Cards extends State<Cards> {
       });
     });
     //searchSnapshot.documents.clear();
-    searchSnapshot.documents.forEach((expert) {
+    expertSnapshot.documents.forEach((expert) {
       if (expert["Name"].toLowerCase().contains(searchQuery)) {
         flag = 1;
         setState(() {
@@ -146,16 +146,11 @@ class _Cards extends State<Cards> {
         if (expertSnapshot != null)
           return SearchResults(expertSnapshot, allExpertHeaderText);
         else
-          return SliverPadding(
-            padding: EdgeInsets.all(20.0),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Center(
-                    child: loading,
-                  );
-                },
-                childCount: 1,
+          return SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Center(
+                child: loading,
               ),
             ),
           );
@@ -165,16 +160,11 @@ class _Cards extends State<Cards> {
         else if (searchSnapshot != null && resultAvailable == false) {
           return SliverToBoxAdapter(child: NoResultCard());
         } else
-          return SliverPadding(
-            padding: EdgeInsets.all(20.0),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Center(
-                    child: loading,
-                  );
-                },
-                childCount: 1,
+          return SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Center(
+                child: loading,
               ),
             ),
           );
