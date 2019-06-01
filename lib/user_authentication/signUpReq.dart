@@ -2,7 +2,7 @@ import 'package:experto/user_authentication/userAdd.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../user_page/bloc/is_loading.dart';
+import "package:experto/utils/bloc/is_loading.dart";
 
 class InputField extends StatelessWidget {
   final String hintText;

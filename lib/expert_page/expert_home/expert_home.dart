@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './app_bar.dart';
 
-import '../../user_page/bloc/reload.dart';
+import "package:experto/utils/bloc/reload.dart";
 import './verticle_list.dart';
 
 class ExpertHome extends StatelessWidget {

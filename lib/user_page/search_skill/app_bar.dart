@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
-import '../bloc/search_bloc.dart';
-import '../bloc/is_searching.dart';
-import 'package:experto/global_app_bar.dart';
+import "package:experto/utils/bloc/search_bloc.dart";
+import "package:experto/utils/bloc/is_searching.dart";
+import "package:experto/utils/global_app_bar.dart";
 
 class CustomFlexibleSpace extends StatelessWidget {
   @override

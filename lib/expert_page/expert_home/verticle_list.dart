@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/expert_authentication/expertAdd.dart';
-//import 'package:experto/user_page/bloc/is_searching.dart';
 import 'package:flutter/material.dart';
 
-import '../../user_page/search_expert/timed_out.dart';
-import '../../user_page/bloc/reload.dart';
+import 'package:experto/utils/timed_out.dart';
+import "package:experto/utils/bloc/reload.dart";
 
 class VerticalList extends StatefulWidget {
   @override

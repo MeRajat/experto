@@ -3,7 +3,7 @@ import "package:flutter/cupertino.dart";
 
 import './expert_app_bar.dart';
 import './expert_cards.dart';
-import '../bloc/reload.dart';
+import "package:experto/utils/bloc/reload.dart";
 
 class ExpertList extends StatelessWidget {
   final String name;

@@ -4,11 +4,11 @@ import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
 
 import './search_result_cards.dart';
-import '../bloc/search_bloc.dart';
-import '../bloc/reload.dart';
-import '../bloc/is_searching.dart';
-import './no_result.dart';
-import './timed_out.dart';
+import "package:experto/utils/bloc/search_bloc.dart";
+import "package:experto/utils/bloc/reload.dart";
+import "package:experto/utils/bloc/is_searching.dart";
+import 'package:experto/utils/no_result.dart';
+import 'package:experto/utils/timed_out.dart';
 
 class Cards extends StatefulWidget {
   @override

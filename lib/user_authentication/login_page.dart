@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 import './app_bar.dart' as appBar;
 import './signUpReq.dart';
-import '../user_page/bloc/is_loading.dart';
+import "package:experto/utils/bloc/is_loading.dart";
 
 class LoginPage extends StatefulWidget {
   @override
