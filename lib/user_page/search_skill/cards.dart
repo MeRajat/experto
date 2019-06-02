@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
@@ -25,11 +26,12 @@ class Cards extends StatefulWidget {
 }
 
 class _Cards extends State<Cards> {
-  List results = [];
-  List recommendedSkills;
   int searchingStatus = 0;
-  String searchString;
-  bool resultAvailable = false, timedOut = false;
+  String searchString = '';
+  bool resultAvailable = false, timedOut = false, loading = false;
+  List<DocumentSnapshot> querySetResult = [], tempResult = [], topSkills = [];
+  QuerySnapshot searchSnapshot, topSkillSnapshot;
+  DocumentReference skillReference;
 
   @override
   void dispose() {
@@ -38,80 +40,168 @@ class _Cards extends State<Cards> {
     super.dispose();
   }
 
-  void reload() async {
+  @override
+  void initState() {
+    getTopSkills();
+    listenReload();
+    getSearchingStatus();
+    getSearch();
+    super.initState();
+  }
+
+  void getTopSkills() async {
+    setState(() {
+      loading = true;
+    });
+
+    topSkillSnapshot = await Firestore.instance
+        .collection('TopSkills')
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {
+      setState(() {
+        timedOut = true;
+      });
+    }).then((snapshot) async {
+      for (int i = 0; i < snapshot.documents.length; i++) {
+        skillReference = snapshot.documents[i].data['Skill'];
+        topSkills.add(await skillReference.get());
+      }
+      setState(() {
+        loading = false;
+      });
+    });
+  }
+
+  void listenReload() async {
     userSearchSkill.getStatus.listen((value) {
       if (value == true) {
-        setState(() {
-          searchingStatus = 0;
-        });
+        reload();
       }
+    });
+  }
+
+  void reload() {
+    setState(() {
+      timedOut = false;
+      searchingStatus = 0;
+      topSkills = [];
+      searchSnapshot = null;
+      getTopSkills();
     });
   }
 
   void retrySearch() {
     timedOut = false;
-    searchingStatus = 1;
-    search(searchString);
+    if (searchingStatus == 0) {
+      reload();
+    } else {
+      search(searchString);
+    }
   }
 
   void getSearchingStatus() async {
     isSearching.getStatus.listen((result) {
       setState(() {
+        timedOut = false;
+        if (result == 0) {
+          searchString = '';
+        }
         searchingStatus = result;
       });
     });
   }
 
-  void search(searchQuery) {
-    List tempResultList = [];
-    int flag = 0;
-    widget.skills.forEach((expert) {
-      if (expert.toLowerCase().contains(searchQuery)) {
-        flag = 1;
-        tempResultList.add(expert);
-        setState(() {
-          resultAvailable = true;
-          results = tempResultList;
-        });
+  void getQuerySet(String searchQuery) async {
+    QuerySnapshot searchSnapshot = await Firestore.instance
+        .collection("Skills")
+        .where("Index", isEqualTo: searchQuery.toUpperCase())
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {});
+
+    searchSnapshot.documents.forEach((snapshot) {
+      querySetResult.add(snapshot);
+      tempResult.add(snapshot);
+    });
+
+    (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
+
+    setState(() {
+      loading = false;
+    });
+  }
+
+  void getTempSet(String searchQuery) async {
+    querySetResult.forEach((snapshot) {
+      if (snapshot['Name'].toLowerCase().contains(searchQuery.toLowerCase())) {
+        tempResult.add(snapshot);
       }
     });
-    if (flag == 0) {
-      setState(() {
-        resultAvailable = false;
-        results = [];
-      });
+
+    (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
+
+    setState(() {
+      loading = false;
+    });
+  }
+
+  Future<void> search(searchQuery) async {
+    setState(() {
+      loading = true;
+    });
+    searchSnapshot = null;
+    tempResult = [];
+    if (querySetResult.length == 0 || searchQuery.length == 1) {
+      querySetResult = [];
+      getQuerySet(searchQuery);
+    } else {
+      getTempSet(searchQuery);
     }
   }
 
   void getSearch() async {
     searchBloc.value.listen((searchQuery) {
-      searchString = searchQuery;
       searchingStatus = 1;
-      search(searchQuery);
+      timedOut = false;
+      if (searchString != searchQuery) {
+        searchString = searchQuery;
+        search(searchQuery);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     {
-      reload();
-      getSearchingStatus();
-      getSearch();
       String recommendationHeaderText = "Top Skills";
       String searchHeaderText = "Results";
+
       if (timedOut) {
         return SliverToBoxAdapter(child: TimedOut(retrySearch));
       }
-      if (searchingStatus == 0) {
-        return SearchResults(
-            widget.recommendedSkills, recommendationHeaderText);
-      } else {
-        if (resultAvailable) {
-          return SearchResults(results, searchHeaderText);
-        } else {
-          return SliverToBoxAdapter(child: NoResultCard());
-        }
+
+      if (loading) {
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        );
       }
+
+      if (searchingStatus == 0) {
+        return SearchResults(topSkills, recommendationHeaderText);
+      }
+
+      if (searchingStatus == 1 && resultAvailable) {
+        return SearchResults(tempResult, searchHeaderText);
+      }
+
+      if (searchingStatus == 1 && !resultAvailable) {
+        return SliverToBoxAdapter(child: NoResultCard());
+      } else
+        return SliverToBoxAdapter(child: Container());
     }
   }
 }

@@ -52,6 +52,9 @@ class _Cards extends State<Cards> {
   @override
   void initState() {
     timedOut = false;
+    getSearchingStatus();
+    getSearch();
+    listenReload();
     getExpert();
     super.initState();
   }
@@ -153,9 +156,6 @@ class _Cards extends State<Cards> {
   @override
   Widget build(BuildContext context) {
     {
-      getSearchingStatus();
-      getSearch();
-      listenReload();
       String allExpertHeaderText = "All Experts";
       String searchHeaderText = "Results";
 

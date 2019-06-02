@@ -1,12 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import './expert_list.dart';
 
 class CustomCard extends StatelessWidget {
-  final String name;
+  final DocumentSnapshot skill;
   final Icon icon;
-  CustomCard(this.name, this.icon);
+  CustomCard(this.skill, this.icon);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class CustomCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return ExpertList(name:name);
+                return ExpertList(name:"abc");
               },
             ),
           );
@@ -36,7 +37,7 @@ class CustomCard extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(bottom: 5),
                       child: Text(
-                        name,
+                        skill['Name'],
                         style: Theme.of(context)
                             .textTheme
                             .title
@@ -45,7 +46,7 @@ class CustomCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Breif Skill Description adf Overflow Testing",
+                      skill['tagLine'],
                       style: Theme.of(context)
                           .primaryTextTheme
                           .body2
