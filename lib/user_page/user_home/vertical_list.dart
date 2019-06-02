@@ -80,7 +80,7 @@ class _VerticalListState extends State<VerticalList> {
   Widget build(BuildContext context) {
     if (experts != null && experts.length > 0)
       return SliverPadding(
-        padding: EdgeInsets.only(top: 20, bottom: 20),
+        padding: EdgeInsets.only(top: 20, bottom: 100),
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {

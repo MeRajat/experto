@@ -6,6 +6,7 @@ import "package:flutter/cupertino.dart";
 
 import "package:url_launcher/url_launcher.dart";
 import "package:experto/utils/global_app_bar.dart";
+import './feedback.dart' as expert_feedback;
 
 class AppBar extends StatelessWidget {
   final DocumentSnapshot expert;
@@ -31,49 +32,49 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlexibleSpaceBar(
       titlePadding: EdgeInsets.all(0),
-      background: Hero(
-        tag: expert['emailID'],
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
+      background: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Hero(
+            tag: expert['emailID'],
+            child: Padding(
               padding: EdgeInsets.only(left: 10, top: 80),
               child: Icon(
                 Icons.person,
                 size: 110,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 10, top: 80),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    expert["Name"],
-                    style: Theme.of(context).textTheme.title.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          letterSpacing: -.5,
-                        ),
-                  ),
-                  Text(
-                    expert["emailID"],
-                    style: Theme.of(context).primaryTextTheme.body1.copyWith(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 12,
-                        ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: ContactExpert(expert),
-                  )
-                ],
-              ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 10, top: 80),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  expert["Name"],
+                  style: Theme.of(context).textTheme.title.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        letterSpacing: -.5,
+                      ),
+                ),
+                Text(
+                  expert["emailID"],
+                  style: Theme.of(context).primaryTextTheme.body1.copyWith(
+                        fontStyle: FontStyle.italic,
+                        fontSize: 12,
+                      ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: ContactExpert(expert),
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -198,7 +199,24 @@ class ContactExpert extends StatelessWidget {
             onTap: () {
               _launchSkype(context, expert["SkypeUser"], "chat");
             },
-            child: Icon(Icons.chat),
+            child: Icon(
+              Icons.chat,
+              size: 20,
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder:(BuildContext context){
+                return expert_feedback.Feedback(expert);
+              }),
+              );},
+            child: Icon(
+              Icons.feedback,
+              size: 20,
+            ),
           ),
         ),
       ],

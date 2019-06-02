@@ -11,16 +11,6 @@ import 'package:experto/utils/timed_out.dart';
 import 'package:experto/utils/no_result.dart';
 
 class Cards extends StatefulWidget {
-  final List recommendedSkills = ["Fashion", "Mathematics", "Data science"];
-
-  final List skills = [
-    "Fashion",
-    "Mathematics",
-    "Data science",
-    "OS",
-    "DS and Algorithms"
-  ];
-
   @override
   _Cards createState() => _Cards();
 }
@@ -132,7 +122,7 @@ class _Cards extends State<Cards> {
 
   void getTempSet(String searchQuery) async {
     querySetResult.forEach((snapshot) {
-      if (snapshot['Name'].toLowerCase().contains(searchQuery.toLowerCase())) {
+      if (snapshot.data['Name'].toLowerCase().contains(searchQuery.toLowerCase())) {
         tempResult.add(snapshot);
       }
     });

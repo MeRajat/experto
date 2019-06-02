@@ -41,8 +41,7 @@ class CustomCard extends StatelessWidget {
                         style: Theme.of(context)
                             .textTheme
                             .title
-                            .copyWith(fontWeight: FontWeight.bold),
-                        textScaleFactor: .85,
+                            .copyWith(fontSize: 17,),
                       ),
                     ),
                     Text(
