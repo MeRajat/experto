@@ -209,7 +209,6 @@ class _ContactExpert extends State<ContactExpert> {
                   child: Text(
                     title,
                     style: Theme.of(context).primaryTextTheme.body2.copyWith(
-                          fontWeight: FontWeight.bold,
                           fontSize: 20,
                         ),
                   ),
@@ -226,22 +225,21 @@ class _ContactExpert extends State<ContactExpert> {
                         ),
                   ),
                 ),
-                Padding(
+                Container(
+                  width: double.infinity,
                   padding: EdgeInsets.only(
                     left: 15,
                     right: 15,
                     bottom: 60,
                   ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: RaisedButton(
-                      child: Text("Yes",
-                          style:
-                              Theme.of(context).primaryTextTheme.body2.copyWith(
-                                    color: Colors.black,
-                                  )),
-                      onPressed: callback,
-                    ),
+                  child: RaisedButton(
+                    color: Colors.blueAccent,
+                    child: Text("Yes",
+                        style:
+                            Theme.of(context).primaryTextTheme.body2.copyWith(
+                                  color: Colors.black,
+                                )),
+                    onPressed: callback,
                   ),
                 ),
               ],
