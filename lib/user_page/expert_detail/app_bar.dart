@@ -205,22 +205,23 @@ class _ContactExpert extends State<ContactExpert> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(left: 15, top: 20, bottom: 40),
+                  padding: EdgeInsets.only(left: 15, top: 20, bottom: 80),
                   child: Text(
                     title,
-                    style: Theme.of(context).primaryTextTheme.body2.copyWith(
-                          fontSize: 20,
+                    style: Theme.of(context).textTheme.title.copyWith(
+                          fontSize: 24,
+                          letterSpacing: -.5
                         ),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(
                     left: 20,
-                    bottom: 10,
+                    bottom: 15,
                   ),
                   child: Text(
                     secondaryText,
-                    style: Theme.of(context).primaryTextTheme.body2.copyWith(
+                    style: Theme.of(context).primaryTextTheme.body1.copyWith(
                           fontSize: 12,
                         ),
                   ),
@@ -230,7 +231,7 @@ class _ContactExpert extends State<ContactExpert> {
                   padding: EdgeInsets.only(
                     left: 15,
                     right: 15,
-                    bottom: 60,
+                    bottom: 70,
                   ),
                   child: RaisedButton(
                     color: Colors.blueAccent,
@@ -267,7 +268,7 @@ class _ContactExpert extends State<ContactExpert> {
         InkWell(
           onTap: () {
             showBottomSheel(
-                title: "Video Call ${expert["Name"]}",
+                title: "video call ${expert["Name"]}",
                 secondaryText:
                     "Are you sure you want to video call this expert ?",
                 callback: videoCall);
@@ -279,7 +280,7 @@ class _ContactExpert extends State<ContactExpert> {
           child: InkWell(
             onTap: () {
               showBottomSheel(
-                  title: "Message ${expert["Name"]}",
+                  title: "message ${expert["Name"]}",
                   secondaryText: "Are you sure you want to message this expert",
                   callback: () {
                     _launchSkype(context, expert["SkyperUser"], "chat");
