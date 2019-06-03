@@ -81,11 +81,18 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
   }
 }
 
-class ContactExpert extends StatelessWidget {
+class ContactExpert extends StatefulWidget{
+  final DocumentSnapshot expert;
+  ContactExpert(this.expert);
+  
+  @override
+  _ContactExpert createState()=>_ContactExpert(expert);
+}
+class _ContactExpert extends State<ContactExpert> {
   final DocumentSnapshot expert;
   CollectionReference interaction;
 
-  ContactExpert(this.expert) {
+  _ContactExpert(this.expert) {
     getInteraction();
   }
 

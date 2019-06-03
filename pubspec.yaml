@@ -26,6 +26,7 @@ dependencies:
   permission_handler: '^3.1.0'
   url_launcher:
   rxdart:
+  agora_rtc_engine:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -34,8 +35,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  agora_rtc_engine:
-    path: build/Flutter-SDK/
+ # agora_rtc_engine:
+ #   path: build/Flutter-SDK/
 
 
 # For information on the generic Dart part of this file, see the

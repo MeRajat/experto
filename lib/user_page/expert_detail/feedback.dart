@@ -48,67 +48,14 @@ class _FeedbackForm extends State<FeedbackForm> {
 
   void listenSubmission() async {
     feedbackSubmission.getStatus.listen((status) {
-      if (status == true) {
-        setState(() {
-          submiting = true;
-        });
-      }
+      setState(() {});
     });
   }
 
   void listenSubmissionCompleted() async {
     feedbackSubmissionCompleted.getStatus.listen((status) {
-      if (status == true) {
-        setState(() {
-          submitted = true;
-        });
-      }
+      setState(() {});
     });
-  }
-
-  Widget submitButton() {
-    if (submitted) {
-      return Padding(
-        padding: EdgeInsets.only(bottom:40),
-        child:Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.check_circle, size: 25),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Text("Your response is captured"),
-            ),
-          ],
-        ),
-      );
-    }
-    if (!submiting) {
-      return Padding(
-        child: SizedBox(
-          child: RaisedButton(
-            onPressed: () {
-              providedFeedback.saveFeedback(feedbackFormKey);
-            },
-            child: Text("Submit", style: TextStyle(color: Colors.black)),
-            elevation: 3,
-            highlightElevation: 3,
-            color: Colors.blueAccent,
-          ),
-        ),
-        padding: EdgeInsets.only(
-          left: 15,
-          right: 15,
-          bottom: 40,
-        ),
-      );
-    } else {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
   }
 
   @override
@@ -212,7 +159,7 @@ class _FeedbackForm extends State<FeedbackForm> {
                 ),
               ),
             ),
-            submitButton(),
+            providedFeedback.submitButton(feedbackFormKey,context),
           ],
         ));
   }

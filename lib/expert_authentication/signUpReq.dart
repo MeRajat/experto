@@ -157,7 +157,7 @@ class Authenticate {
 
   Future<void> signIn(
       GlobalKey<FormState> _formKey, BuildContext context) async {
-    String _email=null;
+    String _email;
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       isLoadingLoginExpert.updateStatus(true);
