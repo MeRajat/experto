@@ -1,4 +1,4 @@
-//import 'package:experto/video_call/init.dart';
+import 'package:experto/video_call/init.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         "/expert_signup": (context) => expertSignup.SignupPage(),
         "/expert_home" : (context) => expertHome.HomePage(),
         "/home_page":(context)=>HomePage(),
-        //"/video_call":(context)=>startVideo(),
+        "/video_call":(context)=>startVideo(),
       },
       //darkTheme: theme.darkTheme(),
       theme: theme.darkTheme(),

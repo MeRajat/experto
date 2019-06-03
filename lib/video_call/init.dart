@@ -1,26 +1,183 @@
-//import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
-/*import io.agora.rtc.Constants;
-import io.agora.rtc.IRtcEngineEventHandler;
-import io.agora.rtc.RtcEngine;
-...*/
+import 'dart:async';
 
-class Agora extends StatefulWidget{
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+
+class startVideo extends StatefulWidget {
   @override
-  _AgoraState createState() => _AgoraState();
+  _startVideoState createState() => _startVideoState();
 }
 
-class _AgoraState extends State<Agora> {
+class _startVideoState extends State<startVideo> {
+  bool _isInChannel = false;
+  final _infoStrings = <String>[];
+
+  static final _sessions = List<VideoSession>();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    //_initAgoraRtcEngine();
+
+    _initAgoraRtcEngine();
+    _addAgoraEventHandlers();
+    _addRenderView(0, (viewId) {
+      AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return null;
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Agora Flutter SDK'),
+        ),
+        body: Container(
+          child: Column(
+            children: [
+              Container(height: 320, child: _viewRows()),
+              OutlineButton(
+                child: Text(_isInChannel ? 'Leave Channel' : 'Join Channel',
+                    style: textStyle),
+                onPressed: _toggleChannel,
+              ),
+              Expanded(child: Container(child: _buildInfoList())),
+            ],
+          ),
+        ),
+      );
+  }
+
+  Future<void> _initAgoraRtcEngine() async {
+    AgoraRtcEngine.create('b3a6eb25d854422baf608d1010d93463');
+    AgoraRtcEngine.enableVideo();
+    AgoraRtcEngine.setChannelProfile(ChannelProfile.Communication);
+  }
+
+  void _addAgoraEventHandlers() {
+    AgoraRtcEngine.onJoinChannelSuccess =
+        (String channel, int uid, int elapsed) {
+      setState(() {
+        String info = 'onJoinChannel: ' + channel + ', uid: ' + uid.toString();
+        _infoStrings.add(info);
+      });
+    };
+
+    AgoraRtcEngine.onLeaveChannel = () {
+      setState(() {
+        _infoStrings.add('onLeaveChannel');
+      });
+    };
+
+    AgoraRtcEngine.onUserJoined = (int uid, int elapsed) {
+      setState(() {
+        String info = 'userJoined: ' + uid.toString();
+        _infoStrings.add(info);
+        _addRenderView(uid, (viewId) {
+          AgoraRtcEngine.setupRemoteVideo(viewId, VideoRenderMode.Hidden, uid);
+        });
+      });
+    };
+
+    AgoraRtcEngine.onUserOffline = (int uid, int reason) {
+      setState(() {
+        String info = 'userOffline: ' + uid.toString();
+        _infoStrings.add(info);
+        _removeRenderView(uid);
+      });
+    };
+
+    AgoraRtcEngine.onFirstRemoteVideoFrame =
+        (int uid, int width, int height, int elapsed) {
+      setState(() {
+        String info = 'firstRemoteVideo: ' +
+            uid.toString() +
+            ' ' +
+            width.toString() +
+            'x' +
+            height.toString();
+        _infoStrings.add(info);
+      });
+    };
+  }
+
+  void _toggleChannel() {
+    setState(() {
+      if (_isInChannel) {
+        _isInChannel = false;
+        AgoraRtcEngine.leaveChannel();
+        AgoraRtcEngine.stopPreview();
+      } else {
+        _isInChannel = true;
+        AgoraRtcEngine.startPreview();
+        AgoraRtcEngine.joinChannel(null, 'flutter', null, 0);
+      }
+    });
+  }
+
+  Widget _viewRows() {
+    List<Widget> views = _getRenderViews();
+    if (views.length > 0) {
+      List<Widget> expandeViews = views
+          .map((widget) => Expanded(child: Container(child: widget)))
+          .toList();
+      return Row(children: expandeViews);
+    } else {
+      return null;
+    }
+  }
+
+  void _addRenderView(int uid, Function(int viewId) finished) {
+    Widget view = AgoraRtcEngine.createNativeView(uid, (viewId) {
+      _getVideoSession(uid).viewId = viewId;
+      if (finished != null) {
+        finished(viewId);
+      }
+    });
+    VideoSession session = VideoSession(uid, view);
+    _sessions.add(session);
+  }
+
+  void _removeRenderView(int uid) {
+    VideoSession session = _getVideoSession(uid);
+    if (session != null) {
+      _sessions.remove(session);
+    }
+    AgoraRtcEngine.removeNativeView(session.viewId);
+  }
+
+  VideoSession _getVideoSession(int uid) {
+    return _sessions.firstWhere((session) {
+      return session.uid == uid;
+    });
+  }
+
+  List<Widget> _getRenderViews() {
+    return _sessions.map((session) => session.view).toList();
+  }
+
+  static TextStyle textStyle = TextStyle(fontSize: 18, color: Colors.blue);
+
+  Widget _buildInfoList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(8.0),
+      itemExtent: 24,
+      itemBuilder: (context, i) {
+        return ListTile(
+          title: Text(_infoStrings[i]),
+        );
+      },
+      itemCount: _infoStrings.length,
+    );
+  }
+}
+
+class VideoSession {
+  int uid;
+  Widget view;
+  int viewId;
+
+  VideoSession(int uid, Widget view) {
+    this.uid = uid;
+    this.view = view;
   }
 }

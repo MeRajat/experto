@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_authentication/userAdd.dart';
 import "package:experto/utils/bloc/reload.dart";
+import 'package:experto/video_call/init.dart';
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
@@ -189,7 +190,15 @@ class ContactExpert extends StatelessWidget {
       children: <Widget>[
         InkWell(
           onTap: () {
-            _launchSkype(context, expert["SkypeUser"], "call");
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return startVideo();
+                },
+              ),
+            );
+            //_launchSkype(context, expert["SkypeUser"], "call");
           },
           child: Icon(Icons.video_call),
         ),
