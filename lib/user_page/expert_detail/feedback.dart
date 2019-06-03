@@ -136,6 +136,7 @@ class _FeedbackForm extends State<FeedbackForm> {
             Container(
               margin: EdgeInsets.only(left: 15, right: 15, bottom: 40, top: 20),
               child: Material(
+                elevation:5,
                 borderRadius: BorderRadius.circular(5),
                 child: TextFormField(
                   style: Theme.of(context)

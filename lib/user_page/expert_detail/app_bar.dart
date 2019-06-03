@@ -81,13 +81,14 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
   }
 }
 
-class ContactExpert extends StatefulWidget{
+class ContactExpert extends StatefulWidget {
   final DocumentSnapshot expert;
   ContactExpert(this.expert);
-  
+
   @override
-  _ContactExpert createState()=>_ContactExpert(expert);
+  _ContactExpert createState() => _ContactExpert(expert);
 }
+
 class _ContactExpert extends State<ContactExpert> {
   final DocumentSnapshot expert;
   CollectionReference interaction;
@@ -190,6 +191,76 @@ class _ContactExpert extends State<ContactExpert> {
     }
   }
 
+  void showBottomSheel(
+      {@required String title,
+      @required String secondaryText,
+      @required Function callback}) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Material(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 15, top: 20, bottom: 40),
+                  child: Text(
+                    title,
+                    style: Theme.of(context).primaryTextTheme.body2.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    bottom: 10,
+                  ),
+                  child: Text(
+                    secondaryText,
+                    style: Theme.of(context).primaryTextTheme.body2.copyWith(
+                          fontSize: 12,
+                        ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 15,
+                    right: 15,
+                    bottom: 60,
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: RaisedButton(
+                      child: Text("Yes",
+                          style:
+                              Theme.of(context).primaryTextTheme.body2.copyWith(
+                                    color: Colors.black,
+                                  )),
+                      onPressed: callback,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  void videoCall() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return startVideo();
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -197,15 +268,11 @@ class _ContactExpert extends State<ContactExpert> {
       children: <Widget>[
         InkWell(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return startVideo();
-                },
-              ),
-            );
-            //_launchSkype(context, expert["SkypeUser"], "call");
+            showBottomSheel(
+                title: "Video Call ${expert["Name"]}",
+                secondaryText:
+                    "Are you sure you want to video call this expert ?",
+                callback: videoCall);
           },
           child: Icon(Icons.video_call),
         ),
@@ -213,7 +280,12 @@ class _ContactExpert extends State<ContactExpert> {
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
             onTap: () {
-              _launchSkype(context, expert["SkypeUser"], "chat");
+              showBottomSheel(
+                  title: "Message ${expert["Name"]}",
+                  secondaryText: "Are you sure you want to message this expert",
+                  callback: () {
+                    _launchSkype(context, expert["SkyperUser"], "chat");
+                  });
             },
             child: Icon(
               Icons.chat,
@@ -225,10 +297,12 @@ class _ContactExpert extends State<ContactExpert> {
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder:(BuildContext context){
-                return expert_feedback.Feedback(expert);
-              }),
-              );},
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (BuildContext context) {
+                  return expert_feedback.Feedback(expert);
+                }),
+              );
+            },
             child: Icon(
               Icons.feedback,
               size: 20,

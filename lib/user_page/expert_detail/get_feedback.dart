@@ -72,14 +72,14 @@ class ValidateFeedback {
               saveFeedback(feedbackFormKey, context);
             },
             child: Text("Submit", style: TextStyle(color: Colors.black)),
-            elevation: 3,
-            highlightElevation: 3,
+            elevation: 5,
+            highlightElevation: 5,
             color: Colors.blueAccent,
           ),
         ),
         padding: EdgeInsets.only(
-          left: 15,
-          right: 15,
+          left: 14,
+          right: 14,
           bottom: 40,
         ),
       );
