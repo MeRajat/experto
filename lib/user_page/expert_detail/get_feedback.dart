@@ -108,6 +108,7 @@ class ValidateFeedback {
       submiting = true;
       feedbackSubmission.updateStatus(true);
       try {
+        feedbackCollection = Firestore.instance.collection("Feedback");
         Feedback feedback = new Feedback(
           rating: rating,
           review: review,
@@ -117,6 +118,7 @@ class ValidateFeedback {
         await Firestore.instance
             .collection("Feedback")
             .where("User", isEqualTo: currentUser.reference)
+            .where("Expert", isEqualTo: expertReference)
             .getDocuments()
             .timeout(Duration(seconds: 10), onTimeout: () {
           throw TimeoutException;
