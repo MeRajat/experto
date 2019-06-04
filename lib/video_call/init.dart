@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 
 class startVideo extends StatefulWidget {
@@ -28,23 +27,20 @@ class _startVideoState extends State<startVideo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Agora Flutter SDK'),
+      body: Container(
+        child: Column(
+          children: [
+            Container(height: 320, child: _viewRows()),
+            OutlineButton(
+              child: Text(_isInChannel ? 'Leave Channel' : 'Join Channel',
+                  style: textStyle),
+              onPressed: _toggleChannel,
+            ),
+            Expanded(child: Container(child: _buildInfoList())),
+          ],
         ),
-        body: Container(
-          child: Column(
-            children: [
-              Container(height: 320, child: _viewRows()),
-              OutlineButton(
-                child: Text(_isInChannel ? 'Leave Channel' : 'Join Channel',
-                    style: textStyle),
-                onPressed: _toggleChannel,
-              ),
-              Expanded(child: Container(child: _buildInfoList())),
-            ],
-          ),
-        ),
-      );
+      ),
+    );
   }
 
   Future<void> _initAgoraRtcEngine() async {

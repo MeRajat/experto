@@ -29,6 +29,6 @@ class CustomFlexibleSpace extends StatelessWidget {
 class Appbar extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return CustomAppBar(250,"Experto", CustomFlexibleSpace());
+    return CustomAppBar(250,"Experto", CustomFlexibleSpace(),logout: false,);
   }
 }

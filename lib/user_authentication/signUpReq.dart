@@ -69,6 +69,13 @@ class Authenticate {
     getUser();
     msg="Invalid details";
   }
+  void Clear(){
+    _isSignIn = false;
+    details = new List<String>();
+    getUser();
+    msg="Invalid details";
+
+  }
 
   Future<void> _ackAlert(BuildContext context, String title, String content) {
     return showDialog<void>(
@@ -117,6 +124,7 @@ class Authenticate {
   Future<void> signUp(
       GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
+    details.clear();
     if (formState.validate()) {
       formState.save();
       try {
@@ -154,6 +162,7 @@ class Authenticate {
 
   Future<void> signIn(
       GlobalKey<FormState> _formKey, BuildContext context) async {
+    details.clear();
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
@@ -172,7 +181,7 @@ class Authenticate {
         formState.reset();
       } catch (e) {
         _isSignIn = false;
-        //formState.reset();
+        formState.reset();
         details.clear();
         isLoadingLogin.updateStatus(false);
         _ackAlert(

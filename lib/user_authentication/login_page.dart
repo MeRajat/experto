@@ -80,6 +80,7 @@ class _CustomForm extends State<CustomForm> {
   }
 
   void startAuthentication() {
+    authenticate.Clear();
     authenticate.signIn(_formKey, context);
   }
 
