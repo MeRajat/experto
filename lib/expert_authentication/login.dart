@@ -33,7 +33,7 @@ class CustomForm extends StatefulWidget {
 
 class _CustomForm extends State<CustomForm> {
   final GlobalKey<FormState> _formKeyExpert = GlobalKey<FormState>();
-  final Authenticate authenticate = new Authenticate();
+  Authenticate authenticate = new Authenticate();
   bool loading = false;
 
   @override
@@ -60,6 +60,7 @@ class _CustomForm extends State<CustomForm> {
   }
 
   void startAuthentication() {
+    //authenticate.Clear();
     authenticate.signIn(_formKeyExpert, context);
   }
 

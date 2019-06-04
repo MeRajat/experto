@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 
 class StartVideo extends StatefulWidget {
@@ -28,23 +27,20 @@ class _StartVideoState extends State<StartVideo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Agora Flutter SDK'),
+      body: Container(
+        child: Column(
+          children: [
+            Container(height: 320, child: _viewRows()),
+            OutlineButton(
+              child: Text(_isInChannel ? 'Leave Channel' : 'Join Channel',
+                  style: textStyle),
+              onPressed: _toggleChannel,
+            ),
+            Expanded(child: Container(child: _buildInfoList())),
+          ],
         ),
-        body: Container(
-          child: Column(
-            children: [
-              Container(height: 320, child: _viewRows()),
-              OutlineButton(
-                child: Text(_isInChannel ? 'Leave Channel' : 'Join Channel',
-                    style: textStyle),
-                onPressed: _toggleChannel,
-              ),
-              Expanded(child: Container(child: _buildInfoList())),
-            ],
-          ),
-        ),
-      );
+      ),
+    );
   }
 
   Future<void> _initAgoraRtcEngine() async {
@@ -100,17 +96,19 @@ class _StartVideoState extends State<StartVideo> {
     };
   }
 
-  void _toggleChannel() {
+  void _toggleChannel()async{
+
+    if (_isInChannel) {
+      _isInChannel = false;
+      AgoraRtcEngine.leaveChannel();
+      AgoraRtcEngine.stopPreview();
+    } else {
+      _isInChannel = true;
+      AgoraRtcEngine.startPreview();
+      bool status= await AgoraRtcEngine.joinChannel(null, 'flutter', null, 1);
+      print(status);
+    }
     setState(() {
-      if (_isInChannel) {
-        _isInChannel = false;
-        AgoraRtcEngine.leaveChannel();
-        AgoraRtcEngine.stopPreview();
-      } else {
-        _isInChannel = true;
-        AgoraRtcEngine.startPreview();
-        AgoraRtcEngine.joinChannel(null, 'flutter', null, 0);
-      }
     });
   }
 
