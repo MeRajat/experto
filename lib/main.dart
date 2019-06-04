@@ -27,10 +27,10 @@ class MyApp extends StatelessWidget {
         "/expert_signup": (context) => expertSignup.SignupPage(),
         "/expert_home" : (context) => expertHome.HomePage(),
         "/home_page":(context)=>HomePage(),
-        "/video_call":(context)=>startVideo(),
+        "/video_call":(context)=>StartVideo(),
       },
       //darkTheme: theme.darkTheme(),
-      theme: theme.darkTheme(),
+      theme: theme.lightTheme(),
       home: Splash(),
     );
   }

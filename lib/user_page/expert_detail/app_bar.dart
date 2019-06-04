@@ -208,20 +208,20 @@ class _ContactExpert extends State<ContactExpert> {
                   padding: EdgeInsets.only(left: 15, top: 20, bottom: 80),
                   child: Text(
                     title,
-                    style: Theme.of(context).textTheme.title.copyWith(
-                          fontSize: 24,
-                          letterSpacing: -.5
-                        ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .title
+                        .copyWith(fontSize: 24, letterSpacing: -.5),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(
                     left: 20,
-                    bottom: 15,
+                    bottom: 10,
                   ),
                   child: Text(
                     secondaryText,
-                    style: Theme.of(context).primaryTextTheme.body1.copyWith(
+                    style: Theme.of(context).primaryTextTheme.body2.copyWith(
                           fontSize: 12,
                         ),
                   ),
@@ -250,14 +250,22 @@ class _ContactExpert extends State<ContactExpert> {
   }
 
   void videoCall() {
-    Navigator.push(
-      context,
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return startVideo();
+          return StartVideo();
         },
       ),
     );
+
+    // Navigator.push(
+    //  context,
+    //  MaterialPageRoute(
+    //    builder: (BuildContext context) {
+    //      return StartVideo();
+    //    },
+    //  ),
+    // );
   }
 
   @override
