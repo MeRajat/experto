@@ -16,7 +16,7 @@ class SearchResults extends StatelessWidget {
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            Icon icon = Icon(CupertinoIcons.settings_solid,size:70);
+            Icon icon = Icon(CupertinoIcons.settings_solid,size:60);
             if (index == 0) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -2,11 +2,11 @@
 # See https://www.dartlang.org/tools/pub/glossary#lockfile
 packages:
   agora_rtc_engine:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
-      path: "E:\\Users\\Madhav\\Documents\\Flutter\\Internship\\experto\\build\\Flutter-SDK\\"
-      relative: false
-    source: path
+      name: agora_rtc_engine
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.9.5"
   async:
     dependency: transitive

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 
-class startVideo extends StatefulWidget {
+class StartVideo extends StatefulWidget {
   @override
-  _startVideoState createState() => _startVideoState();
+  _StartVideoState createState() => _StartVideoState();
 }
 
-class _startVideoState extends State<startVideo> {
+class _StartVideoState extends State<StartVideo> {
   bool _isInChannel = false;
   final _infoStrings = <String>[];
 

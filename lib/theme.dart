@@ -9,9 +9,26 @@ class Theme {
       scaffoldBackgroundColor: Color.fromRGBO(243, 242, 244, 1),
       fontFamily: 'Ubuntu',
       primaryColor: Color(0xFFF2F4ED),
+      primaryTextTheme: TextTheme(
+        title: TextStyle(
+          wordSpacing: 1,
+        ),
+        subtitle: TextStyle(
+          wordSpacing: 1,
+        ),
+        subhead: TextStyle(
+          wordSpacing: 1,
+        ),
+        body1: TextStyle(
+          wordSpacing: 1,
+        ),
+        body2: TextStyle(
+          wordSpacing: 1,
+        ),
+      ),
       bottomAppBarColor: Color(0xFFfcfffe),
       dialogTheme: DialogTheme(
-        backgroundColor: Color.fromRGBO(250,250,250,1),
+        backgroundColor: Color.fromRGBO(250, 250, 250, 1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(5),
@@ -34,8 +51,8 @@ class Theme {
           left: 15,
           top: 10,
         ),
-        color: Color.fromRGBO(250, 250, 250, 1),
-        elevation: 2,
+        color: Color.fromRGBO(245, 245, 245, 1),
+        elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
@@ -72,9 +89,11 @@ class Theme {
       ),
       textTheme: TextTheme(
         title: TextStyle(
+          wordSpacing: 1,
           fontWeight: FontWeight.w700,
         ),
         subhead: TextStyle(
+          wordSpacing: 1,
           fontWeight: FontWeight.w600,
           letterSpacing: -1.4,
         ),
@@ -88,7 +107,7 @@ class Theme {
       brightness: Brightness.dark,
       canvasColor: Color.fromRGBO(50, 50, 50, 1),
       dialogTheme: DialogTheme(
-        backgroundColor: Color.fromRGBO(45,45,45,1),
+        backgroundColor: Color.fromRGBO(45, 45, 45, 1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(5),
@@ -96,11 +115,26 @@ class Theme {
         ),
       ),
       primaryTextTheme: TextTheme(
-        title: TextStyle(color: textColor),
-        subtitle: TextStyle(color: textColor),
-        subhead: TextStyle(color: textColor),
-        body1: TextStyle(color: textColor),
-        body2: TextStyle(color: textColor),
+        title: TextStyle(
+          color: textColor,
+          wordSpacing: 1,
+        ),
+        subtitle: TextStyle(
+          color: textColor,
+          wordSpacing: 1,
+        ),
+        subhead: TextStyle(
+          color: textColor,
+          wordSpacing: 1,
+        ),
+        body1: TextStyle(
+          color: textColor,
+          wordSpacing: 1,
+        ),
+        body2: TextStyle(
+          color: textColor,
+          wordSpacing: 1,
+        ),
       ),
       scaffoldBackgroundColor:
           Color.fromRGBO(28, 28, 28, 1), //Color.fromRGBO(243, 242, 244, 1),
@@ -109,7 +143,7 @@ class Theme {
       bottomAppBarColor: Color(0xFFfcfffe),
       buttonTheme: ButtonThemeData(
         height: 45,
-        disabledColor: Color.fromRGBO(28,28,28,1),
+        disabledColor: Color.fromRGBO(28, 28, 28, 1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -167,10 +201,12 @@ class Theme {
       ),
       textTheme: TextTheme(
         title: TextStyle(
+          wordSpacing:1,
           fontWeight: FontWeight.w700,
           color: textColor,
         ),
         subhead: TextStyle(
+          wordSpacing:1,
           fontWeight: FontWeight.w600,
           color: textColor,
           letterSpacing: -1.4,
