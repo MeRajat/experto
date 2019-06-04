@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         "/home_page":(context)=>HomePage(),
         "/video_call":(context)=>StartVideo(),
       },
-      //darkTheme: theme.darkTheme(),
+      darkTheme: theme.darkTheme(),
       theme: theme.lightTheme(),
       home: Splash(),
     );
