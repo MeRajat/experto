@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:experto/utils/bloc/is_loading.dart";
 
 import './app_bar.dart' as login_page_appbar;
+import "package:experto/utils/authentication_page_utils.dart";
 
 class SignupPage extends StatelessWidget {
   @override
@@ -30,18 +31,26 @@ class _CustomFormField extends State<CustomFormField> {
   bool loading = false;
 
   @override
-  void dispose(){
-    isLoadingSignup.dispose();
+  void dispose() {
+    //isLoadingSignup.dispose();
     super.dispose();
   }
-  
+
+  @override
+  void initState() {
+    checkLoadingStatus();
+    super.initState();
+  }
+
   void checkLoadingStatus() async {
-    isLoadingSignup.getStatus.listen((status){
-      setState((){
-        loading=status;
-      });
+    isLoadingSignup.getStatus.listen((status) {
+      loading = status;
+      if (status) {
+        showAuthSnackBar(context: context, title:"SigningIn");
+      } else {
+        Scaffold.of(context).removeCurrentSnackBar();
+      }
     });
-    
   }
 
   void startAuthentication() {
@@ -50,40 +59,83 @@ class _CustomFormField extends State<CustomFormField> {
 
   @override
   Widget build(BuildContext context) {
-    checkLoadingStatus();
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 10),
+      child: Container(
+        height: 600,
         child: Form(
           key: formKey,
-          child: Column(
-            children: <Widget>[
-              InputField("Name", authenticate.getName),
-              InputField("Email", authenticate.getEmail),
-              InputField("City", authenticate.getCity),
-              InputField("Mobile", authenticate.getMobile,inputType: TextInputType.number),
-              InputField("Password", authenticate.getPass,
-                  isPassword: true),
-              Hero(
-                tag:"userbuttonhero",
-                child: Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: SizedBox(
-                    width:double.infinity,
-                    child: RaisedButton(
-                      onPressed: (loading) ? null : startAuthentication,
-                      elevation: 3,
-                      highlightElevation: 4,
-                      color: Color.fromRGBO(84, 229, 121, 1),
-                      child: authenticate.signInButton("Sign Up")
-                    ),
+          child: Theme(
+            data: Theme.of(context).copyWith(
+                primaryColor: Colors.blue, backgroundColor: Colors.blue),
+            child: Stepper(
+              physics: BouncingScrollPhysics(),
+              type: StepperType.vertical,
+              currentStep: 0,
+              onStepTapped: (int tapped) {},
+              onStepContinue: (loading) ? null : startAuthentication,
+              steps: [
+                Step(
+                  title: Text("Enter Information"),
+                  content: Column(
+                    children: <Widget>[
+                      InputField("Name", authenticate.getName),
+                      InputField("Email", authenticate.getEmail),
+                      InputField("City", authenticate.getCity),
+                      InputField("Mobile", authenticate.getMobile,
+                          inputType: TextInputType.number),
+                      InputField("Password", authenticate.getPass,
+                          isPassword: true),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                Step(
+                  title: Text("Press Continue To SignUp"),
+                  content: Container(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+
+    // @override
+    // Widget build(BuildContext context) {
+    //   checkLoadingStatus();
+    //   return SliverToBoxAdapter(
+    //     child: Padding(
+    //       padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 10),
+    //       child: Form(
+    //         key: formKey,
+    //         child: Column(
+    //           children: <Widget>[
+    //             InputField("Name", authenticate.getName),
+    //             InputField("Email", authenticate.getEmail),
+    //             InputField("City", authenticate.getCity),
+    //             InputField("Mobile", authenticate.getMobile,inputType: TextInputType.number),
+    //             InputField("Password", authenticate.getPass,
+    //                 isPassword: true),
+    //             Hero(
+    //               tag:"userbuttonhero",
+    //               child: Padding(
+    //                 padding: EdgeInsets.only(top: 20),
+    //                 child: SizedBox(
+    //                   width:double.infinity,
+    //                   child: RaisedButton(
+    //                     onPressed: (loading) ? null : startAuthentication,
+    //                     elevation: 3,
+    //                     highlightElevation: 4,
+    //                     color: Color.fromRGBO(84, 229, 121, 1),
+    //                     //child: authenticate.signInButton("Sign Up")
+    //                   ),
+    //                 ),
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
   }
 }

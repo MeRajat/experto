@@ -4,67 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import "package:experto/utils/bloc/is_loading.dart";
 
-class InputField extends StatelessWidget {
-  final String hintText;
-  final TextInputType inputType;
-  final bool isPassword;
-  final void Function(String) fn;
-
-  InputField(this.hintText, this.fn,
-      {this.inputType: TextInputType.text, this.isPassword: false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      child: Material(
-        elevation: 3,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
-          child: TextFormField(
-            obscureText: isPassword,
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'please enter this field';
-              }
-            },
-
-            onSaved:(input)=>fn(input),
-            textInputAction: TextInputAction.next,
-            keyboardType: inputType,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(0),
-              filled: true,
-              hintText: hintText,
-              hintStyle: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class Authenticate {
   CollectionReference userReference;
   QuerySnapshot userSnapshot;
   AuthException exception;
   FirebaseUser usr;
   List<String> details;
-  bool _isSignIn;
+  //bool //_isSignIn;
   Future<void> Function(BuildContext context) fn;
   String msg;
 
   Authenticate() {
-    _isSignIn = false;
+    //_isSignIn = false;
     details = new List<String>();
     getUser();
     msg="Invalid details";
@@ -100,19 +51,19 @@ class Authenticate {
   getMobile(String x) => details.add(x);
   getEmail(String x) => details.add(x);
 
-  Widget signInButton(String x) {
-    if (_isSignIn)
-      return Center(child: CircularProgressIndicator());
-    else
-      return Text(
-        x,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      );
-  }
+  // Widget signInButton(String x) {
+  //   if (//_isSignIn)
+  //     return Center(child: CircularProgressIndicator());
+  //   else
+  //     return Text(
+  //       x,
+  //       style: TextStyle(
+  //         fontSize: 16,
+  //         fontWeight: FontWeight.bold,
+  //         color: Colors.black,
+  //       ),
+  //     );
+  // }
 
   Future<void> signUp(
       GlobalKey<FormState> _formKey, BuildContext context) async {
@@ -121,7 +72,7 @@ class Authenticate {
       formState.save();
       try {
         isLoadingSignup.updateStatus(true);
-        _isSignIn = true;
+        //_isSignIn = true;
         usr=await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
 
@@ -141,7 +92,7 @@ class Authenticate {
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
-        _isSignIn = false;
+        //_isSignIn = false;
         print (e);
         //formState.reset();
         details.clear();
@@ -157,7 +108,8 @@ class Authenticate {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
-      _isSignIn = true;
+      Future.delayed(Duration(seconds:5));
+      //_isSignIn = true;
       formState.save();
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -171,7 +123,7 @@ class Authenticate {
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
-        _isSignIn = false;
+        //_isSignIn = false;
         //formState.reset();
         details.clear();
         isLoadingLogin.updateStatus(false);

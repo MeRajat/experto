@@ -5,65 +5,16 @@ import 'package:flutter/material.dart';
 
 import "package:experto/utils/bloc/is_loading.dart";
 
-class InputField extends StatelessWidget {
-  final String hintText;
-  final TextInputType inputType;
-  final bool isPassword;
-  final void Function(String) fn;
-
-  InputField(this.hintText, this.fn,
-      {this.inputType: TextInputType.text, this.isPassword: false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      child: Material(
-        elevation: 3,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
-          child: TextFormField(
-            obscureText: isPassword,
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'please enter this field';
-              }
-            },
-            
-            onSaved:(input)=>fn(input),
-            textInputAction: TextInputAction.next,
-            keyboardType: inputType,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(0),
-              filled: true,
-              hintText: hintText,
-              hintStyle: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class Authenticate {
   CollectionReference expertReference;
   QuerySnapshot expertSnapshot;
   List<String> details;
   String userName;
-  bool _isSignIn;
+  //bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
 
   Authenticate() {
-    _isSignIn = false;
+    //_isSignIn = false;
     details = new List<String>();
     getExpert();
   }
@@ -99,19 +50,19 @@ class Authenticate {
   getMobile(String x) => details.add(x);
   getEmail(String x) => details.add(x);
 
-  Widget signInButton(String x) {
-    if (_isSignIn)
-      return Center(child: CircularProgressIndicator());
-    else
-      return Text(
-        x,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      );
-  }
+  // Widget signInButton(String x) {
+  //   if (_isSignIn)
+  //     return Center(child: CircularProgressIndicator());
+  //   else
+  //     return Text(
+  //       x,
+  //       style: TextStyle(
+  //         fontSize: 16,
+  //         fontWeight: FontWeight.bold,
+  //         color: Colors.black,
+  //       ),
+  //     );
+  // }
 
   Future<void> signUp(
       GlobalKey<FormState> _formKey, BuildContext context) async {
@@ -120,9 +71,9 @@ class Authenticate {
       formState.save();
       try {
         isLoadingSignupExpert.updateStatus(true);
-        _isSignIn = true;
-        userName="expert_"+details[0].split(" ")[0];
-        String index = details[0].substring(0,1).toUpperCase();
+        //_isSignIn = true;
+        userName = "expert_" + details[0].split(" ")[0];
+        String index = details[0].substring(0, 1).toUpperCase();
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[5]);
         expert = new Experts(
@@ -140,17 +91,17 @@ class Authenticate {
         expertSnapshot = await expertReference
             .where('emailID', isEqualTo: details[1])
             .getDocuments();
-        currentExpert=expertSnapshot.documents[0];
+        currentExpert = expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
-        _isSignIn = false;
+        //_isSignIn = false;
         formState.reset();
         details.clear();
-        expert=null;
+        expert = null;
         isLoadingSignupExpert.updateStatus(false);
-        _ackAlert(context,"SignUp failed",e.toString().split(',')[1]);
+        _ackAlert(context, "SignUp failed", e.toString().split(',')[1]);
       }
     }
   }
@@ -161,35 +112,42 @@ class Authenticate {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       isLoadingLoginExpert.updateStatus(true);
-      _isSignIn = true;
+      //_isSignIn = true;
       formState.save();
       try {
-          await Firestore.instance.collection("Experts").where(
-              "userID", isEqualTo: details[0]).getDocuments().then((
-              QuerySnapshot q) {
-            _email = q.documents[0]["emailID"];
-          }).catchError((e){_email=null;});
-          if(_email==null)
-            throw("User not found!");
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: _email, password: details[1]);
+        await Firestore.instance
+            .collection("Experts")
+            .where("userID", isEqualTo: details[0])
+            .getDocuments()
+            .then((QuerySnapshot q) {
+          _email = q.documents[0]["emailID"];
+        }).catchError((e) {
+          _email = null;
+        });
+        if (_email == null) throw ("User not found!");
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: _email, password: details[1]);
         expertSnapshot = await expertReference
             .where('emailID', isEqualTo: _email)
             .getDocuments();
-        if(expertSnapshot.documents[0]["Status"]==false)
-          throw("Not Active");
+        if (expertSnapshot.documents[0]["Status"] == false)
+          throw ("Not Active");
         //print(expertSnapshot.documents[0]["emailID"]);
-        currentExpert=expertSnapshot.documents[0];
+        currentExpert = expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/expert_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
-        _isSignIn = false;
+        //_isSignIn = false;
         //formState.reset();
         details.clear();
         isLoadingLoginExpert.updateStatus(false);
         _ackAlert(
-            context, "Login Failed!", e=="Not Active"||e=="User not found!"?e:e.toString().split(',')[1]);
+            context,
+            "Login Failed!",
+            e == "Not Active" || e == "User not found!"
+                ? e
+                : e.toString().split(',')[1]);
       }
     }
   }

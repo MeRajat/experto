@@ -4,6 +4,7 @@ import './app_bar.dart' as appBar;
 import './signUpReq.dart';
 
 import "package:experto/utils/bloc/is_loading.dart";
+import "package:experto/utils/authentication_page_utils.dart";
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,36 +20,6 @@ class _LoginPage extends State<LoginPage> {
         slivers: <Widget>[
           appBar.AppBar("Login"),
           CustomForm(),
-          SliverToBoxAdapter(
-            child: Container(
-              width: 20,
-              padding: EdgeInsets.only(left: 23, bottom: 40, right: 23),
-              child: Row(
-                children: <Widget>[
-                  Text("Don't have an account?",
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .body2
-                          .copyWith(fontSize: 13)),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/expert_signup');
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        "SignUp",
-                        style: Theme.of(context)
-                            .primaryTextTheme
-                            .body2
-                            .copyWith(fontSize: 13),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -71,11 +42,20 @@ class _CustomForm extends State<CustomForm> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    checkLoadingStatus();
+    super.initState();
+  }
+
   void checkLoadingStatus() async {
     isLoadingLoginExpert.getStatus.listen((status) {
-      setState(() {
-        loading = status;
-      });
+      loading = status;
+      if (status) {
+        showAuthSnackBar(context:context,title:"Logging In");
+      } else {
+        Scaffold.of(context).removeCurrentSnackBar();
+      }
     });
   }
 
@@ -83,38 +63,86 @@ class _CustomForm extends State<CustomForm> {
     authenticate.signIn(_formKeyExpert, context);
   }
 
+  void redirectCallbackFunc() {
+    Navigator.of(context).pushNamed("/expert_signup");
+  }
+
   @override
   Widget build(BuildContext context) {
-    checkLoadingStatus();
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
+      child: Container(
+        height: 600,
         child: Form(
           key: _formKeyExpert,
-          child: Column(
-            children: <Widget>[
-              InputField("Expertname", authenticate.getName),
-              InputField("Password", authenticate.getPass, isPassword: true),
-              Hero(
-                tag:"expertbuttonhero",
-                child: Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: RaisedButton(
-                      onPressed: (loading) ? null : startAuthentication,
-                      elevation: 3,
-                      highlightElevation: 4,
-                      color: Color.fromRGBO(84, 229, 121, 1),
-                      child: authenticate.signInButton("Sign In"),
-                    ),
+          child: Theme(
+            data: Theme.of(context).copyWith(
+                primaryColor: Colors.blue, backgroundColor: Colors.blue),
+            child: Stepper(
+              physics: BouncingScrollPhysics(),
+              type: StepperType.vertical,
+              currentStep: 0,
+              onStepTapped: (int tapped) {},
+              onStepContinue: (loading) ? null : startAuthentication,
+              steps: [
+                Step(
+                  title: Text("Enter Credentials"),
+                  content: Column(
+                    children: <Widget>[
+                      InputField("Email", authenticate.getName),
+                      InputField("Password", authenticate.getPass,
+                          isPassword: true),
+                      SignupPageRedirect(
+                        text: "Don't have an account?",
+                        redirectLink: "SignUp",
+                        callback: redirectCallbackFunc,
+                      )
+                    ],
                   ),
                 ),
-              ),
-            ],
+                Step(
+                  title: Text("Press Continue To LogIn"),
+                  content: Container(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   checkLoadingStatus();
+  //   return SliverToBoxAdapter(
+  //     child: Padding(
+  //       padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
+  //       child: Form(
+  //         key: _formKeyExpert,
+  //         child: Column(
+  //           children: <Widget>[
+  //             InputField("Expertname", authenticate.getName),
+  //             InputField("Password", authenticate.getPass, isPassword: true),
+  //             Hero(
+  //               tag:"expertbuttonhero",
+  //               child: Padding(
+  //                 padding: EdgeInsets.only(top: 20),
+  //                 child: SizedBox(
+  //                   width: double.infinity,
+  //                   child: RaisedButton(
+  //                     onPressed: (loading) ? null : startAuthentication,
+  //                     elevation: 3,
+  //                     highlightElevation: 4,
+  //                     color: Color.fromRGBO(84, 229, 121, 1),
+  //                     child: authenticate.signInButton("Sign In"),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
