@@ -83,6 +83,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
 
 class ContactExpert extends StatefulWidget {
   final DocumentSnapshot expert;
+
   ContactExpert(this.expert);
 
   @override
@@ -195,58 +196,62 @@ class _ContactExpert extends State<ContactExpert> {
       {@required String title,
       @required String secondaryText,
       @required Function callback}) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Material(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 15, top: 20, bottom: 80),
-                  child: Text(
-                    title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .title
-                        .copyWith(fontSize: 24, letterSpacing: -.5),
-                  ),
+    Future<PersistentBottomSheetController> controller=showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(left: 15, top: 20, bottom: 80),
+                child: Text(
+                  title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .title
+                      .copyWith(fontSize: 24, letterSpacing: -.5),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    bottom: 10,
-                  ),
-                  child: Text(
-                    secondaryText,
-                    style: Theme.of(context).primaryTextTheme.body2.copyWith(
-                          fontSize: 12,
-                        ),
-                  ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 20,
+                  bottom: 10,
                 ),
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                    left: 15,
-                    right: 15,
-                    bottom: 70,
-                  ),
-                  child: RaisedButton(
-                    color: Colors.blueAccent,
-                    child: Text("Yes",
-                        style:
-                            Theme.of(context).primaryTextTheme.body2.copyWith(
-                                  color: Colors.black,
-                                )),
-                    onPressed: callback,
-                  ),
+                child: Text(
+                  secondaryText,
+                  style: Theme.of(context).primaryTextTheme.body2.copyWith(
+                        fontSize: 12,
+                      ),
                 ),
-              ],
-            ),
-          );
-        });
+              ),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                  left: 15,
+                  right: 15,
+                  bottom: 70,
+                ),
+                child: RaisedButton(
+                  color: Colors.blueAccent,
+                  child: Text("Yes",
+                      style: Theme.of(context).primaryTextTheme.body2.copyWith(
+                            color: Colors.black,
+                          )),
+                  onPressed: () {
+                    //Navigator.of(context, rootNavigator: false).pop();
+                    callback();
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    controller.then((PersistentBottomSheetController p){p.close();});
   }
 
   void videoCall() {
@@ -276,7 +281,7 @@ class _ContactExpert extends State<ContactExpert> {
         InkWell(
           onTap: () {
             showBottomSheel(
-                title: "video call ${expert["Name"]}",
+                title: "Video call ${expert["Name"]}?",
                 secondaryText:
                     "Are you sure you want to video call this expert ?",
                 callback: videoCall);

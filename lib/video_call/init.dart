@@ -96,17 +96,19 @@ class _StartVideoState extends State<StartVideo> {
     };
   }
 
-  void _toggleChannel() {
+  void _toggleChannel()async{
+
+    if (_isInChannel) {
+      _isInChannel = false;
+      AgoraRtcEngine.leaveChannel();
+      AgoraRtcEngine.stopPreview();
+    } else {
+      _isInChannel = true;
+      AgoraRtcEngine.startPreview();
+      bool status= await AgoraRtcEngine.joinChannel(null, 'flutter', null, 1);
+      print(status);
+    }
     setState(() {
-      if (_isInChannel) {
-        _isInChannel = false;
-        AgoraRtcEngine.leaveChannel();
-        AgoraRtcEngine.stopPreview();
-      } else {
-        _isInChannel = true;
-        AgoraRtcEngine.startPreview();
-        AgoraRtcEngine.joinChannel(null, 'flutter', null, 0);
-      }
     });
   }
 

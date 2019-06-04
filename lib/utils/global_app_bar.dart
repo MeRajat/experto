@@ -37,7 +37,7 @@ class CustomAppBar extends StatelessWidget {
           tag: "logo",
           child: Image.asset(
             "assets/logo_transparent.png",
-            color: Color.fromRGBO(234, 206, 180, 100),
+            color: Theme.of(context).brightness==Brightness.dark?Color.fromRGBO(234, 206, 180, 100):Colors.black,
           )),
       title: Text(
         title,
