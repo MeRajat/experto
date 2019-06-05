@@ -173,6 +173,7 @@ class _CustomFormField extends State<CustomFormField> {
                       InputField("Name", authenticate.getName),
                       InputField("Email", authenticate.getEmail),
                       InputField("Skype username", authenticate.getSkype),
+                      InputField("City", authenticate.getCity),
                       InputField("Mobile", authenticate.getMobile,
                           inputType: TextInputType.number),
                       InputField("Password", authenticate.getPass,
