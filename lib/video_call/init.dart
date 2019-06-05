@@ -1,3 +1,4 @@
+import 'package:experto/user_authentication/userAdd.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
@@ -10,33 +11,76 @@ class StartVideo extends StatefulWidget {
 class _StartVideoState extends State<StartVideo> {
   bool _isInChannel = false;
   final _infoStrings = <String>[];
-
-  static final _sessions = List<VideoSession>();
+  bool speaker = true, mic = true, camera = true;
+  final _sessions = List<VideoSession>();
 
   @override
   void initState() {
     super.initState();
-
     _initAgoraRtcEngine();
     _addAgoraEventHandlers();
     _addRenderView(0, (viewId) {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
+    _toggleChannel();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
-          children: [
-            Container(height: 320, child: _viewRows()),
-            OutlineButton(
-              child: Text(_isInChannel ? 'Leave Channel' : 'Join Channel',
-                  style: textStyle),
-              onPressed: _toggleChannel,
+      body: Center(
+        child: Stack(
+          children: _viewRows(),
+          //Container(height: 592, child: _viewRows()),
+          //Container(height: 150,width: 110,padding: EdgeInsets.only(right: 20,bottom: 20), child: _viewRows(2)),
+          alignment: AlignmentDirectional.bottomEnd,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _toggleChannel();
+          Navigator.of(context).pop();
+        },
+        child: Icon(Icons.call_end),
+        backgroundColor: Colors.red,
+      ),
+      bottomNavigationBar: Container(
+        color: Theme.of(context).bottomAppBarColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            FlatButton(
+              onPressed: () async {
+                setState(() {
+                  speaker = !speaker;
+                });
+                await AgoraRtcEngine.setEnableSpeakerphone(!speaker);
+                print(speaker);
+              },
+              child: Icon(Icons.speaker_phone),
+              color: speaker ? Theme.of(context).buttonColor : null,
             ),
-            Expanded(child: Container(child: _buildInfoList())),
+            FlatButton(
+              onPressed: () {
+                setState(() {
+                  mic = !mic;
+                });
+                AgoraRtcEngine.enableLocalAudio(mic);
+              },
+              child: Icon(Icons.mic_off),
+              color: mic ? null : Theme.of(context).buttonColor,
+            ),
+            FlatButton(
+              onPressed: () {
+                setState(() {
+                  camera = !camera;
+                });
+                AgoraRtcEngine.switchCamera();
+              },
+              child:
+                  camera ? Icon(Icons.camera_rear) : Icon(Icons.camera_front),
+            )
           ],
         ),
       ),
@@ -96,8 +140,7 @@ class _StartVideoState extends State<StartVideo> {
     };
   }
 
-  void _toggleChannel()async{
-
+  void _toggleChannel() async {
     if (_isInChannel) {
       _isInChannel = false;
       AgoraRtcEngine.leaveChannel();
@@ -105,23 +148,44 @@ class _StartVideoState extends State<StartVideo> {
     } else {
       _isInChannel = true;
       AgoraRtcEngine.startPreview();
-      bool status= await AgoraRtcEngine.joinChannel(null, 'flutter', null, 1);
+      bool status = await AgoraRtcEngine.joinChannel(null, "demo", null, 2);
       print(status);
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
-  Widget _viewRows() {
+  List<Widget> _viewRows() {
     List<Widget> views = _getRenderViews();
-    if (views.length > 0) {
-      List<Widget> expandeViews = views
-          .map((widget) => Expanded(child: Container(child: widget)))
-          .toList();
-      return Row(children: expandeViews);
-    } else {
+    List<Widget> expandedViews = new List<Widget>();
+    if (views.length >= 2) {
+      expandedViews.add(Container(
+          height: 592,
+          child: Row(
+            children: <Widget>[
+              Expanded(child: Container(child: views[views.length - 1])),
+            ],
+          )));
+      expandedViews.add(Container(
+          height: 150,
+          width: 110,
+          padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
+          child: Row(
+            children: <Widget>[
+              Expanded(child: Container(child: views[views.length - 2])),
+            ],
+          )));
+      return expandedViews;
+    } else if (views.length != 0) {
+      expandedViews.add(Container(
+          height: 592,
+          child: Row(
+            children: <Widget>[
+              Expanded(child: Container(child: views[views.length - 1])),
+            ],
+          )));
+      return expandedViews;
+    } else
       return null;
-    }
   }
 
   void _addRenderView(int uid, Function(int viewId) finished) {

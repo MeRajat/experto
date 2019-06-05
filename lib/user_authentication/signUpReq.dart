@@ -133,7 +133,7 @@ class Authenticate {
         formState.reset();
       } catch (e) {
         //_isSignIn = false;
-        formState.reset();
+        //formState.reset();
         details.clear();
         isLoadingLogin.updateStatus(false);
         _ackAlert(context, "Login Failed!", e.toString().split(',')[1]);
