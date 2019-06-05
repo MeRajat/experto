@@ -134,11 +134,12 @@ class _CustomFormField extends State<CustomFormField> {
             type: StepperType.vertical,
             currentStep: step,
             onStepTapped: (tapped) {
-              if (tapped == formKeyExpert.length - 1) {
+              if (step == formKeyExpert.length - 1 &&
+                  tapped < formKeyExpert.length - 1)
                 setState(() {
                   step = tapped;
                 });
-              } else if (validateFormStep(formKeyExpert[step])) {
+              else if (validateFormStep(formKeyExpert[step])) {
                 setState(() {
                   step = tapped;
                 });
