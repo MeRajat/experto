@@ -44,7 +44,9 @@ class _CustomFormField extends State<CustomFormField> {
 
   void checkLoadingStatus() async {
     isLoadingSignup.getStatus.listen((status) {
-      loading = status;
+      setState(() {
+        loading = status;
+      });
       if (status) {
         showAuthSnackBar(context: context, title:"SigningIn", leading: CircularProgressIndicator(),);
       } else {
@@ -61,7 +63,7 @@ class _CustomFormField extends State<CustomFormField> {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        height: 600,
+        height: MediaQuery.of(context).size.height*1.5,
         child: Form(
           key: formKey,
           child: Theme(

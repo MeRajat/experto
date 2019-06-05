@@ -50,9 +50,14 @@ class _CustomForm extends State<CustomForm> {
 
   void checkLoadingStatus() async {
     isLoadingLoginExpert.getStatus.listen((status) {
-      loading = status;
+      setState(() {
+        loading = status;
+      });
       if (status) {
-        showAuthSnackBar(context:context,title:"Logging In",leading:CircularProgressIndicator());
+        showAuthSnackBar(
+            context: context,
+            title: "Logging In",
+            leading: CircularProgressIndicator());
       } else {
         Scaffold.of(context).removeCurrentSnackBar();
       }
