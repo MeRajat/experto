@@ -148,7 +148,7 @@ class _StartVideoState extends State<StartVideo> {
     } else {
       _isInChannel = true;
       AgoraRtcEngine.startPreview();
-      bool status = await AgoraRtcEngine.joinChannel(null, "demo", null, int.parse(currentUser["Mobile"].toString().substring(2)));
+      bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null, int.parse(currentUser["Mobile"].toString().substring(2)));
       print(status);
     }
     setState(() {});
