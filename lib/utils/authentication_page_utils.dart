@@ -17,7 +17,7 @@ class InputField extends StatelessWidget {
     this.minLines: 1,
     this.maxLines: 2,
     this.inputAction: TextInputAction.next,
-    this.maxLength: null,
+    this.maxLength: 0,
   });
 
   @override
@@ -35,7 +35,7 @@ class InputField extends StatelessWidget {
               if (value.isEmpty) {
                 return 'please enter this field';
               }
-              if (maxLength != null && value.length > maxLength) {
+              if (maxLength != 0 && value.length > maxLength) {
                 return 'max length exceeded';
               }
             },
@@ -44,7 +44,7 @@ class InputField extends StatelessWidget {
             keyboardType: inputType,
             minLines: minLines,
             maxLines: maxLines,
-            maxLength: maxLength,
+            maxLength: (maxLength==0)?null:maxLength,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(0),
               filled: true,
@@ -79,22 +79,6 @@ class CustomFlatButton extends StatelessWidget {
     return FlatButton(
       child: Text(text),
       onPressed: onPressedFunction,
-      // showModalBottomSheet(
-      //   context: context,
-      //   builder: (context) {
-      //     return Container(
-      //       height: MediaQuery.of(context).size.height / 2,
-      //       child: CupertinoPicker(
-      //         diameterRatio: 6,
-      //         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //         children: children,
-      //         onSelectedItemChanged: (item) {},
-      //         itemExtent: 40,
-      //       ),
-      //     );
-      //   },
-      //);
-      //,
     );
   }
 }

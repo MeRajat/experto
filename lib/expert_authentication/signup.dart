@@ -42,18 +42,18 @@ class _CustomFormField extends State<CustomFormField> {
   bool isExperienced = false;
   bool hasCertificate = false;
   GetSkills skills = GetSkills();
-  Map<String, Map<String,dynamic>> skillsSelected = {
+  Map<String, Map<String, dynamic>> skillsSelected = {
     "skill1": {
-      'name':'',
-      'reference':null,
+      'name': '',
+      'reference': null,
     },
     "skill2": {
-      'name':'',
-      'reference':null,
+      'name': '',
+      'reference': null,
     },
     "skill3": {
-      'name':'',
-      'reference':null,
+      'name': '',
+      'reference': null,
     }
   };
   //List<DocumentReference> skillReference=[];
@@ -73,9 +73,15 @@ class _CustomFormField extends State<CustomFormField> {
 
   void checkLoadingStatus() async {
     isLoadingSignupExpert.getStatus.listen((status) {
-      setState(() {
-        loading = status;
-      });
+      loading = status;
+      if (status) {
+        showAuthSnackBar(
+            context: context,
+            title: "Signing In",
+            leading: CircularProgressIndicator());
+      } else {
+        Scaffold.of(context).removeCurrentSnackBar();
+      }
     });
   }
 
@@ -104,7 +110,8 @@ class _CustomFormField extends State<CustomFormField> {
             onSelectedItemChanged: (item) {
               setState(() {
                 skillsSelected[selected]['name'] = skills.skillName[item];
-                skillsSelected[selected]['Reference'] = skills.skillReference[item];
+                skillsSelected[selected]['reference'] =
+                    skills.skillReference[item];
               });
             },
             itemExtent: 30,
@@ -126,6 +133,18 @@ class _CustomFormField extends State<CustomFormField> {
             physics: BouncingScrollPhysics(),
             type: StepperType.vertical,
             currentStep: step,
+            onStepTapped: (tapped) {
+              if (tapped < formKeyExpert.length - 1 &&
+                  validateFormStep(formKeyExpert[step])) {
+                setState(() {
+                  step = tapped;
+                });
+              } else {
+                setState(() {
+                  step = tapped;
+                });
+              }
+            },
             onStepContinue: () {
               if (step < formKeyExpert.length - 1 &&
                   validateFormStep(formKeyExpert[step])) {
@@ -139,8 +158,7 @@ class _CustomFormField extends State<CustomFormField> {
                     title: "Skill 1 is required",
                     leading: Icon(Icons.error, size: 25, color: Colors.red),
                   );
-                }
-                else{
+                } else {
                   startAuthentication();
                 }
               }
@@ -195,61 +213,82 @@ class _CustomFormField extends State<CustomFormField> {
                 title: Text("Skills"),
                 content: Form(
                   key: formKeyExpert[2],
-                  child: Row(
-                    children: <Widget>[
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: FormField(
+                    onSaved: (state) {
+                      List<DocumentReference> skillSelectedReference = [];
+                      skillsSelected.forEach((key, value) {
+                        if (value['reference'] != null) {
+                          skillSelectedReference.add(value['reference']);
+                        }
+                      });
+                      authenticate.getSkills(skillSelectedReference);
+                    },
+                    builder: (state) {
+                      return Row(
                         children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              CustomFlatButton(
-                                text: "Select Skill",
-                                onPressedFunction: (){onCustomButtonPressed('skill1');},
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  CustomFlatButton(
+                                    text: "Select Skill",
+                                    onPressedFunction: () {
+                                      onCustomButtonPressed('skill1');
+                                    },
+                                  ),
+                                  Text(
+                                      (skillsSelected['skill1']['name'] == ''
+                                          ? "Required"
+                                          : skillsSelected['skill1']['name']),
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .body2
+                                          .copyWith(color: Colors.red))
+                                ],
                               ),
-                              Text(
-                                  (skillsSelected['skill1']['name'] == ''
-                                      ? "Required"
-                                      : skillsSelected['skill1']['name']),
-                                  style: Theme.of(context)
-                                      .primaryTextTheme
-                                      .body2
-                                      .copyWith(color: Colors.red))
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              CustomFlatButton(
-                                text: "Select Skill",
-                                onPressedFunction: (){onCustomButtonPressed('skill2');},
+                              Row(
+                                children: <Widget>[
+                                  CustomFlatButton(
+                                    text: "Select Skill",
+                                    onPressedFunction: () {
+                                      onCustomButtonPressed('skill2');
+                                    },
+                                  ),
+                                  Text(
+                                      (skillsSelected['skill2']['name'] == ''
+                                          ? "Optional"
+                                          : skillsSelected['skill2']['name']),
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .body2
+                                          .copyWith(color: Colors.blue))
+                                ],
                               ),
-                              Text((skillsSelected['skill2']['name'] == ''
-                                      ? "Optional"
-                                      : skillsSelected['skill2']['name']),
-                                  style: Theme.of(context)
-                                      .primaryTextTheme
-                                      .body2
-                                      .copyWith(color: Colors.blue))
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              CustomFlatButton(
-                                text: "Select Skill",
-                                onPressedFunction: (){onCustomButtonPressed('skill3');},
+                              Row(
+                                children: <Widget>[
+                                  CustomFlatButton(
+                                    text: "Select Skill",
+                                    onPressedFunction: () {
+                                      onCustomButtonPressed('skill3');
+                                    },
+                                  ),
+                                  Text(
+                                      (skillsSelected['skill3']['name'] == ''
+                                          ? "Optional"
+                                          : skillsSelected['skill3']['name']),
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .body2
+                                          .copyWith(color: Colors.blue))
+                                ],
                               ),
-                              Text((skillsSelected['skill3']['name'] == ''
-                                      ? "Optional"
-                                      : skillsSelected['skill3']['name']),
-                                  style: Theme.of(context)
-                                      .primaryTextTheme
-                                      .body2
-                                      .copyWith(color: Colors.blue))
                             ],
                           ),
                         ],
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 ),
               ),

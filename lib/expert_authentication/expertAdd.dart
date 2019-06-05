@@ -5,6 +5,7 @@ DocumentSnapshot currentExpert;
 
 class Experts {
   final String name, email, city, m, userId, skype, index,description,workExperience;
+  final List<DocumentReference> skills;
   bool status;
   int mobile;
 
@@ -20,6 +21,7 @@ class Experts {
     this.mobile = 0,
     @required this.description,
     @required this.workExperience,
+    @required this.skills,
   }) {
     mobile = int.parse(m);
   }
@@ -35,6 +37,7 @@ class Experts {
         'Index': index,
         "Description":description,
         "Work Experience":workExperience,
+        "Skills":skills,
       };
 }
 
