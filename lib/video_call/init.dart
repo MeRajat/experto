@@ -10,7 +10,7 @@ class StartVideo extends StatefulWidget {
 class _StartVideoState extends State<StartVideo> {
   bool _isInChannel = false;
   final _infoStrings = <String>[];
-  bool speaker = false, mic = true;
+  bool speaker = true, mic = true;
   static final _sessions = List<VideoSession>();
 
   @override
@@ -29,9 +29,9 @@ class _StartVideoState extends State<StartVideo> {
     return Scaffold(
       body: Center(
         child: Stack(children: <Widget>[
-          Container(height: 592, child: _viewRows()),
-          Text("Expert"),
-        ],),
+          Container(height: 592, child: _viewRows(1)),
+          Container(height: 150,width: 110,padding: EdgeInsets.only(right: 20,bottom: 20), child: _viewRows(2)),
+        ],alignment: AlignmentDirectional.bottomEnd,),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
@@ -63,7 +63,7 @@ class _StartVideoState extends State<StartVideo> {
                 setState(() {
                   mic = !mic;
                 });
-                AgoraRtcEngine.enableLocalAudio(!mic);
+                AgoraRtcEngine.enableLocalAudio(mic);
               },
               child: Icon(Icons.mic_off),
               color: mic ? null : Theme.of(context).buttonColor,
@@ -135,16 +135,16 @@ class _StartVideoState extends State<StartVideo> {
     } else {
       _isInChannel = true;
       AgoraRtcEngine.startPreview();
-      bool status = await AgoraRtcEngine.joinChannel(null, 'flutter', null, 1);
+      bool status = await AgoraRtcEngine.joinChannel(null, 'demo', null, 2);
       print(status);
     }
     setState(() {});
   }
 
-  Widget _viewRows() {
+  Widget _viewRows(int id) {
     List<Widget> views = _getRenderViews();
     if (views.length > 0) {
-      Widget expandedViews=Expanded(child: Container(child: views[views.length-1]));
+      Widget expandedViews=Expanded(child: Container(child: views[views.length-id]));
       return Row(
         children: <Widget>[
           expandedViews,
