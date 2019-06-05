@@ -10,33 +10,64 @@ class StartVideo extends StatefulWidget {
 class _StartVideoState extends State<StartVideo> {
   bool _isInChannel = false;
   final _infoStrings = <String>[];
-
+  bool speaker = false, mic = true;
   static final _sessions = List<VideoSession>();
 
   @override
   void initState() {
     super.initState();
-
     _initAgoraRtcEngine();
     _addAgoraEventHandlers();
     _addRenderView(0, (viewId) {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
+    _toggleChannel();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
-          children: [
-            Container(height: 320, child: _viewRows()),
-            OutlineButton(
-              child: Text(_isInChannel ? 'Leave Channel' : 'Join Channel',
-                  style: textStyle),
-              onPressed: _toggleChannel,
+      body: Center(
+        child: Stack(children: <Widget>[
+          Container(height: 592, child: _viewRows()),
+          Text("Expert"),
+        ],),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _toggleChannel();
+          Navigator.of(context).pop();
+        },
+        child: Icon(Icons.call_end),
+        backgroundColor: Colors.red,
+      ),
+      bottomNavigationBar: Container(
+        color: Theme.of(context).bottomAppBarColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            FlatButton(
+              onPressed: () async {
+                setState(() {
+                  speaker=!speaker;
+                });
+                await AgoraRtcEngine.setEnableSpeakerphone(!speaker);
+                print(speaker);
+              },
+              child: Icon(Icons.speaker_phone),
+              color: speaker ? Theme.of(context).buttonColor : null,
             ),
-            Expanded(child: Container(child: _buildInfoList())),
+            FlatButton(
+              onPressed: () {
+                setState(() {
+                  mic = !mic;
+                });
+                AgoraRtcEngine.enableLocalAudio(!mic);
+              },
+              child: Icon(Icons.mic_off),
+              color: mic ? null : Theme.of(context).buttonColor,
+            ),
           ],
         ),
       ),
@@ -96,8 +127,7 @@ class _StartVideoState extends State<StartVideo> {
     };
   }
 
-  void _toggleChannel()async{
-
+  void _toggleChannel() async {
     if (_isInChannel) {
       _isInChannel = false;
       AgoraRtcEngine.leaveChannel();
@@ -105,20 +135,21 @@ class _StartVideoState extends State<StartVideo> {
     } else {
       _isInChannel = true;
       AgoraRtcEngine.startPreview();
-      bool status= await AgoraRtcEngine.joinChannel(null, 'flutter', null, 1);
+      bool status = await AgoraRtcEngine.joinChannel(null, 'flutter', null, 1);
       print(status);
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   Widget _viewRows() {
     List<Widget> views = _getRenderViews();
     if (views.length > 0) {
-      List<Widget> expandeViews = views
-          .map((widget) => Expanded(child: Container(child: widget)))
-          .toList();
-      return Row(children: expandeViews);
+      Widget expandedViews=Expanded(child: Container(child: views[views.length-1]));
+      return Row(
+        children: <Widget>[
+          expandedViews,
+        ],
+      );
     } else {
       return null;
     }
