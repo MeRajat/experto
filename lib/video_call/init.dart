@@ -165,30 +165,24 @@ class _StartVideoState extends State<StartVideo> {
               Expanded(child: Container(child: views[views.length - 1])),
             ],
           )));
-      expandedViews.add(Hero(
-        tag:"myvideo",
-        child: Container(
-            height: 150,
-            width: 110,
-            padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
-            child: Row(
-              children: <Widget>[
-                Expanded(child: Container(child: views[views.length - 2])),
-              ],
-            )),
-      ));
+      expandedViews.add(Container(
+          height: 150,
+          width: 110,
+          padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
+          child: Row(
+            children: <Widget>[
+              Expanded(child: Container(child: views[views.length - 2])),
+            ],
+          )));
       return expandedViews;
     } else if (views.length != 0) {
-      expandedViews.add(Hero(
-        tag: "myvideo",
-        child: Container(
-            height: 592,
-            child: Row(
-              children: <Widget>[
-                Expanded(child: Container(child: views[views.length - 1])),
-              ],
-            )),
-      ));
+      expandedViews.add(Container(
+          height: 592,
+          child: Row(
+            children: <Widget>[
+              Expanded(child: Container(child: views[views.length - 1])),
+            ],
+          )));
       return expandedViews;
     } else
       return null;
