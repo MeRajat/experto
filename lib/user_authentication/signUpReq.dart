@@ -81,7 +81,7 @@ class Authenticate {
         isLoadingSignup.updateStatus(true);
         //_isSignIn = true;
         QuerySnapshot val=await userReference.where("Mobile",isEqualTo: int.parse(details[3])).getDocuments();
-          if(val!=null)
+          if(val.documents.length!=0)
             throw("Mobile Number already in use");
         usr=await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
