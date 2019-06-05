@@ -81,6 +81,9 @@ class Authenticate {
       try {
         isLoadingSignup.updateStatus(true);
         //_isSignIn = true;
+        QuerySnapshot val=await userReference.where("Mobile",isEqualTo: int.parse(details[3])).getDocuments();
+          if(val!=null)
+            throw("Mobile Number already in use");
         usr=await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
 
@@ -106,7 +109,7 @@ class Authenticate {
         details.clear();
         user=null;
         isLoadingSignup.updateStatus(false);
-        _ackAlert(context, "SignUp Failed!", e.toString().split(',')[1]);
+        _ackAlert(context, "SignUp Failed!", e=="Mobile Number already in use"?e:e.toString().split(',')[1]);
       }
     }
   }
