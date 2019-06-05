@@ -38,7 +38,7 @@ class _CustomForm extends State<CustomForm> {
 
   @override
   void dispose() {
-    isLoadingLoginExpert.dispose();
+    //isLoadingLoginExpert.dispose();
     super.dispose();
   }
 
@@ -53,13 +53,12 @@ class _CustomForm extends State<CustomForm> {
       setState(() {
         loading = status;
       });
+      Scaffold.of(context).removeCurrentSnackBar();
       if (status) {
         showAuthSnackBar(
             context: context,
             title: "Logging In",
             leading: CircularProgressIndicator());
-      } else {
-        Scaffold.of(context).removeCurrentSnackBar();
       }
     });
   }

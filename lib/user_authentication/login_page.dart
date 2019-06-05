@@ -52,15 +52,13 @@ class _CustomForm extends State<CustomForm> {
       setState(() {
         loading = status;
       });
-
+      Scaffold.of(context).removeCurrentSnackBar();
       if (status) {
         loading = true;
         showAuthSnackBar(
             context: context,
             title: "Logging In",
             leading: CircularProgressIndicator());
-      } else {
-        Scaffold.of(context).removeCurrentSnackBar();
       }
     });
   }
