@@ -90,11 +90,11 @@ class _CustomFormField extends State<CustomFormField> {
   }
 
   bool validateFormStep(GlobalKey<FormState> formkey) {
-    bool validate = formkey.currentState.validate();
-    if (validate) {
-      formkey.currentState.save();
-    }
-    return validate;
+    return formkey.currentState.validate();
+    //if (validate) {
+    //  formkey.currentState.save();
+    //}
+    //return validate;
   }
 
   void onCustomButtonPressed(String selected) {
@@ -134,12 +134,11 @@ class _CustomFormField extends State<CustomFormField> {
             type: StepperType.vertical,
             currentStep: step,
             onStepTapped: (tapped) {
-              if (tapped < formKeyExpert.length - 1 &&
-                  validateFormStep(formKeyExpert[step])) {
+              if (tapped == formKeyExpert.length - 1) {
                 setState(() {
                   step = tapped;
                 });
-              } else {
+              } else if (validateFormStep(formKeyExpert[step])) {
                 setState(() {
                   step = tapped;
                 });
