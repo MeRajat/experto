@@ -4,7 +4,8 @@ import 'package:meta/meta.dart';
 DocumentSnapshot currentExpert;
 
 class Experts {
-  final String name, email, city, m, userId, skype, index;
+  final String name, email, city, m, userId, skype, index,description,workExperience;
+  final List<DocumentReference> skills;
   bool status;
   int mobile;
 
@@ -18,6 +19,9 @@ class Experts {
     @required this.status,
     @required this.index,
     this.mobile = 0,
+    @required this.description,
+    @required this.workExperience,
+    @required this.skills,
   }) {
     mobile = int.parse(m);
   }
@@ -30,7 +34,10 @@ class Experts {
         'City': city,
         'Mobile': mobile,
         'Status': status,
-        'Index': index
+        'Index': index,
+        "Description":description,
+        "Work Experience":workExperience,
+        "Skills":skills,
       };
 }
 

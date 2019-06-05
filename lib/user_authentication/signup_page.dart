@@ -46,7 +46,7 @@ class _CustomFormField extends State<CustomFormField> {
     isLoadingSignup.getStatus.listen((status) {
       loading = status;
       if (status) {
-        showAuthSnackBar(context: context, title:"SigningIn");
+        showAuthSnackBar(context: context, title:"SigningIn", leading: CircularProgressIndicator(),);
       } else {
         Scaffold.of(context).removeCurrentSnackBar();
       }

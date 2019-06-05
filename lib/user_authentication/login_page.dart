@@ -51,7 +51,7 @@ class _CustomForm extends State<CustomForm> {
     isLoadingLogin.getStatus.listen((status) {
       loading = status;
       if (status) {
-        showAuthSnackBar(context:context,title:"Logging In");
+        showAuthSnackBar(context: context, title: "Logging In",leading:CircularProgressIndicator());
       } else {
         Scaffold.of(context).removeCurrentSnackBar();
       }
@@ -76,7 +76,9 @@ class _CustomForm extends State<CustomForm> {
           key: _formKey,
           child: Theme(
             data: Theme.of(context).copyWith(
-                primaryColor: Colors.blue, backgroundColor: Colors.blue),
+              primaryColor: Colors.blue,
+              backgroundColor: Colors.blue,
+            ),
             child: Stepper(
               physics: BouncingScrollPhysics(),
               type: StepperType.vertical,

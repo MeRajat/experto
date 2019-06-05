@@ -17,7 +17,7 @@ class InputField extends StatelessWidget {
     this.minLines: 1,
     this.maxLines: 2,
     this.inputAction: TextInputAction.next,
-    this.maxLength: null,
+    this.maxLength: 0,
   });
 
   @override
@@ -35,7 +35,7 @@ class InputField extends StatelessWidget {
               if (value.isEmpty) {
                 return 'please enter this field';
               }
-              if (maxLength != null && value.length > maxLength) {
+              if (maxLength != 0 && value.length > maxLength) {
                 return 'max length exceeded';
               }
             },
@@ -44,7 +44,7 @@ class InputField extends StatelessWidget {
             keyboardType: inputType,
             minLines: minLines,
             maxLines: maxLines,
-            maxLength: maxLength,
+            maxLength: (maxLength==0)?null:maxLength,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(0),
               filled: true,
@@ -67,30 +67,18 @@ class InputField extends StatelessWidget {
 
 class CustomFlatButton extends StatelessWidget {
   final String text;
+  final onPressedFunction;
 
-  CustomFlatButton({@required this.text});
+  CustomFlatButton({
+    @required this.text,
+    @required this.onPressedFunction,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
       child: Text(text),
-      onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          builder: (context) {
-            return Container(
-              height: MediaQuery.of(context).size.height / 2,
-              child: CupertinoPicker(
-                diameterRatio: 6,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                children: <Widget>[],
-                onSelectedItemChanged: (item) {},
-                itemExtent: 40,
-              ),
-            );
-          },
-        );
-      },
+      onPressed: onPressedFunction,
     );
   }
 }
@@ -137,8 +125,11 @@ class SignupPageRedirect extends StatelessWidget {
   }
 }
 
-void showAuthSnackBar(
-    {@required BuildContext context, @required String title}) {
+void showAuthSnackBar({
+  @required BuildContext context,
+  @required String title,
+  @required leading,
+}) {
   Scaffold.of(context).showSnackBar(
     SnackBar(
       backgroundColor: Colors.black87,
@@ -148,16 +139,15 @@ void showAuthSnackBar(
         child: Padding(
           child: Row(
             children: <Widget>[
-              CircularProgressIndicator(),
+              leading,
               Padding(
                 padding: EdgeInsets.only(left: 20),
                 child: Text(
                   title,
-                  
                   style: Theme.of(context)
                       .primaryTextTheme
                       .body2
-                      .copyWith(color: Colors.white, fontSize: 20),
+                      .copyWith(color: Colors.white, fontSize: 15),
                 ),
               ),
             ],

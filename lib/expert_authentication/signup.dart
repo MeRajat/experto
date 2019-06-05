@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:experto/expert_authentication/get_all_skills.dart';
+
 import './signUpReq.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/cupertino.dart';
@@ -28,12 +31,39 @@ class CustomFormField extends StatefulWidget {
 }
 
 class _CustomFormField extends State<CustomFormField> {
-  final GlobalKey<FormState> formKeyExpert = GlobalKey<FormState>();
+  final List<GlobalKey<FormState>> formKeyExpert = [
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
+  ];
   static final Authenticate authenticate = new Authenticate();
   bool loading = false;
   int step = 0;
   bool isExperienced = false;
   bool hasCertificate = false;
+  GetSkills skills = GetSkills();
+  Map<String, Map<String, dynamic>> skillsSelected = {
+    "skill1": {
+      'name': '',
+      'reference': null,
+    },
+    "skill2": {
+      'name': '',
+      'reference': null,
+    },
+    "skill3": {
+      'name': '',
+      'reference': null,
+    }
+  };
+  //List<DocumentReference> skillReference=[];
+
+  @override
+  void initState() {
+    checkLoadingStatus();
+    skills.getSkills();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -43,9 +73,15 @@ class _CustomFormField extends State<CustomFormField> {
 
   void checkLoadingStatus() async {
     isLoadingSignupExpert.getStatus.listen((status) {
-      setState(() {
-        loading = status;
-      });
+      loading = status;
+      if (status) {
+        showAuthSnackBar(
+            context: context,
+            title: "Signing In",
+            leading: CircularProgressIndicator());
+      } else {
+        Scaffold.of(context).removeCurrentSnackBar();
+      }
     });
   }
 
@@ -53,41 +89,91 @@ class _CustomFormField extends State<CustomFormField> {
     authenticate.signUp(formKeyExpert, context);
   }
 
+  bool validateFormStep(GlobalKey<FormState> formkey) {
+    return formkey.currentState.validate();
+    //if (validate) {
+    //  formkey.currentState.save();
+    //}
+    //return validate;
+  }
+
+  void onCustomButtonPressed(String selected) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height / 3,
+          child: CupertinoPicker(
+            diameterRatio: 8,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            children: skills.getSkillAsWidget(context),
+            onSelectedItemChanged: (item) {
+              setState(() {
+                skillsSelected[selected]['name'] = skills.skillName[item];
+                skillsSelected[selected]['reference'] =
+                    skills.skillReference[item];
+              });
+            },
+            itemExtent: 30,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    checkLoadingStatus();
     return SliverToBoxAdapter(
       child: Container(
         height: 700,
-        child: Form(
-          key: formKeyExpert,
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              primaryColor: Colors.blue,
-              backgroundColor: Colors.blue
-            ),
-            child: Stepper(
-              physics: BouncingScrollPhysics(),
-              type: StepperType.vertical,
-              currentStep: step,
-              onStepTapped: (int stepTapped) {
+        child: Theme(
+          data: Theme.of(context).copyWith(
+              primaryColor: Colors.blue, backgroundColor: Colors.blue),
+          child: Stepper(
+            physics: BouncingScrollPhysics(),
+            type: StepperType.vertical,
+            currentStep: step,
+            onStepTapped: (tapped) {
+              if (step == formKeyExpert.length - 1 &&
+                  tapped < formKeyExpert.length - 1)
                 setState(() {
-                  step = stepTapped;
+                  step = tapped;
                 });
-              },
-              onStepContinue: () {
+              else if (validateFormStep(formKeyExpert[step])) {
+                setState(() {
+                  step = tapped;
+                });
+              }
+            },
+            onStepContinue: () {
+              if (step < formKeyExpert.length - 1 &&
+                  validateFormStep(formKeyExpert[step])) {
                 setState(() {
                   step += 1;
                 });
-              },
-              steps: [
-                Step(
-                  title: Text("Basic Information"),
-                  content: Column(
+              } else {
+                if (skillsSelected['skill1']['name'] == '') {
+                  showAuthSnackBar(
+                    context: context,
+                    title: "Skill 1 is required",
+                    leading: Icon(Icons.error, size: 25, color: Colors.red),
+                  );
+                } else {
+                  startAuthentication();
+                }
+              }
+            },
+            steps: [
+              Step(
+                title: Text("Basic Information"),
+                content: Form(
+                  key: formKeyExpert[0],
+                  child: Column(
                     children: <Widget>[
                       InputField("Name", authenticate.getName),
                       InputField("Email", authenticate.getEmail),
                       InputField("Skype username", authenticate.getSkype),
+                      InputField("City", authenticate.getCity),
                       InputField("Mobile", authenticate.getMobile,
                           inputType: TextInputType.number),
                       InputField("Password", authenticate.getPass,
@@ -95,13 +181,16 @@ class _CustomFormField extends State<CustomFormField> {
                     ],
                   ),
                 ),
-                Step(
-                  title: Text("About yourself"),
-                  content: Column(
+              ),
+              Step(
+                title: Text("About yourself"),
+                content: Form(
+                  key: formKeyExpert[1],
+                  child: Column(
                     children: <Widget>[
                       InputField(
                         "Breif Discription",
-                        authenticate.getName,
+                        authenticate.getDescription,
                         inputType: TextInputType.multiline,
                         minLines: 2,
                         maxLines: null,
@@ -110,7 +199,7 @@ class _CustomFormField extends State<CustomFormField> {
                       ),
                       InputField(
                         "Previous Experience",
-                        authenticate.getName,
+                        authenticate.getWorkExperience,
                         inputType: TextInputType.multiline,
                         minLines: 2,
                         maxLines: null,
@@ -120,112 +209,94 @@ class _CustomFormField extends State<CustomFormField> {
                     ],
                   ),
                 ),
-                Step(
-                  title: Text("Skills"),
-                  content: Row(
-                    children: <Widget>[
-                      Column(
+              ),
+              Step(
+                title: Text("Skills"),
+                content: Form(
+                  key: formKeyExpert[2],
+                  child: FormField(
+                    onSaved: (state) {
+                      List<DocumentReference> skillSelectedReference = [];
+                      skillsSelected.forEach((key, value) {
+                        if (value['reference'] != null) {
+                          skillSelectedReference.add(value['reference']);
+                        }
+                      });
+                      authenticate.getSkills(skillSelectedReference);
+                    },
+                    builder: (state) {
+                      return Row(
                         children: <Widget>[
-                          Row(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              CustomFlatButton(text: "Select Skill"),
-                              Text("Required",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.red))
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              CustomFlatButton(text: "Select Skill"),
-                              Text("Optional",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.blue))
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              CustomFlatButton(text: "Select Skill"),
-                              Text("Optional",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.blue))
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  CustomFlatButton(
+                                    text: "Select Skill",
+                                    onPressedFunction: () {
+                                      onCustomButtonPressed('skill1');
+                                    },
+                                  ),
+                                  Text(
+                                      (skillsSelected['skill1']['name'] == ''
+                                          ? "Required"
+                                          : skillsSelected['skill1']['name']),
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .body2
+                                          .copyWith(color: Colors.red))
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  CustomFlatButton(
+                                    text: "Select Skill",
+                                    onPressedFunction: () {
+                                      onCustomButtonPressed('skill2');
+                                    },
+                                  ),
+                                  Text(
+                                      (skillsSelected['skill2']['name'] == ''
+                                          ? "Optional"
+                                          : skillsSelected['skill2']['name']),
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .body2
+                                          .copyWith(color: Colors.blue))
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  CustomFlatButton(
+                                    text: "Select Skill",
+                                    onPressedFunction: () {
+                                      onCustomButtonPressed('skill3');
+                                    },
+                                  ),
+                                  Text(
+                                      (skillsSelected['skill3']['name'] == ''
+                                          ? "Optional"
+                                          : skillsSelected['skill3']['name']),
+                                      style: Theme.of(context)
+                                          .primaryTextTheme
+                                          .body2
+                                          .copyWith(color: Colors.blue))
+                                ],
+                              ),
                             ],
                           ),
                         ],
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
-    // return SliverToBoxAdapter(
-    //   child: Padding(
-    //     padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 10),
-    //     child: Form(
-    //       key: formKeyExpert,
-    //       child: Column(
-    //         children: <Widget>[
-    //           InputField("Name", authenticate.getName),
-    //           InputField("Email", authenticate.getEmail),
-    //           InputField("Skype username", authenticate.getSkype),
-    //           InputField("City", authenticate.getCity),
-    //           InputField("Mobile", authenticate.getMobile,
-    //               inputType: TextInputType.number),
-    //           InputField("Password", authenticate.getPass, isPassword: true),
-    //           Padding(padding:EdgeInsets.only(top:20)),
-    //           Row(
-    //             children: <Widget>[
-    //               Text(
-    //                 'Do You Have Any Previous Experience',
-    //                 style: Theme.of(context).primaryTextTheme.body2,
-    //               ),
-    //               Checkbox(
-    //                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    //                 value: isExperienced,
-    //                 onChanged: ((value) {
-    //                   setState(() {
-    //                     isExperienced = value;
-    //                   });
-    //                 }),
-    //               ),
-    //             ],
-    //           ),
-    //           Row(
-    //             children: <Widget>[
-    //               Text(
-    //                 'Do You Have Any Certificates',
-    //                 style: Theme.of(context).primaryTextTheme.body2,
-    //               ),
-    //               SizedBox(
-    //                 height: 5,
-    //                 child:Checkbox(
-    //                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    //                   value: hasCertificate,
-    //                   onChanged: ((value) {
-    //                     setState(() {
-    //                       hasCertificate = value;
-    //                     });
-    //                   }),
-    //                 ),),
-    //             ],
-    //           ),
-    //           Hero(
-    //             tag:"expertbuttonhero",
-    //             child: Padding(
-    //               padding: EdgeInsets.only(top: 20),
-    //               child: SizedBox(
-    //                 width: double.infinity,
-    //                 child: RaisedButton(
-    //                   onPressed: startAuthentication,
-    //                   elevation: 3,
-    //                   highlightElevation: 4,
-    //                   color: Color.fromRGBO(84, 229, 121, 1),
-    //                   child: authenticate.signInButton("Sign Up"),
-    //                 ),
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
