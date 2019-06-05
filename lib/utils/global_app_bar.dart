@@ -13,13 +13,18 @@ class CustomAppBar extends StatelessWidget {
 
   List<Widget> logOut(BuildContext context) {
     List<Widget> list = new List<Widget>();
-    list.add(FlatButton(
+    list.add(
+      FlatButton(
+        padding:EdgeInsets.only(right:20),
         onPressed: () {
           Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
               MaterialPageRoute(builder: (buildContext) => HomePage()),
               ModalRoute.withName(':'));
         },
-        child: Text("Log Out")));
+        child: Text("Logout",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.red)),
+        //color: Colors.redAccent,
+      ),
+    );
     if (logout)
       return list;
     else
@@ -37,7 +42,9 @@ class CustomAppBar extends StatelessWidget {
           tag: "logo",
           child: Image.asset(
             "assets/logo_transparent.png",
-            color: Theme.of(context).brightness==Brightness.dark?Color.fromRGBO(234, 206, 180, 100):Colors.black,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Color.fromRGBO(234, 206, 180, 100)
+                : Colors.black,
           )),
       title: Text(
         title,

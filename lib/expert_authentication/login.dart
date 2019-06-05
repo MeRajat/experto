@@ -52,7 +52,7 @@ class _CustomForm extends State<CustomForm> {
     isLoadingLoginExpert.getStatus.listen((status) {
       loading = status;
       if (status) {
-        showAuthSnackBar(context:context,title:"Logging In");
+        showAuthSnackBar(context:context,title:"Logging In",leading:CircularProgressIndicator());
       } else {
         Scaffold.of(context).removeCurrentSnackBar();
       }

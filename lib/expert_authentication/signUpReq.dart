@@ -49,7 +49,8 @@ class Authenticate {
   getSkype(String x) => details.add(x);
   getMobile(String x) => details.add(x);
   getEmail(String x) => details.add(x);
-
+  getDescription(String x) => details.add(x);
+  getWorkExperience(String x) => details.add(x);
   // Widget signInButton(String x) {
   //   if (_isSignIn)
   //     return Center(child: CircularProgressIndicator());
@@ -65,44 +66,48 @@ class Authenticate {
   // }
 
   Future<void> signUp(
-      GlobalKey<FormState> _formKey, BuildContext context) async {
-    FormState formState = _formKey.currentState;
-    if (formState.validate()) {
-      formState.save();
-      try {
-        isLoadingSignupExpert.updateStatus(true);
-        //_isSignIn = true;
-        userName = "expert_" + details[0].split(" ")[0];
-        String index = details[0].substring(0, 1).toUpperCase();
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: details[1], password: details[5]);
-        expert = new Experts(
-            email: details[1],
-            city: details[3],
-            name: details[0],
-            skype: details[2],
-            userId: userName,
-            status: false,
-            m: details[4],
-            index: index);
-        Firestore.instance.runTransaction((Transaction t) async {
-          await expertReference.add(expert.toJson());
-        });
-        expertSnapshot = await expertReference
-            .where('emailID', isEqualTo: details[1])
-            .getDocuments();
-        currentExpert = expertSnapshot.documents[0];
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/expert_home', ModalRoute.withName(':'));
-        formState.reset();
-      } catch (e) {
-        //_isSignIn = false;
-        formState.reset();
-        details.clear();
-        expert = null;
-        isLoadingSignupExpert.updateStatus(false);
-        _ackAlert(context, "SignUp failed", e.toString().split(',')[1]);
-      }
+      List<GlobalKey<FormState>> _formKey, BuildContext context) async {
+    _formKey.forEach((form) {
+      form.currentState.save();
+    });
+    try {
+      isLoadingSignupExpert.updateStatus(true);
+      userName = "expert_" + details[0].split(" ")[0];
+      String index = details[0].substring(0, 1).toUpperCase();
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: details[1], password: details[5]);
+      expert = new Experts(
+          email: details[1],
+          city: details[3],
+          name: details[0],
+          skype: details[2],
+          userId: userName,
+          status: false,
+          m: details[4],
+          index: index,
+          description: details[6],
+          workExperience: details[7]);
+      Firestore.instance.runTransaction((Transaction t) async {
+        await expertReference.add(expert.toJson());
+      });
+      expertSnapshot = await expertReference
+          .where('emailID', isEqualTo: details[1])
+          .getDocuments();
+      currentExpert = expertSnapshot.documents[0];
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/expert_home', ModalRoute.withName(':'));
+      _formKey.forEach((form) {
+        form.currentState.reset();
+      });
+    } catch (e) {
+      //_isSignIn = false;
+      _formKey.forEach((form) {
+        form.currentState.reset();
+      });
+      details.clear();
+      expert = null;
+      isLoadingSignupExpert.updateStatus(false);
+      _ackAlert(context, "SignUp failed", e.toString().split(',')[1]);
     }
   }
 

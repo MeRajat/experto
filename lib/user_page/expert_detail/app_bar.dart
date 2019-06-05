@@ -196,7 +196,7 @@ class _ContactExpert extends State<ContactExpert> {
       {@required String title,
       @required String secondaryText,
       @required Function callback}) {
-    Future<PersistentBottomSheetController> controller=showModalBottomSheet(
+    Future<PersistentBottomSheetController> controller = showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return Material(
@@ -251,7 +251,9 @@ class _ContactExpert extends State<ContactExpert> {
         );
       },
     );
-    controller.then((PersistentBottomSheetController p){p.close();});
+    controller.then((PersistentBottomSheetController p) {
+      p.close();
+    });
   }
 
   void videoCall() {
@@ -281,12 +283,14 @@ class _ContactExpert extends State<ContactExpert> {
         InkWell(
           onTap: () {
             showBottomSheel(
-                title: "Video call ${expert["Name"]}?",
+                title: "video call ${expert["Name"]}?",
                 secondaryText:
                     "Are you sure you want to video call this expert ?",
                 callback: videoCall);
           },
-          child: Icon(Icons.video_call),
+          child: Icon(
+            Icons.video_call,
+          ),
         ),
         Padding(
           padding: EdgeInsets.only(left: 10),
@@ -299,10 +303,7 @@ class _ContactExpert extends State<ContactExpert> {
                     _launchSkype(context, expert["SkyperUser"], "chat");
                   });
             },
-            child: Icon(
-              Icons.chat,
-              size: 20,
-            ),
+            child: Icon(Icons.chat, size: 20),
           ),
         ),
         Padding(

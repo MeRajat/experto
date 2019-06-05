@@ -18,14 +18,13 @@ class Authenticate {
     //_isSignIn = false;
     details = new List<String>();
     getUser();
-    msg="Invalid details";
+    msg = "Invalid details";
   }
-  void Clear(){
+  void Clear() {
     //_isSignIn = false;
     details = new List<String>();
     getUser();
-    msg="Invalid details";
-
+    msg = "Invalid details";
   }
 
   Future<void> _ackAlert(BuildContext context, String title, String content) {
@@ -81,30 +80,31 @@ class Authenticate {
       try {
         isLoadingSignup.updateStatus(true);
         //_isSignIn = true;
-        usr=await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        usr = await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
 
         user = new Users(
-            email: details[1],
-            city: details[2],
-            name: details[0],
-            m: details[3]);
+          email: details[1],
+          city: details[2],
+          name: details[0],
+          m: details[3],
+        );
         Firestore.instance.runTransaction((Transaction t) async {
           await userReference.add(user.toJson());
         });
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[1])
             .getDocuments();
-        currentUser=userSnapshot.documents[0];
+        currentUser = userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
       } catch (e) {
         //_isSignIn = false;
-        print (e);
+        print(e);
         //formState.reset();
         details.clear();
-        user=null;
+        user = null;
         isLoadingSignup.updateStatus(false);
         _ackAlert(context, "SignUp Failed!", e.toString().split(',')[1]);
       }
@@ -117,7 +117,7 @@ class Authenticate {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
-      Future.delayed(Duration(seconds:5));
+      Future.delayed(Duration(seconds: 5));
       //_isSignIn = true;
       formState.save();
       try {
@@ -127,7 +127,7 @@ class Authenticate {
             .where('emailID', isEqualTo: details[0])
             .getDocuments();
         //print(userSnapshot.documents[0]["emailID"]);
-        currentUser=userSnapshot.documents[0];
+        currentUser = userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
@@ -136,8 +136,7 @@ class Authenticate {
         formState.reset();
         details.clear();
         isLoadingLogin.updateStatus(false);
-        _ackAlert(
-            context, "Login Failed!", e.toString().split(',')[1]);
+        _ackAlert(context, "Login Failed!", e.toString().split(',')[1]);
       }
     }
   }
