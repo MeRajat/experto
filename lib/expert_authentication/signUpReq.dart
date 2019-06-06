@@ -102,9 +102,9 @@ class Authenticate {
       });
     } catch (e) {
       //_isSignIn = false;
-      _formKey.forEach((form) {
-        form.currentState.reset();
-      });
+      //_formKey.forEach((form) {
+      //  form.currentState.reset();
+      //});
       details.clear();
       expert = null;
       isLoadingSignupExpert.updateStatus(false);
@@ -153,7 +153,7 @@ class Authenticate {
             "Login Failed!",
             e == "Not Active" || e == "User not found!"
                 ? e
-                : e.toString().split(',')[1]);
+                : e.toString().split(' ')[1]);
       }
     }
   }

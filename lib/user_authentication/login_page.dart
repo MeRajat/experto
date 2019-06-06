@@ -49,11 +49,16 @@ class _CustomForm extends State<CustomForm> {
 
   void checkLoadingStatus() async {
     isLoadingLogin.getStatus.listen((status) {
-      loading = status;
+      setState(() {
+        loading = status;
+      });
+      Scaffold.of(context).removeCurrentSnackBar();
       if (status) {
-        showAuthSnackBar(context: context, title: "Logging In",leading:CircularProgressIndicator());
-      } else {
-        Scaffold.of(context).removeCurrentSnackBar();
+        loading = true;
+        showAuthSnackBar(
+            context: context,
+            title: "Logging In",
+            leading: CircularProgressIndicator());
       }
     });
   }
@@ -84,7 +89,7 @@ class _CustomForm extends State<CustomForm> {
               type: StepperType.vertical,
               currentStep: 0,
               onStepTapped: (int tapped) {},
-              onStepContinue: (loading) ? null : startAuthentication,
+              onStepContinue: (loading == true) ? null : startAuthentication,
               steps: [
                 Step(
                   title: Text("Enter Credentials"),

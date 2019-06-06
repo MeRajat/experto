@@ -73,14 +73,15 @@ class _CustomFormField extends State<CustomFormField> {
 
   void checkLoadingStatus() async {
     isLoadingSignupExpert.getStatus.listen((status) {
-      loading = status;
+      setState(() {
+        loading = status;
+      });
+      Scaffold.of(context).removeCurrentSnackBar();
       if (status) {
         showAuthSnackBar(
             context: context,
             title: "Signing In",
             leading: CircularProgressIndicator());
-      } else {
-        Scaffold.of(context).removeCurrentSnackBar();
       }
     });
   }
@@ -91,10 +92,6 @@ class _CustomFormField extends State<CustomFormField> {
 
   bool validateFormStep(GlobalKey<FormState> formkey) {
     return formkey.currentState.validate();
-    //if (validate) {
-    //  formkey.currentState.save();
-    //}
-    //return validate;
   }
 
   void onCustomButtonPressed(String selected) {
@@ -125,7 +122,7 @@ class _CustomFormField extends State<CustomFormField> {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-        height: 700,
+        height: MediaQuery.of(context).size.height * 1.5,
         child: Theme(
           data: Theme.of(context).copyWith(
               primaryColor: Colors.blue, backgroundColor: Colors.blue),
@@ -145,24 +142,28 @@ class _CustomFormField extends State<CustomFormField> {
                 });
               }
             },
-            onStepContinue: () {
-              if (step < formKeyExpert.length - 1 &&
-                  validateFormStep(formKeyExpert[step])) {
-                setState(() {
-                  step += 1;
-                });
-              } else {
-                if (skillsSelected['skill1']['name'] == '') {
-                  showAuthSnackBar(
-                    context: context,
-                    title: "Skill 1 is required",
-                    leading: Icon(Icons.error, size: 25, color: Colors.red),
-                  );
-                } else {
-                  startAuthentication();
-                }
-              }
-            },
+            onStepContinue: (loading == true)
+                ? null
+                : () {
+                    if (step < formKeyExpert.length - 1) {
+                      if (validateFormStep(formKeyExpert[step])) {
+                        setState(() {
+                          step += 1;
+                        });
+                      }
+                    } else {
+                      if (skillsSelected['skill1']['name'] == '') {
+                        showAuthSnackBar(
+                          context: context,
+                          title: "Skill 1 is required",
+                          leading:
+                              Icon(Icons.error, size: 25, color: Colors.red),
+                        );
+                      } else {
+                        startAuthentication();
+                      }
+                    }
+                  },
             steps: [
               Step(
                 title: Text("Basic Information"),
