@@ -73,7 +73,7 @@ class _SkillTextField extends State<SkillTextField> {
       style: TextStyle(fontSize: 17),
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.search, size: 20),
-        hintText: 'search by name',
+        hintText: 'search by domain',
       ),
     );
   }

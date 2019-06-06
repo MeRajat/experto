@@ -7,9 +7,9 @@ import "package:experto/utils/bloc/reload.dart";
 import 'package:experto/utils/timed_out.dart';
 
 class Cards extends StatefulWidget {
-  final String name;
+  final DocumentSnapshot skill;
 
-  Cards({this.name});
+  Cards({this.skill});
 
   @override
   _CardsState createState() => _CardsState();
@@ -50,7 +50,7 @@ class _CardsState extends State<Cards> {
   Future<void> getExperts() async {
     timedOut = false;
     expert = await experts
-        .where("Skills", arrayContains: widget.name)
+        .where("Skills", arrayContains: widget.skill.reference)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {
