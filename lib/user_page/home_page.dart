@@ -1,3 +1,4 @@
+import 'package:experto/utils/floating_action_button.dart';
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 import "./search_skill/search_skill.dart";
@@ -36,21 +37,28 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        items: navigationBarItems(),
+    return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 50.0),
+        child: FAB(color: Colors.green),
       ),
-      tabBuilder: (BuildContext context, int index) {
-        return WillPopScope(
-          onWillPop: () => overrideBack(index),
-          child: CupertinoTabView(
-            navigatorKey: keys[index],
-            builder: (BuildContext context) {
-              return pages[index];
-            },
-          ),
-        );
-      },
+      //bottomNavigationBar: Container(height: 50,color: Colors.transparent,),
+      body: CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          items: navigationBarItems(),
+        ),
+        tabBuilder: (BuildContext context, int index) {
+          return WillPopScope(
+            onWillPop: () => overrideBack(index),
+            child: CupertinoTabView(
+              navigatorKey: keys[index],
+              builder: (BuildContext context) {
+                return pages[index];
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }

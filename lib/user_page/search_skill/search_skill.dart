@@ -1,4 +1,3 @@
-import 'package:experto/utils/floating_action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -9,9 +8,7 @@ import "package:experto/utils/bloc/reload.dart";
 class SearchSkill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FAB(color: Colors.green),
-      body: CustomScrollView(
+    return CustomScrollView(
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: <Widget>[
           search_app_bar.AppBar(),
@@ -25,7 +22,6 @@ class SearchSkill extends StatelessWidget {
           ),
           Cards(),
         ],
-      ),
     );
   }
 }
