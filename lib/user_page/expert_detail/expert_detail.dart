@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:experto/utils/floating_action_button.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
@@ -19,6 +20,8 @@ class ExpertDetail extends StatelessWidget {
           Detail(expert: expert),
         ],
       ),
+      floatingActionButton: FAB(color: Colors.green),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

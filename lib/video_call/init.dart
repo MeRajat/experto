@@ -1,4 +1,6 @@
 import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/user_page/expert_detail/app_bar.dart';
+import 'package:experto/utils/floating_action_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
@@ -52,6 +54,7 @@ class _StartVideoState extends State<StartVideo> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _toggleChannel();
+          startVideo = null;
           Navigator.of(context).pop();
         },
         child: Icon(Icons.call_end),

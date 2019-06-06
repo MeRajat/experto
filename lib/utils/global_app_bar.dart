@@ -1,4 +1,5 @@
 import 'package:experto/home_page/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
@@ -16,7 +17,8 @@ class CustomAppBar extends StatelessWidget {
     list.add(
       FlatButton(
         padding:EdgeInsets.only(right:20),
-        onPressed: () {
+        onPressed: () async {
+          await FirebaseAuth.instance.signOut();
           Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
               MaterialPageRoute(builder: (buildContext) => HomePage()),
               ModalRoute.withName(':'));
@@ -38,14 +40,14 @@ class CustomAppBar extends StatelessWidget {
       expandedHeight: expandedHeight,
       pinned: true,
       floating: isFloating,
-      leading: Hero(
-          tag: "logo",
-          child: Image.asset(
-            "assets/logo_transparent.png",
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Color.fromRGBO(234, 206, 180, 100)
-                : Colors.black,
-          )),
+      leading: Image.asset(
+        "assets/logo_transparent.png",
+        color: Theme
+            .of(context)
+            .brightness == Brightness.dark
+            ? Color.fromRGBO(234, 206, 180, 100)
+            : Colors.black,
+      ),
       title: Text(
         title,
         style: Theme.of(context).textTheme.title.copyWith(letterSpacing: -.7),

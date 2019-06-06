@@ -8,7 +8,6 @@ class Authenticate {
   CollectionReference userReference;
   QuerySnapshot userSnapshot;
   AuthException exception;
-  FirebaseUser usr;
   List<String> details;
   //bool //_isSignIn;
   Future<void> Function(BuildContext context) fn;

@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 DocumentSnapshot currentUser;
+FirebaseUser usr;
 
 class Users {
   final String name, email, city, m;
