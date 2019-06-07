@@ -1,5 +1,4 @@
 import 'package:experto/user_authentication/userAdd.dart';
-import 'package:experto/user_page/expert_detail/app_bar.dart';
 import 'package:experto/utils/floating_action_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -66,7 +65,8 @@ class _StartVideoState extends State<StartVideo> {
         backgroundColor: Colors.red,
       ),
       bottomNavigationBar: Container(
-        color: Theme.of(context).bottomAppBarColor,
+        color: Colors.transparent,
+        //color: Theme.of(context).bottomAppBarColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
@@ -171,7 +171,7 @@ class _StartVideoState extends State<StartVideo> {
       //_showNotification();
       AgoraRtcEngine.startPreview();
       bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null,
-          int.parse(currentUser["Mobile"].toString().substring(2)));
+          int.parse(userData.currentUser["Mobile"].toString().substring(2)));
       print(status);
     }
     setState(() {});

@@ -118,11 +118,11 @@ class ValidateFeedback {
           rating: rating,
           review: review,
           expertReference: expertReference,
-          userReference: currentUser.reference,
+          userReference: userData.currentUser.reference,
         );
         await Firestore.instance
             .collection("Feedback")
-            .where("User", isEqualTo: currentUser.reference)
+            .where("User", isEqualTo: userData.currentUser.reference)
             .where("Expert", isEqualTo: expertReference)
             .getDocuments()
             .timeout(Duration(seconds: 10), onTimeout: () {

@@ -1,12 +1,13 @@
+import 'package:experto/user_authentication/signUpReq.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
 class CardInfo {
   String text, greetingText, navigatorLink;
   Icon icon;
+
   CardInfo(this.icon, this.text, this.greetingText, this.navigatorLink);
 }
-
 class Cards extends StatelessWidget {
   final List<CardInfo> card = [
     CardInfo(
@@ -23,17 +24,24 @@ class Cards extends StatelessWidget {
     )
   ];
 
+  final Authenticate authenticate = new Authenticate();
+
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
       padding: EdgeInsets.only(top: 10, bottom: 40),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
+              (BuildContext context, int index) {
             return Card(
               child: InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, card[index].navigatorLink);
+                onTap: () async {
+                  bool signin = await authenticate.IsSignIn();
+                  if (index == 0 && signin)
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/user_home', ModalRoute.withName(':'));
+                  else
+                    Navigator.pushNamed(context, card[index].navigatorLink);
                 },
                 child: SizedBox(
                   height: 150,
