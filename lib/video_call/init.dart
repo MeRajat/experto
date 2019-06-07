@@ -27,7 +27,6 @@ class _StartVideoState extends State<StartVideo> {
     _addRenderView(0, (viewId) {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
-    _toggleChannel();
 
     // Local Notification
     var initializationSettingsAndroid =
@@ -36,6 +35,8 @@ class _StartVideoState extends State<StartVideo> {
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    _toggleChannel();
   }
 
   @override
@@ -155,17 +156,17 @@ class _StartVideoState extends State<StartVideo> {
 
   void _toggleChannel() async {
     if (_isInChannel) {
+      await flutterLocalNotificationsPlugin.cancelAll();
       _isInChannel = false;
       AgoraRtcEngine.leaveChannel();
       AgoraRtcEngine.stopPreview();
-      await _showNotification();
     } else {
       _isInChannel = true;
+      await _showNotification();
       AgoraRtcEngine.startPreview();
       bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null,
           int.parse(currentUser["Mobile"].toString().substring(2)));
       print(status);
-      await flutterLocalNotificationsPlugin.cancel(0);
     }
     setState(() {});
   }
@@ -173,8 +174,8 @@ class _StartVideoState extends State<StartVideo> {
   Future<void> _showNotification() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.Max,
-        priority: Priority.High,
+        importance: Importance.Low,
+        priority: Priority.Low,
         ongoing: true,
         autoCancel: false);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
@@ -183,24 +184,21 @@ class _StartVideoState extends State<StartVideo> {
     var clock = Stopwatch();
     clock.start();
     while (true) {
+      await Future.delayed(Duration(seconds: 1), () async {});
       if (!_isInChannel) return;
-      await Future.delayed(Duration(seconds: 1), () async {
-        String twoDigits(int n) {
-          if (n >= 10) return "$n";
-          return "0$n";
-        }
+      String twoDigits(int n) {
+        if (n >= 10) return "$n";
+        return "0$n";
+      }
 
-        String twoDigitMinutes =
-            twoDigits(clock.elapsed.inMinutes.remainder(60));
-        String twoDigitSeconds =
-            twoDigits(clock.elapsed.inSeconds.remainder(60));
-        String twoDigitHours = twoDigits(clock.elapsed.inHours);
-        await flutterLocalNotificationsPlugin.show(
-            0,
-            'Video Call',
-            "$twoDigitHours:$twoDigitMinutes:$twoDigitSeconds",
-            platformChannelSpecifics);
-      });
+      String twoDigitMinutes = twoDigits(clock.elapsed.inMinutes.remainder(60));
+      String twoDigitSeconds = twoDigits(clock.elapsed.inSeconds.remainder(60));
+      String twoDigitHours = twoDigits(clock.elapsed.inHours);
+      await flutterLocalNotificationsPlugin.show(
+          0,
+          'Video Call',
+          "$twoDigitHours:$twoDigitMinutes:$twoDigitSeconds",
+          platformChannelSpecifics);
     }
   }
 
