@@ -74,7 +74,7 @@ class ValidateFeedback {
             onPressed: () {
               saveFeedback(feedbackFormKey, context);
             },
-            child: Text("Submit", style: TextStyle(color: Colors.black)),
+            child: Text("Submit",),
             elevation: 5,
             highlightElevation: 5,
             color: (Theme.of(context).brightness == Brightness.dark)

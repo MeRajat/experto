@@ -249,9 +249,7 @@ class _ContactExpert extends State<ContactExpert> {
                       ? Color.fromRGBO(42, 123, 249,1)
                       : Colors.blue,
                   child: Text("Yes",
-                      style: Theme.of(context).primaryTextTheme.body2.copyWith(
-                            color: Colors.black,
-                          )),
+                      style: Theme.of(context).primaryTextTheme.body2),
                   onPressed: () {
                     //Navigator.of(context, rootNavigator: false).pop();
                     callback();
@@ -297,7 +295,7 @@ class _ContactExpert extends State<ContactExpert> {
             showBottomSheel(
                 icon: Icon(Icons.face, size: 120),
                 secondaryText:
-                    "Are you sure you want to video call this expert ?",
+                    "Are you sure you want to call this expert ?",
                 callback: videoCall);
           },
           child: Icon(
