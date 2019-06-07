@@ -6,7 +6,8 @@ import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    new FlutterLocalNotificationsPlugin();
 // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
 
 class StartVideo extends StatefulWidget {
@@ -28,15 +29,16 @@ class _StartVideoState extends State<StartVideo> {
     _addRenderView(0, (viewId) {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
-    _toggleChannel();
 
     // Local Notification
     var initializationSettingsAndroid =
-    new AndroidInitializationSettings('@mipmap/ic_launcher');
+        new AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    _toggleChannel();
   }
 
   @override
@@ -155,38 +157,55 @@ class _StartVideoState extends State<StartVideo> {
     };
   }
 
-
-
   void _toggleChannel() async {
     if (_isInChannel) {
+      await flutterLocalNotificationsPlugin.cancelAll();
       _isInChannel = false;
       AgoraRtcEngine.leaveChannel();
       AgoraRtcEngine.stopPreview();
-      await _showNotification();
     } else {
       _isInChannel = true;
+      await _showNotification();
       AgoraRtcEngine.startPreview();
-      bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null, int.parse(currentUser["Mobile"].toString().substring(2)));
+      bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null,
+          int.parse(currentUser["Mobile"].toString().substring(2)));
       print(status);
-      await flutterLocalNotificationsPlugin.cancel(0);
     }
     setState(() {});
   }
 
   Future<void> _showNotification() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.Max,
-        priority: Priority.High,
+        'VideoCall',
+        'Video Calls',
+        'The ongoing notifcation that shows the current;y elapsed time of the video call',
+        importance: Importance.Low,
+        priority: Priority.Low,
         ongoing: true,
         autoCancel: false);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'Video Call', 'Video Call in progress', platformChannelSpecifics);
-  }
+    var clock = Stopwatch();
+    clock.start();
+    while (true) {
+      await Future.delayed(Duration(seconds: 1), () async {});
+      if (!_isInChannel) return;
+      String twoDigits(int n) {
+        if (n >= 10) return "$n";
+        return "0$n";
+      }
 
+      String twoDigitMinutes = twoDigits(clock.elapsed.inMinutes.remainder(60));
+      String twoDigitSeconds = twoDigits(clock.elapsed.inSeconds.remainder(60));
+      String twoDigitHours = twoDigits(clock.elapsed.inHours);
+      await flutterLocalNotificationsPlugin.show(
+          0,
+          'Video Call',
+          "$twoDigitHours:$twoDigitMinutes:$twoDigitSeconds",
+          platformChannelSpecifics);
+    }
+  }
 
   List<Widget> _viewRows() {
     List<Widget> views = _getRenderViews();

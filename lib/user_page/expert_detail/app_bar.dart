@@ -194,35 +194,45 @@ class _ContactExpert extends State<ContactExpert> {
   }
 
   void showBottomSheel(
-      {@required String title,
+      {@required Icon icon,
       @required String secondaryText,
       @required Function callback}) {
     Future<PersistentBottomSheetController> controller = showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return Material(
+          elevation: 5,
           color: Theme.of(context).scaffoldBackgroundColor,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(left: 15, top: 20, bottom: 80),
-                child: Text(
-                  title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .title
-                      .copyWith(fontSize: 24, letterSpacing: -.5),
+                child: icon,
+                padding: EdgeInsets.only(
+                  top: 20,
+                  bottom: 20,
                 ),
               ),
-              Padding(
+              //Padding(
+              //  padding: EdgeInsets.only(left: 15, top: 20, bottom: 80),
+              //  child: Text(
+              //    title,
+              //    style: Theme.of(context)
+              //        .textTheme
+              //        .title
+              //        .copyWith(fontSize: 24, letterSpacing: -.5),
+              //  ),
+              //),
+              Container(
+                width: 200,
                 padding: EdgeInsets.only(
                   left: 20,
                   bottom: 10,
                 ),
                 child: Text(
                   secondaryText,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).primaryTextTheme.body2.copyWith(
                         fontSize: 12,
                       ),
@@ -236,11 +246,11 @@ class _ContactExpert extends State<ContactExpert> {
                   bottom: 70,
                 ),
                 child: RaisedButton(
-                  color: Colors.blueAccent,
+                  color: (Theme.of(context).brightness == Brightness.dark)
+                      ? Color.fromRGBO(42, 123, 249,1)
+                      : Colors.blue,
                   child: Text("Yes",
-                      style: Theme.of(context).primaryTextTheme.body2.copyWith(
-                            color: Colors.black,
-                          )),
+                      style: Theme.of(context).primaryTextTheme.body2),
                   onPressed: () {
                     //Navigator.of(context, rootNavigator: false).pop();
                     callback();
@@ -285,9 +295,9 @@ class _ContactExpert extends State<ContactExpert> {
         InkWell(
           onTap: () {
             showBottomSheel(
-                title: "video call ${expert["Name"]}?",
+                icon: Icon(Icons.face, size: 120),
                 secondaryText:
-                    "Are you sure you want to video call this expert ?",
+                    "Are you sure you want to call this expert ?",
                 callback: videoCall);
           },
           child: Icon(
@@ -299,7 +309,7 @@ class _ContactExpert extends State<ContactExpert> {
           child: InkWell(
             onTap: () {
               showBottomSheel(
-                  title: "message ${expert["Name"]}",
+                  icon: Icon(Icons.chat_bubble_outline, size: 120),
                   secondaryText: "Are you sure you want to message this expert",
                   callback: () {
                     _launchSkype(context, expert["SkyperUser"], "chat");

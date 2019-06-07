@@ -125,7 +125,8 @@ class _CustomFormField extends State<CustomFormField> {
         height: MediaQuery.of(context).size.height * 1.5,
         child: Theme(
           data: Theme.of(context).copyWith(
-              primaryColor: Colors.blue, backgroundColor: Colors.blue),
+              primaryColor: Colors.blue,
+              backgroundColor: Color.fromRGBO(42, 123, 249, 1)),
           child: Stepper(
             physics: BouncingScrollPhysics(),
             type: StepperType.vertical,
