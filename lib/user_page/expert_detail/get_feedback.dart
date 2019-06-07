@@ -10,7 +10,7 @@ import "package:experto/user_authentication/userAdd.dart";
 class ValidateFeedback {
   int rating;
   String review;
-  bool submiting = false, submitted = false, updatedPreviousFeedback=false;
+  bool submiting = false, submitted = false, updatedPreviousFeedback = false;
   CollectionReference feedbackCollection;
   QuerySnapshot feedbackSnapshot;
   Feedback feedback;
@@ -40,7 +40,8 @@ class ValidateFeedback {
     );
   }
 
-  Widget submitButton(GlobalKey<FormState> feedbackFormKey,BuildContext context){
+  Widget submitButton(
+      GlobalKey<FormState> feedbackFormKey, BuildContext context) {
     if (submitted) {
       return Padding(
         padding: EdgeInsets.only(bottom: 40),
@@ -50,7 +51,9 @@ class ValidateFeedback {
             Icon(Icons.check_circle, size: 25),
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child:(updatedPreviousFeedback)? Text("We have updated your response"):Text("Your response is captured"),
+              child: (updatedPreviousFeedback)
+                  ? Text("We have updated your response")
+                  : Text("Your response is captured"),
             ),
           ],
         ),
@@ -74,7 +77,9 @@ class ValidateFeedback {
             child: Text("Submit", style: TextStyle(color: Colors.black)),
             elevation: 5,
             highlightElevation: 5,
-            color: Colors.blueAccent,
+            color: (Theme.of(context).brightness == Brightness.dark)
+                ? Color.fromRGBO(42, 123, 249, 1)
+                : Colors.blue,
           ),
         ),
         padding: EdgeInsets.only(
@@ -87,7 +92,7 @@ class ValidateFeedback {
       return Container();
     }
   }
-  
+
   void getRating(int providedRating) {
     rating = providedRating;
     print(rating);
@@ -96,7 +101,7 @@ class ValidateFeedback {
   void getReview(String providedReview) {
     review = providedReview;
   }
-  
+
   void getexpert(DocumentSnapshot expertSnapshot) {
     expertReference = expertSnapshot.reference;
   }
@@ -122,10 +127,9 @@ class ValidateFeedback {
             .getDocuments()
             .timeout(Duration(seconds: 10), onTimeout: () {
           throw TimeoutException;
-        }).catchError((e){
+        }).catchError((e) {
           throw TimeoutException;
-        })
-        .then((QuerySnapshot feedbackSnapshot) async {
+        }).then((QuerySnapshot feedbackSnapshot) async {
           if (feedbackSnapshot.documents.length == 0) {
             updatedPreviousFeedback = false;
             await Firestore.instance.runTransaction((Transaction t) async {
