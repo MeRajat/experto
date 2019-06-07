@@ -173,7 +173,9 @@ class _StartVideoState extends State<StartVideo> {
 
   Future<void> _showNotification() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
+        'VideoCall',
+        'Video Calls',
+        'The ongoing notifcation that shows the current;y elapsed time of the video call',
         importance: Importance.Low,
         priority: Priority.Low,
         ongoing: true,
