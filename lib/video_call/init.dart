@@ -16,7 +16,7 @@ class StartVideo extends StatefulWidget {
 }
 
 class _StartVideoState extends State<StartVideo> {
-  bool _isInChannel = false;
+  bool _isInChannel = false,_toggleView=true;
   final _infoStrings = <String>[];
   bool speaker = true, mic = true, camera = true;
   final _sessions = List<VideoSession>();
@@ -29,20 +29,23 @@ class _StartVideoState extends State<StartVideo> {
     _addRenderView(0, (viewId) {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
+    _toggleChannel();
 
     // Local Notification
-    var initializationSettingsAndroid =
+    /*var initializationSettingsAndroid =
         new AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-    _toggleChannel();
+*/
   }
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+
+    });
     return Scaffold(
       body: Center(
         child: Stack(
@@ -165,7 +168,7 @@ class _StartVideoState extends State<StartVideo> {
       AgoraRtcEngine.stopPreview();
     } else {
       _isInChannel = true;
-      await _showNotification();
+      //_showNotification();
       AgoraRtcEngine.startPreview();
       bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null,
           int.parse(currentUser["Mobile"].toString().substring(2)));
@@ -211,31 +214,59 @@ class _StartVideoState extends State<StartVideo> {
     List<Widget> views = _getRenderViews();
     List<Widget> expandedViews = new List<Widget>();
     if (views.length >= 2) {
-      expandedViews.add(Container(
-          height: 592,
-          child: Row(
-            children: <Widget>[
-              Expanded(child: Container(child: views[views.length - 1])),
-            ],
-          )));
-      expandedViews.add(Container(
-          height: 150,
-          width: 110,
-          padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
-          child: Row(
-            children: <Widget>[
-              Expanded(child: Container(child: views[views.length - 2])),
-            ],
-          )));
+      if(_toggleView) {
+        expandedViews.add(Container(
+            height: 592,
+            width: 400,
+            child: views[views.length - 1]));
+        expandedViews.add(Stack(
+          children: <Widget>[
+            Container(
+                height: 150,
+                width: 110,
+                padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
+                child: views[views.length - 2]),
+            FlatButton(
+              onPressed: (){
+                setState(() {
+                  _toggleView=!_toggleView;
+                });
+                },
+              child: SizedBox(height: 130,width: 60,),
+            )
+          ],
+        ));
+      }
+      else{
+        expandedViews.add(Container(
+            height: 592,
+            width: 400,
+            child: views[views.length - 2]));
+        expandedViews.add(Stack(
+          children: <Widget>[
+            Container(
+                height: 150,
+                width: 110,
+                padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
+                child: views[views.length - 1]),
+            FlatButton(
+              onPressed: (){
+                setState(() {
+                  _toggleView=!_toggleView;
+                });
+              },
+              child: SizedBox(height: 130,width: 60,),
+            )
+          ],
+        ));
+      }
+
       return expandedViews;
     } else if (views.length != 0) {
       expandedViews.add(Container(
           height: 592,
-          child: Row(
-            children: <Widget>[
-              Expanded(child: Container(child: views[views.length - 1])),
-            ],
-          )));
+          width: 400,
+          child: views[views.length - 1]));
       return expandedViews;
     } else
       return null;
