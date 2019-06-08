@@ -7,7 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     new FlutterLocalNotificationsPlugin();
-// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
 
 class StartVideo extends StatefulWidget {
   @override
@@ -28,16 +27,16 @@ class _StartVideoState extends State<StartVideo> {
     _addRenderView(0, (viewId) {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
-    _toggleChannel();
 
     // Local Notification
-    /*var initializationSettingsAndroid =
+    var initializationSettingsAndroid =
         new AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
-*/
+
+    _toggleChannel();
   }
 
   @override
@@ -168,7 +167,7 @@ class _StartVideoState extends State<StartVideo> {
       AgoraRtcEngine.stopPreview();
     } else {
       _isInChannel = true;
-      //_showNotification();
+      _showNotification();
       AgoraRtcEngine.startPreview();
       bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null,
           int.parse(userData.currentUser["Mobile"].toString().substring(2)));
