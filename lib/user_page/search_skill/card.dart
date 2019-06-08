@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import "package:cached_network_image/cached_network_image.dart";
 
 import './expert_list.dart';
 
 class CustomCard extends StatelessWidget {
   final DocumentSnapshot skill;
-  final Icon icon;
-  CustomCard(this.skill, this.icon);
+  CustomCard(this.skill);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class CustomCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return ExpertList(skill:skill);
+                return ExpertList(skill: skill);
               },
             ),
           );
@@ -27,9 +27,27 @@ class CustomCard extends StatelessWidget {
           padding: EdgeInsets.only(left: 5, right: 5, bottom: 12, top: 5),
           child: Row(
             children: <Widget>[
-              icon,
               Container(
-                padding: EdgeInsets.only(left: 5),
+                margin: EdgeInsets.only(
+                  left: 5,
+                  top: 5,
+                ),
+                width: 55,
+                height: 55,
+                child: CachedNetworkImage(
+                  imageUrl: skill["IconURL"],
+                  placeholder: (BuildContext context, string) => Center(
+                        heightFactor: 1.1,
+                        widthFactor: 1.1,
+                        child: CircularProgressIndicator(),
+                      ),
+                  color: (Theme.of(context).brightness == Brightness.light)
+                      ? Colors.black
+                      : Colors.white,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 15),
                 width: 200,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,10 +56,9 @@ class CustomCard extends StatelessWidget {
                       padding: EdgeInsets.only(bottom: 5),
                       child: Text(
                         skill['Name'],
-                        style: Theme.of(context)
-                            .textTheme
-                            .title
-                            .copyWith(fontSize: 17,),
+                        style: Theme.of(context).textTheme.title.copyWith(
+                              fontSize: 17,
+                            ),
                       ),
                     ),
                     Text(
@@ -49,7 +66,7 @@ class CustomCard extends StatelessWidget {
                       style: Theme.of(context)
                           .primaryTextTheme
                           .body2
-                          .copyWith(fontSize:12),
+                          .copyWith(fontSize: 12),
                     )
                   ],
                 ),
