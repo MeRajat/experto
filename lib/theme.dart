@@ -5,6 +5,9 @@ class Theme {
   ThemeData lightTheme() {
     return ThemeData(
       brightness: Brightness.light,
+      bottomAppBarTheme: BottomAppBarTheme(
+        color: Colors.transparent,
+      ),
       canvasColor: Color.fromRGBO(250, 250, 250, 1),
       scaffoldBackgroundColor: Color.fromRGBO(243, 242, 244, 1),
       fontFamily: 'Ubuntu',
@@ -26,7 +29,7 @@ class Theme {
           wordSpacing: 1,
         ),
       ),
-      bottomAppBarColor: Color(0xFFfcfffe),
+      bottomAppBarColor: Colors.transparent,
       dialogTheme: DialogTheme(
         backgroundColor: Color.fromRGBO(250, 250, 250, 1),
         shape: RoundedRectangleBorder(
