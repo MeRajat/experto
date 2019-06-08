@@ -30,15 +30,19 @@ class _StartVideoState extends State<StartVideo> {
     initNotification(_isInChannel);
     _toggleChannel();
   }
-  @override
-  Widget build(BuildContext context) {
+
+  Future<void> check() async {
     if (_buttonState)
-      Future.delayed(Duration(seconds: 5), () {
+      await Future.delayed(Duration(seconds: 5), () {
         _buttonState = !_buttonState;
         setState(() {
 
         });
       });
+  }
+  @override
+  Widget build(BuildContext context) {
+    check();
     return Scaffold(
       body: Stack(
         children: _viewRows() +
@@ -118,7 +122,7 @@ class _StartVideoState extends State<StartVideo> {
                 setState(() {
                   speaker = !speaker;
                 });
-                await AgoraRtcEngine.setEnableSpeakerphone(!speaker);
+                await AgoraRtcEngine.setEnableSpeakerphone(speaker);
                 print(speaker);
               },
               child: Icon(Icons.speaker_phone),
