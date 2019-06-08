@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +11,22 @@ class CustomCard extends StatelessWidget {
   final DocumentSnapshot skill;
   CustomCard(this.skill);
 
+  final List<Color> colorsDarkMode = [
+    Color.fromRGBO(46, 117, 178, 1),
+    Color.fromRGBO(229, 107, 107, 1),
+    Color.fromRGBO(172, 95, 175, 1),
+    Color.fromRGBO(255, 138, 96, 1),
+    Color.fromRGBO(94, 165, 95,1)
+  ];
+  final List<Color> colorsLightMode = [
+    Colors.red,
+    Colors.purple,
+    Colors.blue,
+    Colors.deepOrangeAccent,
+    Colors.green,
+  ];
+
+  final random = new Random();
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -41,9 +59,9 @@ class CustomCard extends StatelessWidget {
                         widthFactor: 1.1,
                         child: CircularProgressIndicator(),
                       ),
-                  color: (Theme.of(context).brightness == Brightness.light)
-                      ? Colors.black
-                      : Colors.white,
+                  color: (Theme.of(context).brightness == Brightness.dark)
+                      ? colorsDarkMode[random.nextInt(colorsDarkMode.length)]
+                      : colorsLightMode[random.nextInt(colorsLightMode.length)],
                 ),
               ),
               Container(
