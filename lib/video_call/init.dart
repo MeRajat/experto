@@ -3,10 +3,7 @@ import 'package:experto/utils/floating_action_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    new FlutterLocalNotificationsPlugin();
+import 'package:experto/video_call/notification.dart';
 
 class StartVideo extends StatefulWidget {
   @override
@@ -27,15 +24,7 @@ class _StartVideoState extends State<StartVideo> {
     _addRenderView(0, (viewId) {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
-
-    // Local Notification
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
+    initNotification(_isInChannel);
     _toggleChannel();
   }
 
@@ -228,52 +217,19 @@ class _StartVideoState extends State<StartVideo> {
 
   void _toggleChannel() async {
     if (_isInChannel) {
-      await flutterLocalNotificationsPlugin.cancelAll();
       _isInChannel = false;
+      stateChangedInformNotification(_isInChannel);
       AgoraRtcEngine.leaveChannel();
       AgoraRtcEngine.stopPreview();
     } else {
       _isInChannel = true;
-      _showNotification();
+      stateChangedInformNotification(_isInChannel);
       AgoraRtcEngine.startPreview();
       bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null,
           int.parse(UserData.currentUser["Mobile"].toString().substring(2)));
       print(status);
     }
     setState(() {});
-  }
-
-  Future<void> _showNotification() async {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'VideoCall',
-        'Video Calls',
-        'The ongoing notifcation that shows the current;y elapsed time of the video call',
-        importance: Importance.Low,
-        priority: Priority.Low,
-        ongoing: true,
-        autoCancel: false);
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    var clock = Stopwatch();
-    clock.start();
-    while (true) {
-      await Future.delayed(Duration(seconds: 1), () async {});
-      if (!_isInChannel) return;
-      String twoDigits(int n) {
-        if (n >= 10) return "$n";
-        return "0$n";
-      }
-
-      String twoDigitMinutes = twoDigits(clock.elapsed.inMinutes.remainder(60));
-      String twoDigitSeconds = twoDigits(clock.elapsed.inSeconds.remainder(60));
-      String twoDigitHours = twoDigits(clock.elapsed.inHours);
-      await flutterLocalNotificationsPlugin.show(
-          0,
-          'Video Call',
-          "$twoDigitHours:$twoDigitMinutes:$twoDigitSeconds",
-          platformChannelSpecifics);
-    }
   }
 
   List<Widget> _viewRows() {
