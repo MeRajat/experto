@@ -53,8 +53,38 @@ class HomePage extends StatelessWidget {
     //       ),
     //     ],
     //   ),
-    // );
-
+//    // );
+//      appBar: AppBar(
+//        leading: Image.asset(
+//          "assets/logo_transparent.png",
+//          color: Theme
+//              .of(context)
+//              .brightness == Brightness.dark
+//              ? Color.fromRGBO(234, 206, 180, 100)
+//              : Colors.black,
+//        ),
+//        title:Text(
+//        "Experto",
+//        style: Theme.of(context).textTheme.title.copyWith(letterSpacing: -.7),
+//      ),
+//        flexibleSpace: FlexibleSpaceBar(
+//          titlePadding: EdgeInsets.all(20),
+//          background: Column(
+//            mainAxisAlignment: MainAxisAlignment.end,
+//            crossAxisAlignment: CrossAxisAlignment.start,
+//            children: <Widget>[
+//              Padding(
+//                padding: EdgeInsets.only(left: 20, bottom: 15),
+//                child: Text(
+//                  "Welcome",
+//                  style: Theme.of(context).textTheme.title,
+//                  textScaleFactor: 1.8,
+//                ),
+//              ),
+//            ],
+//          ),
+//        ),
+//      ),
       body: CustomScrollView(
         physics: BouncingScrollPhysics(),
         slivers: <Widget>[

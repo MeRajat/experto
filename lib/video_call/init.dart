@@ -32,7 +32,13 @@ class _StartVideoState extends State<StartVideo> {
   }
   @override
   Widget build(BuildContext context) {
-    setState(() {});
+    if (_buttonState)
+      Future.delayed(Duration(seconds: 5), () {
+        _buttonState = !_buttonState;
+        setState(() {
+
+        });
+      });
     return Scaffold(
       body: Stack(
         children: _viewRows() +
