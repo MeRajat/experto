@@ -50,80 +50,48 @@ class _StartVideoState extends State<StartVideo> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    InkWell(
-                      onTap: () async {
+                    _generateActionButton(
+                      color: speaker ? Theme.of(context).buttonColor : null,
+                      onTapFunction: () async {
                         setState(() {
                           speaker = !speaker;
                         });
                         await AgoraRtcEngine.setEnableSpeakerphone(!speaker);
                         print(speaker);
                       },
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          color: speaker ? Theme.of(context).buttonColor : null,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.speaker_phone),
-                      ),
+                      icon: Icon(Icons.speaker_phone),
                     ),
-                    InkWell(
-                      onTap: () {
+                    _generateActionButton(
+                      color: null,
+                      onTapFunction: () {
                         setState(() {
                           mic = !mic;
                         });
                         AgoraRtcEngine.enableLocalAudio(mic);
                       },
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          //color: mic ? null : Theme.of(context).buttonColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: mic?Icon(Icons.mic):Icon(Icons.mic_off),
-                      ),
+                      icon: mic ? Icon(Icons.mic) : Icon(Icons.mic_off),
                     ),
-                    InkWell(
-                      onTap: () {
+                    _generateActionButton(
+                      color: null,
+                      onTapFunction: () {
                         setState(() {
                           camera = !camera;
                         });
                         AgoraRtcEngine.switchCamera();
                       },
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          //color: mic ? null : Theme.of(context).buttonColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: camera
-                            ? Icon(Icons.camera_rear)
-                            : Icon(Icons.camera_front),
-                      ),
+                      icon: camera
+                          ? Icon(Icons.camera_rear)
+                          : Icon(Icons.camera_front),
                     ),
-                    InkWell(
-                      onTap: () {
+                    _generateActionButton(
+                      color: Colors.red,
+                      onTapFunction: () {
                         _toggleChannel();
                         startVideo = null;
                         Navigator.of(context).pop();
                       },
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.call_end),
-                      ),
-                    )
+                      icon: Icon(Icons.call_end),
+                    ),
                   ],
                 ),
               ],
@@ -182,6 +150,26 @@ class _StartVideoState extends State<StartVideo> {
       //     ],
       //   ),
       // ),
+    );
+  }
+
+  Widget _generateActionButton({
+    @required Widget icon,
+    @required Color color,
+    @required Function onTapFunction,
+  }) {
+    return InkWell(
+      onTap: onTapFunction,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 20),
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+        ),
+        child: icon,
+      ),
     );
   }
 
