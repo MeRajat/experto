@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
-import "package:firebase_storage/firebase_storage.dart";
 
 import './search_result_cards.dart';
 import "package:experto/utils/bloc/search_bloc.dart";

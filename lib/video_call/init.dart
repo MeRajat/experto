@@ -170,7 +170,7 @@ class _StartVideoState extends State<StartVideo> {
       _showNotification();
       AgoraRtcEngine.startPreview();
       bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null,
-          int.parse(userData.currentUser["Mobile"].toString().substring(2)));
+          int.parse(UserData.currentUser["Mobile"].toString().substring(2)));
       print(status);
     }
     setState(() {});

@@ -18,32 +18,32 @@ class Authenticate {
     getUser();
     msg = "Invalid details";
   }
-  void Clear() {
+  void clear() {
     details = new List<String>();
     getUser();
     msg = "Invalid details";
-    userData.currentUser = null;
-    userData.usr = null;
+    UserData.currentUser = null;
+    UserData.usr = null;
   }
 
-  Future<bool> IsSignIn() async {
-    userData.usr = await FirebaseAuth.instance.currentUser();
-    if (userData.usr == null)
+  Future<bool> isSignIn() async {
+    UserData.usr = await FirebaseAuth.instance.currentUser();
+    if (UserData.usr == null)
       return false;
-    else if (userData.currentUser == null) {
+    else if (UserData.currentUser == null) {
       userSnapshot = await userReference
-          .where('emailID', isEqualTo: userData.usr.email)
+          .where('emailID', isEqualTo: UserData.usr.email)
           .getDocuments();
-      userData.currentUser = userSnapshot.documents[0];
+      UserData.currentUser = userSnapshot.documents[0];
       return true;
     }
-    else if (userData.usr.email == userData.currentUser["emailID"])
+    else if (UserData.usr.email == UserData.currentUser["emailID"])
       return true;
     else {
       userSnapshot = await userReference
-          .where('emailID', isEqualTo: userData.usr.email)
+          .where('emailID', isEqualTo: UserData.usr.email)
           .getDocuments();
-      userData.currentUser = userSnapshot.documents[0];
+      UserData.currentUser = userSnapshot.documents[0];
       return true;
     }
   }
@@ -103,7 +103,7 @@ class Authenticate {
         QuerySnapshot val=await userReference.where("Mobile",isEqualTo: int.parse(details[3])).getDocuments();
           if(val.documents.length!=0)
             throw("Mobile Number already in use");
-        userData.usr =
+        UserData.usr =
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
 
@@ -119,7 +119,7 @@ class Authenticate {
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[1])
             .getDocuments();
-        userData.currentUser = userSnapshot.documents[0];
+        UserData.currentUser = userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();
@@ -151,7 +151,7 @@ class Authenticate {
             .where('emailID', isEqualTo: details[0])
             .getDocuments();
         //print(userSnapshot.documents[0]["emailID"]);
-        userData.currentUser = userSnapshot.documents[0];
+        UserData.currentUser = userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'));
         formState.reset();

@@ -36,7 +36,7 @@ class Cards extends StatelessWidget {
             return Card(
               child: InkWell(
                 onTap: () async {
-                  bool signin = await authenticate.IsSignIn();
+                  bool signin = await authenticate.isSignIn();
                   if (index == 0 && signin)
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/user_home', ModalRoute.withName(':'));

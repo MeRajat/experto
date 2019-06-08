@@ -64,7 +64,7 @@ class _CustomForm extends State<CustomForm> {
   }
 
   void startAuthentication() {
-    authenticate.Clear();
+    authenticate.clear();
     authenticate.signIn(_formKey, context);
   }
 
