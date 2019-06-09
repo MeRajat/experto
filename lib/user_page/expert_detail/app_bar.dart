@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_authentication/userAdd.dart';
 import "package:experto/utils/bloc/reload.dart";
 import 'package:experto/utils/floating_action_button.dart';
+import 'package:experto/video_call/notification.dart';
 import 'package:experto/video_call/init.dart';
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
@@ -268,7 +269,7 @@ class _ContactExpert extends State<ContactExpert> {
   }
 
   void videoCall() {
-    startVideo = StartVideo();
+    notificationStartVideo = startVideo = StartVideo();
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (BuildContext context) {

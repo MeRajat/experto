@@ -1,9 +1,13 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart';
+import 'package:experto/video_call/init.dart';
+
+StartVideo notificationStartVideo;
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     new FlutterLocalNotificationsPlugin();
 
-var _isInChannel = false;
+var _isInCall = false;
 
 void initNotification(isInChannelState) {
   var initializationSettingsAndroid =
@@ -11,13 +15,22 @@ void initNotification(isInChannelState) {
   var initializationSettingsIOS = new IOSInitializationSettings();
   var initializationSettings = new InitializationSettings(
       initializationSettingsAndroid, initializationSettingsIOS);
-  flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  _isInChannel = isInChannelState;
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+  onSelectNotification: onSelectNotification);
+  _isInCall = isInChannelState;
+}
+
+Future onSelectNotification(String payload) async {
+  await Navigator.push(
+      StartVideo.navigatorKey.currentState.context,
+      new MaterialPageRoute(
+        builder: (context) => notificationStartVideo,
+      ));
 }
 
 void stateChangedInformNotification(isInChannel) {
-  _isInChannel = isInChannel;
-  if (_isInChannel) {
+  _isInCall = isInChannel;
+  if (_isInCall) {
     _showNotification();
   } else
     flutterLocalNotificationsPlugin.cancelAll();
@@ -39,7 +52,7 @@ Future<void> _showNotification() async {
   clock.start();
   while (true) {
     await Future.delayed(Duration(seconds: 1), () async {});
-    if (!_isInChannel) {
+    if (!_isInCall) {
       return;
     }
     String twoDigits(int n) {
