@@ -15,7 +15,7 @@ List<BottomNavigationBarItem> navigationBarItems() {
         CupertinoIcons.settings,
         size: 25,
       ),
-      title: Text("Skill"),
+      title: Text("Domains"),
     ),
     BottomNavigationBarItem(
       icon: Icon(

@@ -30,17 +30,17 @@ class CustomCard extends StatelessWidget {
                 tag:expert["emailID"],
                 child: Icon(
                   CupertinoIcons.person_solid,
-                  size: 60,
+                  size: 80,
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(left: 5),
-                width: 200,
+                padding: EdgeInsets.only(top:10,left: 10,bottom: 5),
+                width: 230,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.only(bottom: 5),
+                      padding: EdgeInsets.only(bottom: 8),
                       child: Text(
                         expert["Name"],
                         style: Theme.of(context)
@@ -51,7 +51,7 @@ class CustomCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Breif Skill Description adf Overflow Testing",
+                      expert['Description'],
                       style: Theme.of(context)
                           .primaryTextTheme
                           .body2

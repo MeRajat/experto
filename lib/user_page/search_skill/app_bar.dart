@@ -29,7 +29,7 @@ class AppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomAppBar(
       130,
-      'Skill',
+      'Domains',
       CustomFlexibleSpace(),
       isFloating:true,
     );

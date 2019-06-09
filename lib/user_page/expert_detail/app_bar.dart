@@ -54,20 +54,26 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  expert["Name"],
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        letterSpacing: -.5,
-                      ),
+                Container(
+                  width: 200,
+                  child: Text(
+                    expert["Name"],
+                    style: Theme.of(context).textTheme.title.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          letterSpacing: -.5,
+                        ),
+                  ),
                 ),
-                Text(
-                  expert["emailID"],
-                  style: Theme.of(context).primaryTextTheme.body1.copyWith(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 12,
-                      ),
+                Container(
+                  width:200,
+                  child: Text(
+                    expert["emailID"],
+                    style: Theme.of(context).primaryTextTheme.body1.copyWith(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12,
+                        ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 8),
@@ -247,7 +253,7 @@ class _ContactExpert extends State<ContactExpert> {
                 ),
                 child: RaisedButton(
                   color: (Theme.of(context).brightness == Brightness.dark)
-                      ? Color.fromRGBO(42, 123, 249,1)
+                      ? Color.fromRGBO(42, 123, 249, 1)
                       : Colors.blue,
                   child: Text("Yes",
                       style: Theme.of(context).primaryTextTheme.body2),
@@ -296,8 +302,7 @@ class _ContactExpert extends State<ContactExpert> {
           onTap: () {
             showBottomSheel(
                 icon: Icon(Icons.face, size: 120),
-                secondaryText:
-                    "Are you sure you want to call this expert ?",
+                secondaryText: "Are you sure you want to call this expert ?",
                 callback: videoCall);
           },
           child: Icon(
