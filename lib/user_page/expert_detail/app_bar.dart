@@ -66,7 +66,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  width:200,
+                  width: 200,
                   child: Text(
                     expert["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
@@ -199,7 +199,7 @@ class _ContactExpert extends State<ContactExpert> {
     }
   }
 
-  void showBottomSheel(
+  void showBottomSheet(
       {@required Icon icon,
       @required String secondaryText,
       @required Function callback}) {
@@ -300,10 +300,12 @@ class _ContactExpert extends State<ContactExpert> {
       children: <Widget>[
         InkWell(
           onTap: () {
-            showBottomSheel(
+            showBottomSheet(
                 icon: Icon(Icons.face, size: 120),
                 secondaryText: "Are you sure you want to call this expert ?",
-                callback: videoCall);
+                callback: () {
+                  _launchSkype(context, widget.expert["SkypeUser"], "call");
+                });
           },
           child: Icon(
             Icons.video_call,
@@ -313,11 +315,11 @@ class _ContactExpert extends State<ContactExpert> {
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
             onTap: () {
-              showBottomSheel(
+              showBottomSheet(
                   icon: Icon(Icons.chat_bubble_outline, size: 120),
                   secondaryText: "Are you sure you want to message this expert",
                   callback: () {
-                    _launchSkype(context, expert["SkyperUser"], "chat");
+                    _launchSkype(context, expert["SkypeUser"], "chat");
                   });
             },
             child: Icon(Icons.chat, size: 20),
