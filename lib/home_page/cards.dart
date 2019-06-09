@@ -36,7 +36,25 @@ class Cards extends StatelessWidget {
             return Card(
               child: InkWell(
                 onTap: () async {
+                  bool loading = true;
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return WillPopScope(
+                          child: Center(
+                            heightFactor: .2,
+                            widthFactor: .2,
+                            child: CircularProgressIndicator(),
+                          ),
+                          onWillPop: () => (loading)
+                              ? Future.value(false)
+                              : Future.value(true),
+                        );
+                      });
+                  await Future.delayed(Duration(seconds: 1));
                   bool signin = await authenticate.isSignIn();
+                  loading = true;
+                  Navigator.of(context).pop();
                   if (index == 0 && signin)
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/user_home', ModalRoute.withName(':'));
