@@ -123,7 +123,7 @@ class Authenticate {
       try {
         await Firestore.instance
             .collection("Experts")
-            .where("userID", isEqualTo: details[0])
+            .where("userID", isEqualTo: details['name'])
             .getDocuments()
             .then((QuerySnapshot q) {
           _email = q.documents[0]["emailID"];
@@ -132,7 +132,7 @@ class Authenticate {
         });
         if (_email == null) throw ("User not found!");
         await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: _email, password: details[1]);
+            .signInWithEmailAndPassword(email: _email, password: details['password']);
         expertSnapshot = await expertReference
             .where('emailID', isEqualTo: _email)
             .getDocuments();
@@ -153,7 +153,7 @@ class Authenticate {
             "Login Failed!",
             e == "Not Active" || e == "User not found!"
                 ? e
-                : e.toString().split(' ')[1]);
+                : e.toString().split(',')[1]);
       }
     }
   }

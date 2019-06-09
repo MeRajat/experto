@@ -44,7 +44,7 @@ class InputField extends StatelessWidget {
             keyboardType: inputType,
             minLines: minLines,
             maxLines: maxLines,
-            maxLength: (maxLength==0)?null:maxLength,
+            maxLength: (maxLength == 0) ? null : maxLength,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(0),
               filled: true,
@@ -52,6 +52,7 @@ class InputField extends StatelessWidget {
               hintStyle: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
+                letterSpacing: -.6,
               ),
             ),
             style: TextStyle(
@@ -116,7 +117,7 @@ class SignupPageRedirect extends StatelessWidget {
                   style: Theme.of(context)
                       .primaryTextTheme
                       .body2
-                      .copyWith(fontSize: 12),
+                      .copyWith(fontSize: 12, color: Colors.blue),
                 ),
               ),
             ),
