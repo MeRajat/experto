@@ -317,7 +317,7 @@ class _ContactExpert extends State<ContactExpert> {
                   icon: Icon(Icons.chat_bubble_outline, size: 120),
                   secondaryText: "Are you sure you want to message this expert",
                   callback: () {
-                    _launchSkype(context, expert["SkyperUser"], "chat");
+                    videoCall();
                   });
             },
             child: Icon(Icons.chat, size: 20),
