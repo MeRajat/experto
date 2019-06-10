@@ -16,14 +16,18 @@ class CustomAppBar extends StatelessWidget {
     List<Widget> list = new List<Widget>();
     list.add(
       FlatButton(
-        padding:EdgeInsets.only(right:20),
+        padding: EdgeInsets.only(right: 20),
         onPressed: () async {
           await FirebaseAuth.instance.signOut();
           Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
               MaterialPageRoute(builder: (buildContext) => HomePage()),
               ModalRoute.withName(':'));
         },
-        child: Text("Logout",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.red)),
+        child: Text("Logout",
+            style: Theme.of(context)
+                .primaryTextTheme
+                .body2
+                .copyWith(color: Colors.red)),
         //color: Colors.redAccent,
       ),
     );
@@ -40,13 +44,11 @@ class CustomAppBar extends StatelessWidget {
       expandedHeight: expandedHeight,
       pinned: true,
       floating: isFloating,
-      leading: Image.asset(
-        "assets/logo_transparent.png",
-        color: Theme
-            .of(context)
-            .brightness == Brightness.dark
-            ? Color.fromRGBO(234, 206, 180, 100)
-            : Colors.black,
+      leading: Container(
+        padding: EdgeInsets.only(left:6,right:6),
+        child: Image.asset(
+          "assets/logo_transparent.png",
+        ),
       ),
       title: Text(
         title,

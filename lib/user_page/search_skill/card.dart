@@ -16,7 +16,8 @@ class CustomCard extends StatelessWidget {
     Color.fromRGBO(229, 107, 107, 1),
     Color.fromRGBO(172, 95, 175, 1),
     Color.fromRGBO(255, 138, 96, 1),
-    Color.fromRGBO(94, 165, 95,1)
+    Color.fromRGBO(94, 165, 95,1),
+    Color.fromRGBO(67, 168, 127,1)
   ];
   final List<Color> colorsLightMode = [
     Colors.red,
@@ -24,6 +25,7 @@ class CustomCard extends StatelessWidget {
     Colors.blue,
     Colors.deepOrangeAccent,
     Colors.green,
+    Color.fromRGBO(114, 178, 151, 1),
   ];
 
   final random = new Random();

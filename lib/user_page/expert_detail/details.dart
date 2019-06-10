@@ -71,7 +71,7 @@ class _DetailState extends State<Detail> {
                           children: skillName
                               .map(
                                 (element) => Container(
-                                      padding: EdgeInsets.only(bottom: 10),
+                                      padding: EdgeInsets.only(bottom: 5),
                                       child: Text(element,
                                           style: Theme.of(context)
                                               .primaryTextTheme
