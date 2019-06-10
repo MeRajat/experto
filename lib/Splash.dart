@@ -22,11 +22,14 @@ class SplashState extends State<Splash> {
     super.initState();
   }
 
-
-
-  void getPermissions() async{
-    List<PermissionGroup> permission=[PermissionGroup.camera,PermissionGroup.microphone,PermissionGroup.storage];
-    Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions(permission);
+  void getPermissions() async {
+    List<PermissionGroup> permission = [
+      PermissionGroup.camera,
+      PermissionGroup.microphone,
+      PermissionGroup.storage
+    ];
+    Map<PermissionGroup, PermissionStatus> permissions =
+        await PermissionHandler().requestPermissions(permission);
     /*permission.forEach((PermissionGroup p)async{
       PermissionStatus permissionStatus = await PermissionHandler().checkPermissionStatus(p);
       if(permissionStatus.value==0){
@@ -35,18 +38,23 @@ class SplashState extends State<Splash> {
           _ackAlert(context, "Permissions", "The app requires "+p.value.toString()+" permission to function");
       }
     });*/
-    permissions.forEach((PermissionGroup pg,PermissionStatus ps){
-      print(pg.toString()+" "+ps.toString()+"\n");
+    permissions.forEach((PermissionGroup pg, PermissionStatus ps) {
+      print(pg.toString() + " " + ps.toString() + "\n");
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(50.0),
         child: new Center(
-          child:
-          Hero(tag: "logo", child: Image.asset("assets/logo_transparent.png",color:Theme.of(context).brightness==Brightness.dark?Color.fromRGBO(234, 206, 180, 100):Colors.black)),
+          child: Hero(
+            tag: "logo",
+            child: Image.asset(
+              "assets/logo_transparent.png",
+            ),
+          ),
         ),
       ),
       // )
