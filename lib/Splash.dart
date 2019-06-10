@@ -57,7 +57,6 @@ class SplashState extends State<Splash> {
           ),
         ),
       ),
-      // )
     );
   }
 }
