@@ -13,13 +13,13 @@ class Cards extends StatelessWidget {
     CardInfo(
       Icon(Icons.person, size: 100),
       'User',
-      'sub text welcome gret',
+      '',
       '/user_login',
     ),
     CardInfo(
       Icon(CupertinoIcons.person_solid, size: 100),
       'Expert',
-      'sub text welcome gret',
+      '',
       '/expert_login',
     )
   ];
@@ -62,7 +62,7 @@ class Cards extends StatelessWidget {
                     Navigator.pushNamed(context, card[index].navigatorLink);
                 },
                 child: SizedBox(
-                  height: 150,
+                  height: 130,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -87,9 +87,9 @@ class Cards extends StatelessWidget {
                                 textScaleFactor: 1.3,
                               ),
                             ),
-                            Text(
-                              card[index].greetingText,
-                            ),
+                            //Text(
+                            //  card[index].greetingText,
+                            //),
                           ],
                         ),
                       ),
