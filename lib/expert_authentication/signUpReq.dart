@@ -10,6 +10,7 @@ class Authenticate {
   QuerySnapshot expertSnapshot;
   Map<String,dynamic> details;
   List<DocumentReference> skills;
+  Map<String, Map<String, DateTime>> availablity;
   String userName;
   //bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
@@ -63,6 +64,7 @@ class Authenticate {
   getDescription(String x) => details['description']=x;
   getWorkExperience(String x) => details['workExp']=x;
   getSkills(List<DocumentReference> x) => skills = x;
+  getAvailablity(Map<String, Map<String, DateTime>> x ) => availablity = x;
 
   Future<void> signUp(
       List<GlobalKey<FormState>> _formKey, BuildContext context) async {
@@ -86,7 +88,8 @@ class Authenticate {
           index: index,
           description: details['description'],
           workExperience: details['workExp'],
-          skills:skills);
+          skills:skills,
+          availablity: availablity);
           
       Firestore.instance.runTransaction((Transaction t) async {
         await expertReference.add(expert.toJson());

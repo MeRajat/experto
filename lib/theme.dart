@@ -40,7 +40,6 @@ class Theme {
       ),
       buttonTheme: ButtonThemeData(
         height: 45,
-        
         disabledColor: Color.fromRGBO(243, 242, 244, 1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -205,12 +204,12 @@ class Theme {
       ),
       textTheme: TextTheme(
         title: TextStyle(
-          wordSpacing:1,
+          wordSpacing: 1,
           fontWeight: FontWeight.w700,
           color: textColor,
         ),
         subhead: TextStyle(
-          wordSpacing:1,
+          wordSpacing: 1,
           fontWeight: FontWeight.w600,
           color: textColor,
           letterSpacing: -1.4,
