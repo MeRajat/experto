@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/expert_authentication/get_all_skills.dart';
+import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 
 import './signUpReq.dart';
 import "package:flutter/material.dart";
@@ -35,6 +36,7 @@ class _CustomFormField extends State<CustomFormField> {
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
   ];
   static final Authenticate authenticate = new Authenticate();
   bool loading = false;
@@ -42,6 +44,22 @@ class _CustomFormField extends State<CustomFormField> {
   bool isExperienced = false;
   bool hasCertificate = false;
   GetSkills skills = GetSkills();
+
+  Map<String, Map<String, DateTime>> availablity = {
+    "slot1": {
+      "start": null,
+      "end": null,
+    },
+    "slot2": {
+      "start": null,
+      "end": null,
+    },
+    "slot3": {
+      "start": null,
+      "end": null,
+    }
+  };
+
   Map<String, Map<String, dynamic>> skillsSelected = {
     "skill1": {
       'name': '',
@@ -92,6 +110,21 @@ class _CustomFormField extends State<CustomFormField> {
 
   bool validateFormStep(GlobalKey<FormState> formkey) {
     return formkey.currentState.validate();
+  }
+
+  void onCstmBtnPressedAvail(String slotSelected, String secondarySlot) {
+    DatePicker.showDatePicker(context, pickerMode: DateTimePickerMode.time,
+        onChange: (timeSelected, values) {
+      setState(() {
+        availablity[slotSelected][secondarySlot] = timeSelected;
+      });
+    },
+        pickerTheme: DateTimePickerTheme(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          itemTextStyle:
+              Theme.of(context).primaryTextTheme.body2.copyWith(fontSize: 15),
+          confirmTextStyle: Theme.of(context).primaryTextTheme.body2,
+        ));
   }
 
   void onCustomButtonPressed(String selected) {
@@ -213,9 +246,92 @@ class _CustomFormField extends State<CustomFormField> {
                 ),
               ),
               Step(
-                title: Text("Skills"),
+                subtitle: Text("Select timings when a user can contact you"),
+                title: Text("Availablity"),
                 content: Form(
                   key: formKeyExpert[2],
+                  child: FormField(
+                    onSaved: (_){
+                      authenticate.getAvailablity(availablity);
+                    },
+                    validator: (_) {
+                      bool error = false;
+                      String title;
+                      if (availablity['slot1']['start'] == null ||
+                          availablity['slot1']['end'] == null) {
+                        title = "Time Slot 1 is required";
+                        error = true;
+                      } else {
+                        availablity.forEach((key, value) {
+                          if ((value['start'] == null &&
+                                  value['end'] != null) ||
+                              value['end'] == null && value['start'] != null) {
+                            title = "Incomplete time slot encountered";
+                            error = true;
+                          }
+                        });
+                      }
+                      if (error == true) {
+                        showAuthSnackBar(
+                          context: context,
+                          title: title,
+                          leading: Icon(
+                            Icons.error,
+                            size: 25,
+                            color: Colors.red,
+                          ),
+                        );
+                        return 'error';
+                      }
+                    },
+                    //onSaved: (state) {
+                    //  List<DocumentReference> skillSelectedReference = [];
+                    //  skillsSelected.forEach((key, value) {
+                    //    if (value['reference'] != null) {
+                    //      skillSelectedReference.add(value['reference']);
+                    //    }
+                    //  });
+                    //  authenticate.getSkills(skillSelectedReference);
+                    //},
+                    builder: (state) {
+                      return Row(
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SignupTimeSelector(
+                                headingText: "Time Slot 1",
+                                availablity: availablity,
+                                slot: "slot1",
+                                callbackFunc: onCstmBtnPressedAvail,
+                                selector1Color: Colors.red,
+                                selector2Color: Colors.red,
+                              ),
+                              SignupTimeSelector(
+                                headingText: "Time Slot 2",
+                                availablity: availablity,
+                                callbackFunc: onCstmBtnPressedAvail,
+                                slot: "slot2",
+                              ),
+                              SignupTimeSelector(
+                                headingText: "Time Slot 3",
+                                availablity: availablity,
+                                callbackFunc: onCstmBtnPressedAvail,
+                                slot: "slot3",
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Step(
+                title: Text("Skills"),
+                subtitle: Text("What domain about a user can contact you"),
+                content: Form(
+                  key: formKeyExpert[3],
                   child: FormField(
                     onSaved: (state) {
                       List<DocumentReference> skillSelectedReference = [];
@@ -232,60 +348,27 @@ class _CustomFormField extends State<CustomFormField> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  CustomFlatButton(
-                                    text: "Select Skill",
-                                    onPressedFunction: () {
-                                      onCustomButtonPressed('skill1');
-                                    },
-                                  ),
-                                  Text(
-                                      (skillsSelected['skill1']['name'] == ''
-                                          ? "Required"
-                                          : skillsSelected['skill1']['name']),
-                                      style: Theme.of(context)
-                                          .primaryTextTheme
-                                          .body2
-                                          .copyWith(color: Colors.red))
-                                ],
+                              SignupSkillSelector(
+                                correspondingSkill: 'skill1',
+                                callbackFunc: () {
+                                  onCustomButtonPressed('skill1');
+                                },
+                                color: Colors.red,
+                                skillsSelected: skillsSelected,
                               ),
-                              Row(
-                                children: <Widget>[
-                                  CustomFlatButton(
-                                    text: "Select Skill",
-                                    onPressedFunction: () {
-                                      onCustomButtonPressed('skill2');
-                                    },
-                                  ),
-                                  Text(
-                                      (skillsSelected['skill2']['name'] == ''
-                                          ? "Optional"
-                                          : skillsSelected['skill2']['name']),
-                                      style: Theme.of(context)
-                                          .primaryTextTheme
-                                          .body2
-                                          .copyWith(color: Colors.blue))
-                                ],
+                              SignupSkillSelector(
+                                correspondingSkill: 'skill2',
+                                callbackFunc: () {
+                                  onCustomButtonPressed('skill2');
+                                },
+                                skillsSelected: skillsSelected,
                               ),
-                              Row(
-                                children: <Widget>[
-                                  CustomFlatButton(
-                                    text: "Select Skill",
-                                    onPressedFunction: () {
-                                      onCustomButtonPressed('skill3');
-                                    },
-                                  ),
-                                  Text(
-                                      (skillsSelected['skill3']['name'] == ''
-                                          ? "Optional"
-                                          : skillsSelected['skill3']['name']),
-                                      style: Theme.of(context)
-                                          .primaryTextTheme
-                                          .body2
-                                          .copyWith(color: Colors.blue))
-                                ],
+                              SignupSkillSelector(
+                                correspondingSkill: 'skill3',
+                                callbackFunc: () {
+                                  onCustomButtonPressed('skill3');
+                                },
+                                skillsSelected: skillsSelected,
                               ),
                             ],
                           ),

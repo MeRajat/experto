@@ -69,16 +69,23 @@ class InputField extends StatelessWidget {
 class CustomFlatButton extends StatelessWidget {
   final String text;
   final onPressedFunction;
+  final Color color;
 
   CustomFlatButton({
     @required this.text,
     @required this.onPressedFunction,
+    this.color: Colors.white,
   });
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      child: Text(text),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+        ),
+      ),
       onPressed: onPressedFunction,
     );
   }
@@ -131,6 +138,7 @@ void showAuthSnackBar({
   @required String title,
   @required leading,
 }) {
+  Scaffold.of(context).removeCurrentSnackBar();
   Scaffold.of(context).showSnackBar(
     SnackBar(
       backgroundColor: Colors.black87,
@@ -159,4 +167,92 @@ void showAuthSnackBar({
       duration: Duration(hours: 1),
     ),
   );
+}
+
+class SignupTimeSelector extends StatelessWidget {
+  final Function callbackFunc;
+  final String headingText, slot;
+  final Color selector1Color, selector2Color;
+  final Map<String, Map<String, DateTime>> availablity;
+
+  SignupTimeSelector({
+    @required this.callbackFunc,
+    @required this.headingText,
+    @required this.slot,
+    @required this.availablity,
+    this.selector1Color: Colors.blue,
+    this.selector2Color: Colors.blue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String timeStart = (availablity == null ||
+            availablity[slot]['start'] == null)
+        ? "Start"
+        : '${availablity[slot]['start'].hour.toString()}:${availablity[slot]['start'].minute.toString()}';
+
+    String timeEnd = (availablity == null ||
+            availablity[slot]['end'] == null)
+        ? "End"
+        : '${availablity[slot]['end'].hour.toString()}:${availablity[slot]['end'].minute.toString()}';
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          headingText,
+          style: Theme.of(context)
+              .primaryTextTheme
+              .body2
+              .copyWith(color: Colors.white),
+        ),
+        CustomFlatButton(
+          text: timeStart,
+          color: selector1Color,
+          onPressedFunction: () {
+            callbackFunc(slot, 'start');
+          },
+        ),
+        CustomFlatButton(
+          text: timeEnd,
+          color: selector2Color,
+          onPressedFunction: () {
+            callbackFunc(slot, 'end');
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class SignupSkillSelector extends StatelessWidget {
+  final Map<String, Map<String, dynamic>> skillsSelected;
+  final Function callbackFunc;
+  final Color color;
+  final String correspondingSkill;
+
+  SignupSkillSelector({
+    @required this.skillsSelected,
+    @required this.callbackFunc,
+    @required this.correspondingSkill,
+    this.color: Colors.blue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        CustomFlatButton(
+          text: "Select Skill",
+          onPressedFunction: callbackFunc,
+        ),
+        Text(
+            (skillsSelected[correspondingSkill]['name'] == ''
+                ? "Required"
+                : skillsSelected[correspondingSkill]['name']),
+            style:
+                Theme.of(context).primaryTextTheme.body2.copyWith(color: color))
+      ],
+    );
+  }
 }

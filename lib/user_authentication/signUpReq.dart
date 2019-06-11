@@ -28,25 +28,29 @@ class Authenticate {
 
   Future<bool> isSignIn() async {
     UserData.usr = await FirebaseAuth.instance.currentUser();
-    if (UserData.usr == null)
+    try {
+      if (UserData.usr == null)
+        return false;
+      else if (UserData.currentUser == null) {
+        userSnapshot = await userReference
+            .where('emailID', isEqualTo: UserData.usr.email)
+            .getDocuments();
+        UserData.currentUser = userSnapshot.documents[0];
+        return true;
+      } else if (UserData.usr.email == UserData.currentUser["emailID"])
+        return true;
+      else {
+        userSnapshot = await userReference
+            .where('emailID', isEqualTo: UserData.usr.email)
+            .getDocuments();
+        UserData.currentUser = userSnapshot.documents[0];
+        return true;
+      }
+    } catch (e) {
       return false;
-    else if (UserData.currentUser == null) {
-      userSnapshot = await userReference
-          .where('emailID', isEqualTo: UserData.usr.email)
-          .getDocuments();
-      UserData.currentUser = userSnapshot.documents[0];
-      return true;
-    }
-    else if (UserData.usr.email == UserData.currentUser["emailID"])
-      return true;
-    else {
-      userSnapshot = await userReference
-          .where('emailID', isEqualTo: UserData.usr.email)
-          .getDocuments();
-      UserData.currentUser = userSnapshot.documents[0];
-      return true;
     }
   }
+
   Future<void> _ackAlert(BuildContext context, String title, String content) {
     return showDialog<void>(
       context: context,
@@ -100,12 +104,13 @@ class Authenticate {
       try {
         isLoadingSignup.updateStatus(true);
         //_isSignIn = true;
-        QuerySnapshot val=await userReference.where("Mobile",isEqualTo: int.parse(details[3])).getDocuments();
-          if(val.documents.length!=0)
-            throw("Mobile Number already in use");
-        UserData.usr =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: details[1], password: details[4]);
+        QuerySnapshot val = await userReference
+            .where("Mobile", isEqualTo: int.parse(details[3]))
+            .getDocuments();
+        if (val.documents.length != 0) throw ("Mobile Number already in use");
+        UserData.usr = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: details[1], password: details[4]);
 
         user = new Users(
           email: details[1],
@@ -130,7 +135,12 @@ class Authenticate {
         details.clear();
         user = null;
         isLoadingSignup.updateStatus(false);
-        _ackAlert(context, "SignUp Failed!", e=="Mobile Number already in use"?e:e.toString().split(',')[1]);
+        _ackAlert(
+            context,
+            "SignUp Failed!",
+            e == "Mobile Number already in use"
+                ? e
+                : e.toString().split(',')[1]);
       }
     }
   }
