@@ -66,7 +66,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  width:200,
+                  width: 200,
                   child: Text(
                     expert["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(

@@ -6,6 +6,7 @@ class UserData {
   static DocumentSnapshot currentUser;
   static FirebaseUser usr;
 }
+
 class Users {
   final String name, email, city, m;
   int mobile;

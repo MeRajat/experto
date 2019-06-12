@@ -8,10 +8,12 @@ import "package:experto/utils/bloc/is_loading.dart";
 class Authenticate {
   CollectionReference expertReference;
   QuerySnapshot expertSnapshot;
-  Map<String,dynamic> details;
+  Map<String, dynamic> details;
   List<DocumentReference> skills;
   Map<String, Map<String, DateTime>> availablity;
+  List<Map<String, DateTime>> avail;
   String userName;
+
   //bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
 
@@ -19,15 +21,15 @@ class Authenticate {
     //_isSignIn = false;
     //details = new List<String>();
     details = {
-    "name":"",
-    "passowrd":"",
-    "email":"",
-    "skypeUsername":"",
-    "city":"",
-    "mobile":'',
-    "description":"",
-    "workExp":''
-  };
+      "name": "",
+      "passowrd": "",
+      "email": "",
+      "skypeUsername": "",
+      "city": "",
+      "mobile": '',
+      "description": "",
+      "workExp": ''
+    };
     getExpert();
   }
 
@@ -55,16 +57,27 @@ class Authenticate {
     expertReference = Firestore.instance.collection("Experts");
   }
 
-  getName(String x) => details['name']=x;
-  getPass(String x) => details['password']=x;
-  getCity(String x) => details['city']=x;
-  getSkype(String x) => details['skypeUsername']=x;
-  getMobile(String x) => details['mobile']=x;
-  getEmail(String x) => details['email']=x;
-  getDescription(String x) => details['description']=x;
-  getWorkExperience(String x) => details['workExp']=x;
+  getName(String x) => details['name'] = x;
+
+  getPass(String x) => details['password'] = x;
+
+  getCity(String x) => details['city'] = x;
+
+  getSkype(String x) => details['skypeUsername'] = x;
+
+  getMobile(String x) => details['mobile'] = x;
+
+  getEmail(String x) => details['email'] = x;
+
+  getDescription(String x) => details['description'] = x;
+
+  getWorkExperience(String x) => details['workExp'] = x;
+
   getSkills(List<DocumentReference> x) => skills = x;
-  getAvailablity(Map<String, Map<String, DateTime>> x ) => availablity = x;
+
+  getAvailablity(Map<String, Map<String, DateTime>> x) => availablity = x;
+
+  getAvail(List<Map<String, DateTime>> x) => avail = x;
 
   Future<void> signUp(
       List<GlobalKey<FormState>> _formKey, BuildContext context) async {
@@ -88,9 +101,9 @@ class Authenticate {
           index: index,
           description: details['description'],
           workExperience: details['workExp'],
-          skills:skills,
+          skills: skills,
           availablity: availablity);
-          
+
       Firestore.instance.runTransaction((Transaction t) async {
         await expertReference.add(expert.toJson());
       });
@@ -134,8 +147,8 @@ class Authenticate {
           _email = null;
         });
         if (_email == null) throw ("User not found!");
-        await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: _email, password: details['password']);
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: _email, password: details['password']);
         expertSnapshot = await expertReference
             .where('emailID', isEqualTo: _email)
             .getDocuments();
