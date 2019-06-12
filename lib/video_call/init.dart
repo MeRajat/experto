@@ -53,48 +53,6 @@ class _StartVideoState extends State<StartVideo> {
                 child: Icon(Icons.keyboard_arrow_down)),
               top: 35.0, left: -10.0,) : SizedBox()
             ],
-//              [
-//                Row(
-//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                  children: <Widget>[
-//                    _generateActionButton(
-//                      color: speaker ? Theme.of(context).buttonColor : null,
-//                      onTapFunction: () async {
-//                        setState(() {
-//                          speaker = !speaker;
-//                        });
-//                        await AgoraRtcEngine.setEnableSpeakerphone(!speaker);
-//                        print(speaker);
-//                      },
-//                      icon: Icon(Icons.speaker_phone),
-//                    ),
-//                    _generateActionButton(
-//                      color: null,
-//                      onTapFunction: () {
-//                        setState(() {
-//                          mic = !mic;
-//                        });
-//                        AgoraRtcEngine.enableLocalAudio(mic);
-//                      },
-//                      icon: mic ? Icon(Icons.mic_off) : Icon(Icons.mic),
-//                    ),
-//                    _generateActionButton(
-//                      color: null,
-//                      onTapFunction: () {
-//                        setState(() {
-//                          camera = !camera;
-//                        });
-//                        AgoraRtcEngine.switchCamera();
-//                      },
-//                      icon: camera
-//                          ? Icon(Icons.camera_rear)
-//                          : Icon(Icons.camera_front),
-//                    ),
-//                  ],
-//                ),
-//              ],
-        //Container(height: 592, child: _viewRows()),
-        //Container(height: 150,width: 110,padding: EdgeInsets.only(right: 20,bottom: 20), child: _viewRows(2)),
         alignment: AlignmentDirectional.bottomEnd,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

@@ -255,7 +255,7 @@ class _ContactExpert extends State<ContactExpert> {
                   color: (Theme.of(context).brightness == Brightness.dark)
                       ? Color.fromRGBO(42, 123, 249, 1)
                       : Colors.blue,
-                  child: Text("Yes",
+                  child: Text(callback == null ? "Ok" : "Yes",
                       style: Theme.of(context).primaryTextTheme.body2),
                   onPressed: () {
                     //Navigator.of(context, rootNavigator: false).pop();
@@ -300,10 +300,16 @@ class _ContactExpert extends State<ContactExpert> {
       children: <Widget>[
         InkWell(
           onTap: () {
-            showBottomSheel(
-                icon: Icon(Icons.face, size: 120),
-                secondaryText: "Are you sure you want to call this expert ?",
-                callback: videoCall);
+            if (checkAvail())
+              showBottomSheel(
+                  icon: Icon(Icons.face, size: 120),
+                  secondaryText: "Are you sure you want to call this expert ?",
+                  callback: videoCall);
+            else
+              showBottomSheel(
+                  icon: Icon(Icons.warning, size: 120),
+                  secondaryText: "Expert is not available right now!",
+                  callback: null);
           },
           child: Icon(
             Icons.video_call,
@@ -341,5 +347,24 @@ class _ContactExpert extends State<ContactExpert> {
         ),
       ],
     );
+  }
+
+  bool checkAvail() {
+    Timestamp now = Timestamp.now();
+    int l = expert["Avail"].length,
+        i;
+    for (i = 0; i < l; i++) {
+      Map<String, Timestamp> map = Map.from(expert["Avail"][i]);
+      if (now.compareTo(map["start"]) <= (now.compareTo(map["end"]) * -1))
+        return true;
+    }
+    return false;
+    //    map.forEach((Map<String,DateTime> x){
+    //      if(now.compareTo(x["start"])<=(now.compareTo(x["end"])*-1))
+    //        return true;
+    //      else
+//        return false;
+    //}
+    //);
   }
 }
