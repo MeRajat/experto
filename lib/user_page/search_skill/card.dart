@@ -16,8 +16,8 @@ class CustomCard extends StatelessWidget {
     Color.fromRGBO(229, 107, 107, 1),
     Color.fromRGBO(172, 95, 175, 1),
     Color.fromRGBO(255, 138, 96, 1),
-    Color.fromRGBO(94, 165, 95,1),
-    Color.fromRGBO(67, 168, 127,1)
+    Color.fromRGBO(94, 165, 95, 1),
+    Color.fromRGBO(67, 168, 127, 1)
   ];
   final List<Color> colorsLightMode = [
     Colors.red,
@@ -25,7 +25,7 @@ class CustomCard extends StatelessWidget {
     Colors.blue,
     Colors.deepOrangeAccent,
     Colors.green,
-    Color.fromRGBO(114, 178, 151, 1),
+    Colors.cyan,
   ];
 
   final random = new Random();
@@ -83,10 +83,13 @@ class CustomCard extends StatelessWidget {
                     ),
                     Text(
                       skill['tagLine'],
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .body2
-                          .copyWith(fontSize: 12),
+                      style: Theme.of(context).primaryTextTheme.body2.copyWith(
+                            fontSize: 12,
+                            color: (Theme.of(context).brightness ==
+                                    Brightness.dark)
+                                ? Colors.grey[400]
+                                : Colors.grey[800],
+                          ),
                     )
                   ],
                 ),
