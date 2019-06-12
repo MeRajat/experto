@@ -33,7 +33,9 @@ class _DetailState extends State<Detail> {
       );
     }
     loading = false;
-    setState(() {});
+    try {
+      setState(() {});
+    } catch (e) {}
   }
 
   void getWorkExp() async {

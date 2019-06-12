@@ -146,10 +146,8 @@ class _Cards extends State<Cards> {
     expertSearchBloc.value.listen((searchQuery) {
       searchingStatus = 1;
       timedOut = false;
-      if (searchString != searchQuery) {
-        searchString = searchQuery;
-        search(searchQuery);
-      }
+      searchString = searchQuery;
+      search(searchQuery);
     });
   }
 

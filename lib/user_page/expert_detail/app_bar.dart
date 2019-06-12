@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_authentication/userAdd.dart';
 import "package:experto/utils/bloc/reload.dart";
-import 'package:experto/utils/floating_action_button.dart';
-import 'package:experto/video_call/init.dart';
+
+import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
+import 'package:experto/utils/contact_expert.dart' as contactExpert;
+
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
-import "package:url_launcher/url_launcher.dart";
 import "package:experto/utils/global_app_bar.dart";
 import './feedback.dart' as expert_feedback;
 
@@ -66,7 +67,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  width:200,
+                  width: 200,
                   child: Text(
                     expert["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
@@ -77,7 +78,10 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 8),
-                  child: ContactExpert(expert),
+                  child: Hero(
+                    tag: "contact",
+                    child: ContactExpert(expert),
+                  ),
                 )
               ],
             ),
@@ -164,134 +168,60 @@ class _ContactExpert extends State<ContactExpert> {
     userSearchExpert.updateStatus(true);
   }
 
-  void _showDialog(context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text("Skype Required",
-              style: Theme.of(context).primaryTextTheme.title),
-          content: new Text(
-            "Skype is Required to use this service",
-            style: Theme.of(context).primaryTextTheme.body2,
-          ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void _showDialog(context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: new Text("Skype Required",
+  //             style: Theme.of(context).primaryTextTheme.title),
+  //         content: new Text(
+  //           "Skype is Required to use this service",
+  //           style: Theme.of(context).primaryTextTheme.body2,
+  //         ),
+  //         actions: <Widget>[
+  //           new FlatButton(
+  //             child: new Text("Close"),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
-  void _launchSkype(
-      BuildContext context, String skypeUsername, String serviceType) async {
-    final url = "skype:$skypeUsername?$serviceType";
-    if (await canLaunch(url)) {
-      await updateInteraction();
-      await launch(url);
-    } else {
-      _showDialog(context);
-    }
-  }
+  // void _launchSkype(
+  //     BuildContext context, String skypeUsername, String serviceType) async {
+  //   final url = "skype:$skypeUsername?$serviceType";
+  //   if (await canLaunch(url)) {
+  //     await updateInteraction();
+  //     await launch(url);
+  //   } else {
+  //     _showDialog(context);
+  //   }
+  // }
 
-  void showBottomSheel(
-      {@required Icon icon,
-      @required String secondaryText,
-      @required Function callback}) {
-    Future<PersistentBottomSheetController> controller = showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Material(
-          elevation: 5,
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Padding(
-                child: icon,
-                padding: EdgeInsets.only(
-                  top: 20,
-                  bottom: 20,
-                ),
-              ),
-              //Padding(
-              //  padding: EdgeInsets.only(left: 15, top: 20, bottom: 80),
-              //  child: Text(
-              //    title,
-              //    style: Theme.of(context)
-              //        .textTheme
-              //        .title
-              //        .copyWith(fontSize: 24, letterSpacing: -.5),
-              //  ),
-              //),
-              Container(
-                width: 200,
-                padding: EdgeInsets.only(
-                  left: 20,
-                  bottom: 10,
-                ),
-                child: Text(
-                  secondaryText,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).primaryTextTheme.body2.copyWith(
-                        fontSize: 12,
-                      ),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(
-                  left: 15,
-                  right: 15,
-                  bottom: 70,
-                ),
-                child: RaisedButton(
-                  color: (Theme.of(context).brightness == Brightness.dark)
-                      ? Color.fromRGBO(42, 123, 249, 1)
-                      : Colors.blue,
-                  child: Text("Yes",
-                      style: Theme.of(context).primaryTextTheme.body2),
-                  onPressed: () {
-                    //Navigator.of(context, rootNavigator: false).pop();
-                    callback();
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-    controller.then((PersistentBottomSheetController p) {
-      p.close();
-    });
-  }
+  // void videoCall() {
+  //   startVideo = StartVideo();
+  //   Navigator.of(context, rootNavigator: true).push(
+  //     MaterialPageRoute(
+  //       builder: (BuildContext context) {
+  //         return startVideo;
+  //       },
+  //     ),
+  //   );
 
-  void videoCall() {
-    startVideo = StartVideo();
-    Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) {
-          return startVideo;
-        },
-      ),
-    );
-
-    // Navigator.push(
-    //  context,
-    //  MaterialPageRoute(
-    //    builder: (BuildContext context) {
-    //      return StartVideo();
-    //    },
-    //  ),
-    // );
-  }
+  // Navigator.push(
+  //  context,
+  //  MaterialPageRoute(
+  //    builder: (BuildContext context) {
+  //      return StartVideo();
+  //    },
+  //  ),
+  // );
+  //}
 
   @override
   Widget build(BuildContext context) {
@@ -300,10 +230,14 @@ class _ContactExpert extends State<ContactExpert> {
       children: <Widget>[
         InkWell(
           onTap: () {
-            showBottomSheel(
-                icon: Icon(Icons.face, size: 120),
-                secondaryText: "Are you sure you want to call this expert ?",
-                callback: videoCall);
+            bottomSheet.showBottomSheet(
+              context: context,
+              icon: Icon(Icons.face, size: 120),
+              secondaryText: "Are you sure you want to call this expert ?",
+              callback: () {
+                contactExpert.videoCall(context: context);
+              },
+            );
           },
           child: Icon(
             Icons.video_call,
@@ -313,11 +247,16 @@ class _ContactExpert extends State<ContactExpert> {
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
             onTap: () {
-              showBottomSheel(
+              bottomSheet.showBottomSheet(
+                  context: context,
                   icon: Icon(Icons.chat_bubble_outline, size: 120),
                   secondaryText: "Are you sure you want to message this expert",
                   callback: () {
-                    videoCall();
+                    contactExpert.launchSkype(
+                        context: context,
+                        skypeUsername: expert['SkypeUser'],
+                        serviceType: "chat",
+                        afterLaunchFunc: updateInteraction);
                   });
             },
             child: Icon(Icons.chat, size: 20),
@@ -328,7 +267,9 @@ class _ContactExpert extends State<ContactExpert> {
           child: InkWell(
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (BuildContext context) {
+                MaterialPageRoute(builder: (
+                  BuildContext context,
+                ) {
                   return expert_feedback.Feedback(expert);
                 }),
               );
