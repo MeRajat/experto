@@ -8,8 +8,13 @@ import 'package:experto/utils/contact_expert.dart' as contactExpert;
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
+<<<<<<< HEAD
 import "package:experto/utils/global_app_bar.dart";
 import './feedback.dart' as expert_feedback;
+=======
+import "package:url_launcher/url_launcher.dart";
+import "package:experto/global_app_bar.dart";
+>>>>>>> 801512c84b2779d50223e307066be87041c592d0
 
 class AppBar extends StatelessWidget {
   final DocumentSnapshot expert;
