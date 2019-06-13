@@ -191,8 +191,6 @@ class _ContactExpert extends State<ContactExpert> {
   //     },
   //   );
   // }
-
-<<<<<<< HEAD
   // void _launchSkype(
   //     BuildContext context, String skypeUsername, String serviceType) async {
   //   final url = "skype:$skypeUsername?$serviceType";
@@ -203,7 +201,6 @@ class _ContactExpert extends State<ContactExpert> {
   //     _showDialog(context);
   //   }
   // }
-=======
   void showBottomSheel(
       {@required Icon icon,
       @required String secondaryText,
@@ -274,10 +271,9 @@ class _ContactExpert extends State<ContactExpert> {
       },
     );
     controller.then((PersistentBottomSheetController p) {
-      p.close();
+      //p.close();
     });
   }
->>>>>>> temp2
 
   // void videoCall() {
   //   startVideo = StartVideo();
@@ -306,32 +302,24 @@ class _ContactExpert extends State<ContactExpert> {
       children: <Widget>[
         InkWell(
           onTap: () {
-<<<<<<< HEAD
-            bottomSheet.showBottomSheet(
-              context: context,
-              icon: Icon(Icons.face, size: 120),
-              secondaryText: "Are you sure you want to call this expert ?",
-              callback: () {
-                contactExpert.launchSkype(
-                    context: context,
-                    skypeUsername: expert['SkypeUser'],
-                    serviceType: "call",
-                    afterLaunchFunc: () {});
-                ;
-              },
-            );
-=======
             if (checkAvail())
-              showBottomSheel(
-                  icon: Icon(Icons.face, size: 120),
-                  secondaryText: "Are you sure you want to call this expert ?",
-                  callback: videoCall);
-            else
               showBottomSheel(
                   icon: Icon(Icons.warning, size: 120),
                   secondaryText: "Expert is not available right now!",
                   callback: null);
->>>>>>> temp2
+            else
+              bottomSheet.showBottomSheet(
+                context: context,
+                icon: Icon(Icons.face, size: 120),
+                secondaryText: "Are you sure you want to call this expert ?",
+                callback: () {
+                  contactExpert.launchSkype(
+                      context: context,
+                      skypeUsername: expert['SkypeUser'],
+                      serviceType: "call",
+                      afterLaunchFunc: () {});
+                },
+              );
           },
           child: Icon(
             Icons.video_call,
@@ -341,17 +329,24 @@ class _ContactExpert extends State<ContactExpert> {
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
             onTap: () {
-              bottomSheet.showBottomSheet(
+              if (checkAvail())
+                showBottomSheel(
+                    icon: Icon(Icons.warning, size: 120),
+                    secondaryText: "Expert is not available right now!",
+                    callback: null);
+              else
+                bottomSheet.showBottomSheet(
                   context: context,
-                  icon: Icon(Icons.chat_bubble_outline, size: 120),
-                  secondaryText: "Are you sure you want to message this expert",
+                  icon: Icon(Icons.face, size: 120),
+                  secondaryText: "Are you sure you want to message this expert ?",
                   callback: () {
                     contactExpert.launchSkype(
                         context: context,
                         skypeUsername: expert['SkypeUser'],
                         serviceType: "chat",
-                        afterLaunchFunc: updateInteraction);
-                  });
+                        afterLaunchFunc: () {});
+                  },
+                );
             },
             child: Icon(Icons.chat, size: 20),
           ),
@@ -380,20 +375,18 @@ class _ContactExpert extends State<ContactExpert> {
 
   bool checkAvail() {
     Timestamp now = Timestamp.now();
-    int l = expert["Avail"].length,
-        i;
-    for (i = 0; i < l; i++) {
-      Map<String, Timestamp> map = Map.from(expert["Avail"][i]);
-      if (now.compareTo(map["start"]) <= (now.compareTo(map["end"]) * -1))
+    expert["Availablity"].forEach((_, map) {
+      print(map['start']);
+      Timestamp start = map['start'];
+      if (now.compareTo(start) <= (now.compareTo(map["end"]) * -1))
         return true;
-    }
+    });
+//    int l = expert["Avail"].length, i;
+//    for (i = 0; i < l; i++) {
+//      Map<String, Timestamp> map = Map.from(expert["Avail"][i]);
+//      if (now.compareTo(map["start"]) <= (now.compareTo(map["end"]) * -1))
+//        return true;
+//    }
     return false;
-    //    map.forEach((Map<String,DateTime> x){
-    //      if(now.compareTo(x["start"])<=(now.compareTo(x["end"])*-1))
-    //        return true;
-    //      else
-//        return false;
-    //}
-    //);
   }
 }

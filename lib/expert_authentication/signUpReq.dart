@@ -11,7 +11,7 @@ class Authenticate {
   Map<String, dynamic> details;
   List<DocumentReference> skills;
   Map<String, Map<String, DateTime>> availablity;
-  List<Map<String, DateTime>> avail;
+  List<Map<String, DateTime>> avail = new List<Map<String, DateTime>>();
   String userName;
 
   //bool _isSignIn;
@@ -77,7 +77,7 @@ class Authenticate {
 
   getAvailablity(Map<String, Map<String, DateTime>> x) => availablity = x;
 
-  getAvail(List<Map<String, DateTime>> x) => avail = x;
+  getAvail(Map<String, DateTime> x) => avail.add(x);
 
   Future<void> signUp(
       List<GlobalKey<FormState>> _formKey, BuildContext context) async {

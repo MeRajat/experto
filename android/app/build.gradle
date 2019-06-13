@@ -38,24 +38,12 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 3
-        versionName '1.2β'
+        versionCode 2
+        versionName '1.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-<<<<<<< HEAD
-        //ndk {
-          //  abiFilters 'armeabi-v7a'
-        //}
-=======
-<<<<<<< HEAD
 //        ndk {
 //            abiFilters 'armeabi-v7a'
 //        }
-=======
-        //ndk {
-          //  abiFilters 'armeabi-v7a'
-        //}
->>>>>>> c51523e... last
->>>>>>> temp2
     }
 
     buildTypes {

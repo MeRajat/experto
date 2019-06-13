@@ -40,6 +40,7 @@ class _CustomFormField extends State<CustomFormField> {
   ];
   static final Authenticate authenticate = new Authenticate();
   bool loading = false;
+  Map<String, DateTime> avail;
   int step = 0;
   bool isExperienced = false;
   bool hasCertificate = false;
