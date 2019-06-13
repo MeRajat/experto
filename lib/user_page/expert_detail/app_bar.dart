@@ -235,7 +235,12 @@ class _ContactExpert extends State<ContactExpert> {
               icon: Icon(Icons.face, size: 120),
               secondaryText: "Are you sure you want to call this expert ?",
               callback: () {
-                contactExpert.videoCall(context: context);
+                contactExpert.launchSkype(
+                    context: context,
+                    skypeUsername: expert['SkypeUser'],
+                    serviceType: "chat",
+                    afterLaunchFunc: () {});
+                ;
               },
             );
           },
