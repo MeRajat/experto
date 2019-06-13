@@ -302,10 +302,13 @@ class _ContactExpert extends State<ContactExpert> {
         i;
     for (i = 0; i < l; i++) {
       Map<String, Timestamp> map = Map.from(expert["Avail"][i]);
+      print(map);
+      print(now);
       if (now.compareTo(map["start"]) <= (now.compareTo(map["end"]) * -1))
         return true;
     }
     return false;
+//    List<Map<String,Timestamp>> map=
     //    map.forEach((Map<String,DateTime> x){
     //      if(now.compareTo(x["start"])<=(now.compareTo(x["end"])*-1))
     //        return true;

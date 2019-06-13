@@ -4,7 +4,7 @@ import 'package:experto/utils/floating_action_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:experto/video_call/notification.dart';
+import 'package:experto/video_call/local_notification.dart';
 
 class StartVideo extends StatefulWidget {
   @override

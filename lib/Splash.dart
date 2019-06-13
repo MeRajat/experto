@@ -88,7 +88,7 @@ class SplashState extends State<Splash> {
     );
   }
 
-  void getPermissions() async {
+  Future<void> getPermissions() async {
     List<PermissionGroup> permission = [
       PermissionGroup.camera,
       PermissionGroup.microphone,
