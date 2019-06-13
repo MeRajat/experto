@@ -1,11 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
-<<<<<<< HEAD
 import "package:experto/utils/global_app_bar.dart";
-=======
-import "package:experto/global_app_bar.dart";
->>>>>>> 801512c84b2779d50223e307066be87041c592d0
 
 class CustomFlexibleSpace extends StatelessWidget{
   final String flexibleSpaceText;
