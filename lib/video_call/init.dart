@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:experto/user_authentication/userAdd.dart';
 import 'package:experto/utils/floating_action_button.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +13,11 @@ class StartVideo extends StatefulWidget {
 
 class _StartVideoState extends State<StartVideo> {
   bool _isInChannel = false, _toggleView = true;
+
   final _infoStrings = <String>[];
-  bool speaker = true,
-      mic = true,
-      camera = true,
-      _buttonState = true;
+  bool speaker = true, mic = false, camera = true, _buttonState = true;
   final _sessions = List<VideoSession>();
+  RestartableTimer timer;
 
   @override
   void initState() {
@@ -28,95 +28,96 @@ class _StartVideoState extends State<StartVideo> {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
     initNotification(_isInChannel);
+    timer = new RestartableTimer(Duration(seconds: 5), () {
+      setState(() {
+        _buttonState = !_buttonState;
+      });
+    });
     _toggleChannel();
   }
 
-  Future<void> check() async {
-    if (_buttonState)
-      await Future.delayed(Duration(seconds: 5), () {
-        _buttonState = !_buttonState;
-        setState(() {
-
-        });
-      });
-  }
   @override
   Widget build(BuildContext context) {
-    check();
     return Scaffold(
       body: Stack(
         children: _viewRows() +
-            [_buttonState ? Positioned(child: FlatButton(onPressed: () {
-              Navigator.of(context).pop();
-            },
-                color: Colors.transparent,
-                child: Icon(Icons.keyboard_arrow_down)),
-              top: 35.0, left: -10.0,) : SizedBox()
+            [
+              _buttonState
+                  ? Positioned(
+                      child: FlatButton(
+                          shape: CircleBorder(),
+                          onPressed: () {
+                            AgoraRtcEngine.disableVideo();
+                            AgoraRtcEngine.stopPreview();
+                            Navigator.of(context).pop();
+                          },
+                          color: Color.fromARGB(100, 255, 227, 242),
+                          child: Icon(Icons.keyboard_arrow_down)),
+                      top: 35.0,
+                      left: -10.0,
+                    )
+                  : SizedBox()
             ],
         alignment: AlignmentDirectional.bottomEnd,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _buttonState ? FloatingActionButton(
-        onPressed: () {
-          _toggleChannel();
-          startVideo = null;
-          Navigator.of(context).pop();
-        },
-        child: Icon(Icons.call_end),
-        backgroundColor: Colors.red,
-      ) : null,
-      extendBody: true,
-      bottomNavigationBar: _buttonState ? Container(
-        color: Colors.transparent,
-        padding: EdgeInsets.only(bottom: 10),
-        //color: Theme.of(context).bottomAppBarColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            FlatButton(
-              shape: CircleBorder(),
-              materialTapTargetSize: MaterialTapTargetSize.padded,
-              onPressed: () async {
-                setState(() {
-                  speaker = !speaker;
-                });
-                await AgoraRtcEngine.setEnableSpeakerphone(speaker);
-                print(speaker);
-              },
-              child: Icon(Icons.speaker_phone),
-              color: speaker ? Theme
-                  .of(context)
-                  .buttonColor : null,
-            ),
-            FlatButton(
-              shape: CircleBorder(),
-              materialTapTargetSize: MaterialTapTargetSize.padded,
+      floatingActionButton: _buttonState
+          ? FloatingActionButton(
               onPressed: () {
-                setState(() {
-                  mic = !mic;
-                });
-                AgoraRtcEngine.enableLocalAudio(mic);
+                timer.reset();
+                _toggleChannel();
+                startVideo = null;
+                Navigator.of(context).pop();
               },
-              child: Icon(Icons.mic_off),
-              color: mic ? null : Theme
-                  .of(context)
-                  .buttonColor,
-            ),
-            FlatButton(
-              shape: CircleBorder(),
-              materialTapTargetSize: MaterialTapTargetSize.padded,
-              onPressed: () {
-                setState(() {
-                  camera = !camera;
-                });
-                AgoraRtcEngine.switchCamera();
-              },
-              child:
-              camera ? Icon(Icons.camera_rear) : Icon(Icons.camera_front),
+              child: Icon(Icons.call_end),
+              backgroundColor: Colors.red,
             )
-          ],
-        ),
-      ) : null,
+          : null,
+      extendBody: true,
+      bottomNavigationBar: _buttonState
+          ? Container(
+              color: Colors.transparent,
+              padding: EdgeInsets.only(bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  _bottomButton(Icons.speaker_phone, speaker, () async {
+                    setState(() {
+                      speaker = !speaker;
+                    });
+                    AgoraRtcEngine.setEnableSpeakerphone(speaker);
+                  }),
+                  _bottomButton(Icons.mic_off, mic, () async {
+                    setState(() {
+                      mic = !mic;
+                    });
+                    AgoraRtcEngine.enableLocalAudio(!mic);
+                  }),
+                  _bottomButton(
+                      camera ? Icons.camera_rear : Icons.camera_front, false,
+                      () async {
+                    setState(() {
+                      camera = !camera;
+                    });
+                    AgoraRtcEngine.switchCamera();
+                  }),
+                ],
+              ),
+            )
+          : null,
+    );
+  }
+
+  Widget _bottomButton(IconData icon, bool highlight, Function func) {
+    return FlatButton(
+      shape: CircleBorder(),
+      materialTapTargetSize: MaterialTapTargetSize.padded,
+      onPressed: () {
+        func();
+        timer.reset();
+      },
+      child: Icon(icon),
+      color: highlight ? Colors.blue[100] : Color.fromARGB(100, 255, 227, 242),
     );
   }
 
@@ -183,7 +184,7 @@ class _StartVideoState extends State<StartVideo> {
       _isInChannel = true;
       stateChangedInformNotification(_isInChannel);
       AgoraRtcEngine.startPreview();
-      bool status = await AgoraRtcEngine.joinChannel(null, "notdemo", null,
+      bool status = await AgoraRtcEngine.joinChannel(null, "demo", null,
           int.parse(UserData.currentUser["Mobile"].toString().substring(2)));
       print(status);
     }
@@ -194,33 +195,58 @@ class _StartVideoState extends State<StartVideo> {
     List<Widget> views = _getRenderViews();
     List<Widget> expandedViews = new List<Widget>();
     if (views.length >= 2) {
-      expandedViews.add(
-          Container(height: 600,
-              width: 400,
-              child: views[views.length - (_toggleView ? 1 : 2)]));
-      expandedViews.add(FlatButton(onPressed: () {
-        setState(() {
-          _buttonState = !_buttonState;
-        });
-      },
-        child: SizedBox(height: 600, width: 400,),
+      expandedViews
+          .add(Container(child: views[views.length - (_toggleView ? 1 : 2)]));
+      expandedViews.add(InkWell(
+        onTap: () {
+          timer.reset();
+          setState(() {
+            _buttonState = !_buttonState;
+            if (_buttonState)
+              timer.reset();
+            else
+              timer.cancel();
+          });
+        },
+        onDoubleTap: () async {
+          if (_toggleView) return;
+          setState(() {
+            camera = !camera;
+          });
+          AgoraRtcEngine.switchCamera();
+        },
+        child: SizedBox(
+          height: 700,
+          width: 400,
+        ),
         splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,));
+        highlightColor: Colors.transparent,
+      ));
       expandedViews.add(
         Stack(
           children: <Widget>[
-            Container(
-                height: 150,
-                width: 110,
-                padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
-                child: views[views.length - (_toggleView ? 2 : 1)]),
-            FlatButton(
+            Padding(
+              padding:
+                  EdgeInsets.only(bottom: _buttonState ? 60 : 20, right: 20.0),
+              child: Container(
+                  height: 150,
+                  width: 110,
+                  child: views[views.length - (_toggleView ? 2 : 1)]),
+            ),
+            InkWell(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              onPressed: () {
+              onTap: () {
                 setState(() {
                   _toggleView = !_toggleView;
                 });
+              },
+              onDoubleTap: () async {
+                if (!_toggleView) return;
+                setState(() {
+                  camera = !camera;
+                });
+                AgoraRtcEngine.switchCamera();
               },
               child: SizedBox(
                 height: 130,
@@ -232,16 +258,77 @@ class _StartVideoState extends State<StartVideo> {
       );
       return expandedViews;
     } else if (views.length != 0) {
-      expandedViews.add(
-          Container(child: views[views.length - 1]));
-      expandedViews.add(FlatButton(onPressed: () {
-        setState(() {
-          _buttonState = !_buttonState;
-        });
-      },
-        child: SizedBox(height: 600, width: 400,),
+      expandedViews.add(Container(
+          child: _toggleView
+              ? Center(
+                  child: Text("Reconnecting..."),
+                )
+              : views[0]));
+
+      expandedViews.add(InkWell(
+        onTap: () {
+          timer.reset();
+          setState(() {
+            _buttonState = !_buttonState;
+            if (_buttonState)
+              timer.reset();
+            else
+              timer.cancel();
+          });
+        },
+        onDoubleTap: () async {
+          if (_toggleView) return;
+          setState(() {
+            camera = !camera;
+          });
+          AgoraRtcEngine.switchCamera();
+        },
+        child: SizedBox(
+          height: 700,
+          width: 400,
+        ),
         splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,));
+        highlightColor: Colors.transparent,
+      ));
+      expandedViews.add(
+        Stack(
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(
+                    bottom: _buttonState ? 70 : 20.0, right: 20.0),
+                child: Container(
+                    height: 150,
+                    width: 110,
+                    color: Colors.white,
+                    padding: EdgeInsets.all(0.0),
+                    child: _toggleView
+                        ? views[0]
+                        : Center(
+                            child: Text("Reconnecting..."),
+                          ))),
+            InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () {
+                setState(() {
+                  _toggleView = !_toggleView;
+                });
+              },
+              onDoubleTap: () async {
+                if (!_toggleView) return;
+                setState(() {
+                  camera = !camera;
+                });
+                AgoraRtcEngine.switchCamera();
+              },
+              child: SizedBox(
+                height: 130,
+                width: 60,
+              ),
+            )
+          ],
+        ),
+      );
       return expandedViews;
     } else
       return null;
