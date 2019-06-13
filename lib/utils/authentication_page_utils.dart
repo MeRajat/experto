@@ -191,8 +191,7 @@ class SignupTimeSelector extends StatelessWidget {
         ? "Start"
         : '${availablity[slot]['start'].hour.toString()}:${availablity[slot]['start'].minute.toString()}';
 
-    String timeEnd = (availablity == null ||
-            availablity[slot]['end'] == null)
+    String timeEnd = (availablity == null || availablity[slot]['end'] == null)
         ? "End"
         : '${availablity[slot]['end'].hour.toString()}:${availablity[slot]['end'].minute.toString()}';
     return Row(
