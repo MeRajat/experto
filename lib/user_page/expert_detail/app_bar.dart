@@ -192,6 +192,7 @@ class _ContactExpert extends State<ContactExpert> {
   //   );
   // }
 
+<<<<<<< HEAD
   // void _launchSkype(
   //     BuildContext context, String skypeUsername, String serviceType) async {
   //   final url = "skype:$skypeUsername?$serviceType";
@@ -202,6 +203,81 @@ class _ContactExpert extends State<ContactExpert> {
   //     _showDialog(context);
   //   }
   // }
+=======
+  void showBottomSheel(
+      {@required Icon icon,
+      @required String secondaryText,
+      @required Function callback}) {
+    Future<PersistentBottomSheetController> controller = showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Material(
+          elevation: 5,
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                child: icon,
+                padding: EdgeInsets.only(
+                  top: 20,
+                  bottom: 20,
+                ),
+              ),
+              //Padding(
+              //  padding: EdgeInsets.only(left: 15, top: 20, bottom: 80),
+              //  child: Text(
+              //    title,
+              //    style: Theme.of(context)
+              //        .textTheme
+              //        .title
+              //        .copyWith(fontSize: 24, letterSpacing: -.5),
+              //  ),
+              //),
+              Container(
+                width: 200,
+                padding: EdgeInsets.only(
+                  left: 20,
+                  bottom: 10,
+                ),
+                child: Text(
+                  secondaryText,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).primaryTextTheme.body2.copyWith(
+                        fontSize: 12,
+                      ),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                  left: 15,
+                  right: 15,
+                  bottom: 70,
+                ),
+                child: RaisedButton(
+                  color: (Theme.of(context).brightness == Brightness.dark)
+                      ? Color.fromRGBO(42, 123, 249, 1)
+                      : Colors.blue,
+                  child: Text(callback == null ? "Ok" : "Yes",
+                      style: Theme.of(context).primaryTextTheme.body2),
+                  onPressed: () {
+                    //Navigator.of(context, rootNavigator: false).pop();
+                    callback();
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    controller.then((PersistentBottomSheetController p) {
+      p.close();
+    });
+  }
+>>>>>>> temp2
 
   // void videoCall() {
   //   startVideo = StartVideo();
@@ -230,6 +306,7 @@ class _ContactExpert extends State<ContactExpert> {
       children: <Widget>[
         InkWell(
           onTap: () {
+<<<<<<< HEAD
             bottomSheet.showBottomSheet(
               context: context,
               icon: Icon(Icons.face, size: 120),
@@ -243,6 +320,18 @@ class _ContactExpert extends State<ContactExpert> {
                 ;
               },
             );
+=======
+            if (checkAvail())
+              showBottomSheel(
+                  icon: Icon(Icons.face, size: 120),
+                  secondaryText: "Are you sure you want to call this expert ?",
+                  callback: videoCall);
+            else
+              showBottomSheel(
+                  icon: Icon(Icons.warning, size: 120),
+                  secondaryText: "Expert is not available right now!",
+                  callback: null);
+>>>>>>> temp2
           },
           child: Icon(
             Icons.video_call,
@@ -287,5 +376,24 @@ class _ContactExpert extends State<ContactExpert> {
         ),
       ],
     );
+  }
+
+  bool checkAvail() {
+    Timestamp now = Timestamp.now();
+    int l = expert["Avail"].length,
+        i;
+    for (i = 0; i < l; i++) {
+      Map<String, Timestamp> map = Map.from(expert["Avail"][i]);
+      if (now.compareTo(map["start"]) <= (now.compareTo(map["end"]) * -1))
+        return true;
+    }
+    return false;
+    //    map.forEach((Map<String,DateTime> x){
+    //      if(now.compareTo(x["start"])<=(now.compareTo(x["end"])*-1))
+    //        return true;
+    //      else
+//        return false;
+    //}
+    //);
   }
 }

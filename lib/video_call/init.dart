@@ -15,7 +15,14 @@ class _StartVideoState extends State<StartVideo> {
   bool _isInChannel = false, _toggleView = true;
 
   final _infoStrings = <String>[];
+<<<<<<< HEAD
   bool speaker = true, mic = false, camera = true, _buttonState = true;
+=======
+  bool speaker = true,
+      mic = false,
+      camera = true,
+      _buttonState = true;
+>>>>>>> temp2
   final _sessions = List<VideoSession>();
   RestartableTimer timer;
 
@@ -44,6 +51,7 @@ class _StartVideoState extends State<StartVideo> {
             [
               _buttonState
                   ? Positioned(
+<<<<<<< HEAD
                       child: FlatButton(
                           shape: CircleBorder(),
                           onPressed: () {
@@ -56,6 +64,20 @@ class _StartVideoState extends State<StartVideo> {
                       top: 35.0,
                       left: -10.0,
                     )
+=======
+                child: FlatButton(
+                    shape: CircleBorder(),
+                    onPressed: () {
+                      AgoraRtcEngine.disableVideo();
+                      AgoraRtcEngine.stopPreview();
+                      Navigator.of(context).pop();
+                    },
+                    color: Color.fromARGB(100, 255, 227, 242),
+                    child: Icon(Icons.keyboard_arrow_down)),
+                top: 35.0,
+                left: -10.0,
+              )
+>>>>>>> temp2
                   : SizedBox()
             ],
         alignment: AlignmentDirectional.bottomEnd,
@@ -63,6 +85,7 @@ class _StartVideoState extends State<StartVideo> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _buttonState
           ? FloatingActionButton(
+<<<<<<< HEAD
               onPressed: () {
                 timer.reset();
                 _toggleChannel();
@@ -72,10 +95,22 @@ class _StartVideoState extends State<StartVideo> {
               child: Icon(Icons.call_end),
               backgroundColor: Colors.red,
             )
+=======
+        onPressed: () {
+          timer.reset();
+          _toggleChannel();
+          startVideo = null;
+          Navigator.of(context).pop();
+        },
+        child: Icon(Icons.call_end),
+        backgroundColor: Colors.red,
+      )
+>>>>>>> temp2
           : null,
       extendBody: true,
       bottomNavigationBar: _buttonState
           ? Container(
+<<<<<<< HEAD
               color: Colors.transparent,
               padding: EdgeInsets.only(bottom: 10),
               child: Row(
@@ -104,6 +139,36 @@ class _StartVideoState extends State<StartVideo> {
                 ],
               ),
             )
+=======
+        color: Colors.transparent,
+        padding: EdgeInsets.only(bottom: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            _bottomButton(Icons.speaker_phone, speaker, () async {
+              setState(() {
+                speaker = !speaker;
+              });
+              AgoraRtcEngine.setEnableSpeakerphone(speaker);
+            }),
+            _bottomButton(Icons.mic_off, mic, () async {
+              setState(() {
+                mic = !mic;
+              });
+              AgoraRtcEngine.enableLocalAudio(!mic);
+            }),
+            _bottomButton(
+                camera ? Icons.camera_rear : Icons.camera_front, false,
+                    () async {
+                  setState(() {
+                    camera = !camera;
+                  });
+                  AgoraRtcEngine.switchCamera();
+                }),
+          ],
+        ),
+      )
+>>>>>>> temp2
           : null,
     );
   }
@@ -227,7 +292,11 @@ class _StartVideoState extends State<StartVideo> {
           children: <Widget>[
             Padding(
               padding:
+<<<<<<< HEAD
                   EdgeInsets.only(bottom: _buttonState ? 60 : 20, right: 20.0),
+=======
+              EdgeInsets.only(bottom: _buttonState ? 60 : 20, right: 20.0),
+>>>>>>> temp2
               child: Container(
                   height: 150,
                   width: 110,
@@ -261,8 +330,13 @@ class _StartVideoState extends State<StartVideo> {
       expandedViews.add(Container(
           child: _toggleView
               ? Center(
+<<<<<<< HEAD
                   child: Text("Reconnecting..."),
                 )
+=======
+            child: Text("Reconnecting..."),
+          )
+>>>>>>> temp2
               : views[0]));
 
       expandedViews.add(InkWell(
@@ -304,8 +378,13 @@ class _StartVideoState extends State<StartVideo> {
                     child: _toggleView
                         ? views[0]
                         : Center(
+<<<<<<< HEAD
                             child: Text("Reconnecting..."),
                           ))),
+=======
+                      child: Text("Reconnecting..."),
+                    ))),
+>>>>>>> temp2
             InkWell(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
