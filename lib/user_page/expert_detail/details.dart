@@ -33,7 +33,9 @@ class _DetailState extends State<Detail> {
       );
     }
     loading = false;
-    setState(() {});
+    try {
+      setState(() {});
+    } catch (e) {}
   }
 
   void getWorkExp() async {
@@ -46,6 +48,35 @@ class _DetailState extends State<Detail> {
       padding: EdgeInsets.only(top: 20, bottom: 80),
       sliver: SliverList(
         delegate: SliverChildListDelegate([
+          Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 20, right: 10, top: 20),
+                  child: Text(
+                    "Descirption",
+                    style: Theme.of(context).textTheme.title,
+                    textScaleFactor: 1.2,
+                  ),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(left: 20, top: 15, bottom: 20, right: 20),
+                  child: Text(
+                    widget.expert['Description'],
+                    style: Theme.of(context).primaryTextTheme.body2.copyWith(
+                          fontSize: 13,
+                          color:
+                              (Theme.of(context).brightness == Brightness.dark)
+                                  ? Colors.grey[400]
+                                  : Colors.grey[800],
+                        ),
+                  ),
+                )
+              ],
+            ),
+          ),
           Card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,11 +102,21 @@ class _DetailState extends State<Detail> {
                           children: skillName
                               .map(
                                 (element) => Container(
-                                      padding: EdgeInsets.only(bottom: 5),
-                                      child: Text(element,
-                                          style: Theme.of(context)
-                                              .primaryTextTheme
-                                              .body2),
+                                      padding: EdgeInsets.only(bottom: 3),
+                                      child: Text(
+                                        element,
+                                        style: Theme.of(context)
+                                            .primaryTextTheme
+                                            .body2
+                                            .copyWith(
+                                              fontSize: 13,
+                                              color: (Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark)
+                                                  ? Colors.grey[400]
+                                                  : Colors.grey[800],
+                                            ),
+                                      ),
                                     ),
                               )
                               .toList(),
@@ -105,10 +146,19 @@ class _DetailState extends State<Detail> {
                           (element) => Container(
                                 width: 230,
                                 padding: EdgeInsets.only(bottom: 10),
-                                child: Text(element,
-                                    style: Theme.of(context)
-                                        .primaryTextTheme
-                                        .body2),
+                                child: Text(
+                                  element,
+                                  style: Theme.of(context)
+                                      .primaryTextTheme
+                                      .body2
+                                      .copyWith(
+                                        fontSize: 13,
+                                        color: (Theme.of(context).brightness ==
+                                                Brightness.dark)
+                                            ? Colors.grey[400]
+                                            : Colors.grey[800],
+                                      ),
+                                ),
                               ),
                         )
                         .toList(),

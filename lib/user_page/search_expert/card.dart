@@ -27,20 +27,21 @@ class CustomCard extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Hero(
-                tag:expert["emailID"],
+                tag: expert["emailID"],
                 child: Icon(
                   CupertinoIcons.person_solid,
-                  size: 80,
+                  size: 70,
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(top:10,left: 10,bottom: 5),
+                padding:
+                    EdgeInsets.only(top: 10, left: 10, bottom: 5, right: 10),
                 width: 230,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.only(bottom: 8),
+                      padding: EdgeInsets.only(bottom: 5),
                       child: Text(
                         expert["Name"],
                         style: Theme.of(context)
@@ -50,12 +51,21 @@ class CustomCard extends StatelessWidget {
                         textScaleFactor: .85,
                       ),
                     ),
-                    Text(
-                      expert['Description'],
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .body2
-                          .copyWith(fontSize: 12),
+                    RichText(
+                      text: TextSpan(
+                        text: expert['Description'],
+                        style:
+                            Theme.of(context).primaryTextTheme.body2.copyWith(
+                                  fontSize: 12,
+                                  color: (Theme.of(context).brightness ==
+                                          Brightness.dark)
+                                      ? Colors.grey[400]
+                                      : Colors.grey[800],
+                                ),
+                      ),
+                      maxLines: 2,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
                     )
                   ],
                 ),

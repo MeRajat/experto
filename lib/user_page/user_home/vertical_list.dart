@@ -5,6 +5,8 @@ import '../expert_detail/expert_detail.dart';
 
 import 'package:experto/utils/timed_out.dart';
 import "package:experto/utils/bloc/reload.dart";
+import "package:experto/utils/contact_expert.dart" as contactExpert;
+import "package:experto/utils/bottomSheet.dart" as bottomSheet;
 
 class VerticalList extends StatefulWidget {
   @override
@@ -62,14 +64,14 @@ class _VerticalListState extends State<VerticalList> {
       });
     });
     experts.clear();
-    print(interactionSnapshot.documents.length); 
-      for (int i = 0; i < interactionSnapshot.documents.length; i++) {
-        QuerySnapshot q = await expert
-            .where("emailID",
-                isEqualTo: interactionSnapshot.documents[i]["expert"])
-            .getDocuments();
-        experts.add(q.documents[0]);
-      }
+    print(interactionSnapshot.documents.length);
+    for (int i = 0; i < interactionSnapshot.documents.length; i++) {
+      QuerySnapshot q = await expert
+          .where("emailID",
+              isEqualTo: interactionSnapshot.documents[i]["expert"])
+          .getDocuments();
+      experts.add(q.documents[0]);
+    }
     setState(() {
       load = true;
     });
@@ -86,7 +88,7 @@ class _VerticalListState extends State<VerticalList> {
               return Card(
                 child: Container(
                   padding:
-                      EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 0),
+                      EdgeInsets.only(top: 15, left: 20, right: 20, bottom: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -95,33 +97,36 @@ class _VerticalListState extends State<VerticalList> {
                         style: Theme.of(context)
                             .textTheme
                             .title
-                            .copyWith(fontSize: 19),
+                            .copyWith(fontSize: 20),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 12, bottom: 5),
+                        padding: EdgeInsets.only(top: 12, bottom: 10),
                         child: Row(
                           children: <Widget>[
-                            Text("Your Expert : ",
-                                style:
-                                    Theme.of(context).primaryTextTheme.body2),
-                            Text(
-                              experts[index]["Name"],
-                              style: Theme.of(context).primaryTextTheme.body2,
+                            Hero(
+                              tag: experts[index]['emailID'],
+                              child: Text(
+                                "Your Expert : ${experts[index]["Name"]}",
+                                style: Theme.of(context)
+                                    .primaryTextTheme
+                                    .body2
+                                    .copyWith(
+                                      fontSize: 13,
+                                    ),
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(
-                            height: 30,
-                            width: 75,
-                            child: FlatButton(
-                              child: Text("view detail",
-                                  style:
-                                      Theme.of(context).primaryTextTheme.body2),
-                              padding: EdgeInsets.all(0),
-                              onPressed: () {
+                      Hero(
+                        tag: "contact",
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Spacer(flex: 10),
+                            InkWell(
+                              child: Icon(Icons.info, size: 17),
+                              onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -132,9 +137,44 @@ class _VerticalListState extends State<VerticalList> {
                                 );
                               },
                             ),
-                          ),
-                        ],
-                      )
+                            Spacer(flex: 1),
+                            InkWell(
+                              child: Icon(Icons.video_call, size: 20),
+                              onTap: () {
+                                bottomSheet.showBottomSheet(
+                                  context: context,
+                                  icon: Icon(Icons.face, size: 120),
+                                  secondaryText:
+                                      "Are you sure you want to call this expert ?",
+                                  callback: () {
+                                    contactExpert.videoCall(context: context);
+                                  },
+                                );
+                              },
+                            ),
+                            Spacer(flex: 1),
+                            InkWell(
+                              child: Icon(Icons.chat, size: 16),
+                              onTap: () {
+                                bottomSheet.showBottomSheet(
+                                    context: context,
+                                    icon: Icon(Icons.chat_bubble_outline,
+                                        size: 120),
+                                    secondaryText:
+                                        "Are you sure you want to message this expert",
+                                    callback: () {
+                                      contactExpert.launchSkype(
+                                          context: context,
+                                          skypeUsername: experts[index]
+                                              ['SkypeUser'],
+                                          serviceType: "chat",
+                                          afterLaunchFunc: () {});
+                                    });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),

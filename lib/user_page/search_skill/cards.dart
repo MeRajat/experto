@@ -153,10 +153,8 @@ class _Cards extends State<Cards> {
     searchBloc.value.listen((searchQuery) {
       searchingStatus = 1;
       timedOut = false;
-      if (searchString != searchQuery) {
         searchString = searchQuery;
         search(searchQuery);
-      }
     });
   }
 
