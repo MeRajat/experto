@@ -238,7 +238,7 @@ class _ContactExpert extends State<ContactExpert> {
                 contactExpert.launchSkype(
                     context: context,
                     skypeUsername: expert['SkypeUser'],
-                    serviceType: "chat",
+                    serviceType: "call",
                     afterLaunchFunc: () {});
                 ;
               },
