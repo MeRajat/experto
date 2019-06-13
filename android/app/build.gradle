@@ -41,12 +41,27 @@ android {
         versionCode 3
         versionName '1.2β'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        ndk{
+//            abiFilters "armeabi-v7a"
+//        }
     }
     splits {
         // Configures multiple APKs based on ABI.
         abi {
+            def isReleaseBuild = false
+
+            gradle.startParameter.taskNames.find {
+                // Enable split for release builds in different build flavors
+                // (assemblePaidRelease, assembleFreeRelease, etc.).
+                if (it ==~ /:app:assemble.*Release/) {
+                    isReleaseBuild = true
+                    return true // break
+                }
+
+                return false // continue
+            }
             // Enables building multiple APKs per ABI.
-            enable true
+            enable isReleaseBuild
 
             // By default all ABIs are included, so use reset() and include to specify that we only
             // want APKs for x86, armeabi-v7a, and mips.
