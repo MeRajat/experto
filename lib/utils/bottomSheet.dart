@@ -26,6 +26,7 @@ void showBottomSheet(
               width: 200,
               padding: EdgeInsets.only(
                 left: 20,
+                right: 20,
                 bottom: 10,
               ),
               child: Text(
@@ -47,12 +48,14 @@ void showBottomSheet(
                 color: (Theme.of(context).brightness == Brightness.dark)
                     ? Color.fromRGBO(42, 123, 249, 1)
                     : Colors.blue,
-                child: Text("Yes",
+                child: Text((callback == null) ? "" : "Yes",
                     style: Theme.of(context).primaryTextTheme.body2),
-                onPressed: () {
-                  //Navigator.of(context, rootNavigator: false).pop();
-                  callback();
-                },
+                onPressed: (callback == null)
+                    ? null
+                    : () {
+                        //Navigator.of(context, rootNavigator: false).pop();
+                        callback();
+                      },
               ),
             ),
           ],

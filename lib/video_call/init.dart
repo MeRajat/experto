@@ -15,7 +15,10 @@ class _StartVideoState extends State<StartVideo> {
   bool _isInChannel = false, _toggleView = true;
 
   final _infoStrings = <String>[];
-  bool speaker = true, mic = false, camera = true, _buttonState = true;
+  bool speaker = true,
+      mic = false,
+      camera = true,
+      _buttonState = true;
   final _sessions = List<VideoSession>();
   RestartableTimer timer;
 
@@ -44,18 +47,18 @@ class _StartVideoState extends State<StartVideo> {
             [
               _buttonState
                   ? Positioned(
-                      child: FlatButton(
-                          shape: CircleBorder(),
-                          onPressed: () {
-                            AgoraRtcEngine.disableVideo();
-                            AgoraRtcEngine.stopPreview();
-                            Navigator.of(context).pop();
-                          },
-                          color: Color.fromARGB(100, 255, 227, 242),
-                          child: Icon(Icons.keyboard_arrow_down)),
-                      top: 35.0,
-                      left: -10.0,
-                    )
+                child: FlatButton(
+                    shape: CircleBorder(),
+                    onPressed: () {
+                      AgoraRtcEngine.disableVideo();
+                      AgoraRtcEngine.stopPreview();
+                      Navigator.of(context).pop();
+                    },
+                    color: Color.fromARGB(100, 255, 227, 242),
+                    child: Icon(Icons.keyboard_arrow_down)),
+                top: 35.0,
+                left: -10.0,
+              )
                   : SizedBox()
             ],
         alignment: AlignmentDirectional.bottomEnd,
@@ -63,47 +66,47 @@ class _StartVideoState extends State<StartVideo> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _buttonState
           ? FloatingActionButton(
-              onPressed: () {
-                timer.reset();
-                _toggleChannel();
-                startVideo = null;
-                Navigator.of(context).pop();
-              },
-              child: Icon(Icons.call_end),
-              backgroundColor: Colors.red,
-            )
+        onPressed: () {
+          timer.reset();
+          _toggleChannel();
+          startVideo = null;
+          Navigator.of(context).pop();
+        },
+        child: Icon(Icons.call_end),
+        backgroundColor: Colors.red,
+      )
           : null,
       extendBody: true,
       bottomNavigationBar: _buttonState
           ? Container(
-              color: Colors.transparent,
-              padding: EdgeInsets.only(bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  _bottomButton(Icons.speaker_phone, speaker, () async {
-                    setState(() {
-                      speaker = !speaker;
-                    });
-                    AgoraRtcEngine.setEnableSpeakerphone(speaker);
-                  }),
-                  _bottomButton(Icons.mic_off, mic, () async {
-                    setState(() {
-                      mic = !mic;
-                    });
-                    AgoraRtcEngine.enableLocalAudio(!mic);
-                  }),
-                  _bottomButton(
-                      camera ? Icons.camera_rear : Icons.camera_front, false,
-                      () async {
-                    setState(() {
-                      camera = !camera;
-                    });
-                    AgoraRtcEngine.switchCamera();
-                  }),
-                ],
-              ),
-            )
+        color: Colors.transparent,
+        padding: EdgeInsets.only(bottom: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            _bottomButton(Icons.speaker_phone, speaker, () async {
+              setState(() {
+                speaker = !speaker;
+              });
+              AgoraRtcEngine.setEnableSpeakerphone(speaker);
+            }),
+            _bottomButton(Icons.mic_off, mic, () async {
+              setState(() {
+                mic = !mic;
+              });
+              AgoraRtcEngine.enableLocalAudio(!mic);
+            }),
+            _bottomButton(
+                camera ? Icons.camera_rear : Icons.camera_front, false,
+                    () async {
+                  setState(() {
+                    camera = !camera;
+                  });
+                  AgoraRtcEngine.switchCamera();
+                }),
+          ],
+        ),
+      )
           : null,
     );
   }
@@ -227,7 +230,7 @@ class _StartVideoState extends State<StartVideo> {
           children: <Widget>[
             Padding(
               padding:
-                  EdgeInsets.only(bottom: _buttonState ? 60 : 20, right: 20.0),
+              EdgeInsets.only(bottom: _buttonState ? 60 : 20, right: 20.0),
               child: Container(
                   height: 150,
                   width: 110,
@@ -261,8 +264,8 @@ class _StartVideoState extends State<StartVideo> {
       expandedViews.add(Container(
           child: _toggleView
               ? Center(
-                  child: Text("Reconnecting..."),
-                )
+            child: Text("Reconnecting..."),
+          )
               : views[0]));
 
       expandedViews.add(InkWell(
@@ -304,8 +307,8 @@ class _StartVideoState extends State<StartVideo> {
                     child: _toggleView
                         ? views[0]
                         : Center(
-                            child: Text("Reconnecting..."),
-                          ))),
+                      child: Text("Reconnecting..."),
+                    ))),
             InkWell(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,

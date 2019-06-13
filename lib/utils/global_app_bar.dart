@@ -45,7 +45,10 @@ class CustomAppBar extends StatelessWidget {
       pinned: true,
       floating: isFloating,
       leading: Container(
-        padding: EdgeInsets.only(left:6,right:6),
+        padding: EdgeInsets.only(
+          left: 6,
+          right: 6,
+        ),
         child: Image.asset(
           "assets/logo_transparent.png",
         ),

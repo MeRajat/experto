@@ -41,9 +41,6 @@ android {
         versionCode 3
         versionName '1.2β'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        //ndk {
-          //  abiFilters 'armeabi-v7a'
-        //}
     }
 
     buildTypes {
