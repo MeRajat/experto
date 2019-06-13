@@ -115,16 +115,8 @@ class SplashState extends State<Splash> {
       body: Padding(
         padding: const EdgeInsets.all(50.0),
         child: new Center(
-<<<<<<< HEAD
-          child: Hero(
-              tag: "logo",
-              child: Image.asset(
-                "assets/logo_transparent.png",
-              )),
-=======
           child:
           Hero(tag: "logo", child:  Image.asset("assets/logo_transparent.png",)),
->>>>>>> skype
         ),
       ),
     );
