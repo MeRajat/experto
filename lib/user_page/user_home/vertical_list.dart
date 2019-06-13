@@ -147,12 +147,7 @@ class _VerticalListState extends State<VerticalList> {
                                   secondaryText:
                                       "Are you sure you want to call this expert ?",
                                   callback: () {
-                                    contactExpert.launchSkype(
-                                          context: context,
-                                          skypeUsername: experts[index]
-                                              ['SkypeUser'],
-                                          serviceType: "call",
-                                          afterLaunchFunc: () {});
+                                    contactExpert.videoCall(context:context);
                                   },
                                 );
                               },
