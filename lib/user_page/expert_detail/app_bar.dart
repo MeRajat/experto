@@ -230,7 +230,7 @@ class _ContactExpert extends State<ContactExpert> {
       children: <Widget>[
         InkWell(
           onTap: () {
-            if(checkAvail()){
+            if (checkAvail()) {
               bottomSheet.showBottomSheet(
               context: context,
               icon: Icon(Icons.face, size: 120),
@@ -243,13 +243,12 @@ class _ContactExpert extends State<ContactExpert> {
             }
             else{
               bottomSheet.showBottomSheet(
-              context: context,
-              icon: Icon(Icons.not_interested, size: 120),
-              secondaryText: "Expert is not available right now!",
-              callback: null,
-            );
+                context: context,
+                icon: Icon(Icons.not_interested, size: 120),
+                secondaryText: "Expert is not available right now!",
+                callback: null,
+              );
             }
-            
           },
           child: Icon(
             Icons.video_call,
@@ -297,17 +296,6 @@ class _ContactExpert extends State<ContactExpert> {
   }
 
   bool checkAvail() {
-    Timestamp now = Timestamp.now();
-    int l = expert["Avail"].length,
-        i;
-    for (i = 0; i < l; i++) {
-      Map<String, Timestamp> map = Map.from(expert["Avail"][i]);
-      print(map);
-      print(now);
-      if (now.compareTo(map["start"]) <= (now.compareTo(map["end"]) * -1))
-        return true;
-    }
-    return false;
 //    List<Map<String,Timestamp>> map=
     //    map.forEach((Map<String,DateTime> x){
     //      if(now.compareTo(x["start"])<=(now.compareTo(x["end"])*-1))
@@ -316,5 +304,26 @@ class _ContactExpert extends State<ContactExpert> {
 //        return false;
     //}
     //);
+    DateTime now = DateTime.now();
+    bool avail = true;
+    var expertAvailability = expert["Availablity"];
+    expertAvailability.forEach((_, timeSlot) {
+      if (timeSlot['start'] != null || timeSlot['end'] != null) {
+        DateTime start = timeSlot['start'].toDate();
+        DateTime end = timeSlot['end'].toDate();
+        if (now.hour > start.hour && now.hour < end.hour) {
+          avail = true;
+        }
+        else if (now.hour == start.hour || now.hour == end.hour) {
+          if (now.minute > start.minute && now.minute < start.minute) {
+            avail = true;
+          }
+        }
+        else {
+          avail = false;
+        }
+      }
+    });
+    return avail;
   }
 }
