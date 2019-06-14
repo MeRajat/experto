@@ -77,7 +77,6 @@ class Authenticate {
 
   getAvailablity(Map<String, Map<String, DateTime>> x) => availablity = x;
 
-  getAvail(Map<String, DateTime> x) => avail.add(x);
 
   Future<void> signUp(
       List<GlobalKey<FormState>> _formKey, BuildContext context) async {
@@ -102,7 +101,7 @@ class Authenticate {
           description: details['description'],
           workExperience: details['workExp'],
           skills: skills,
-          availablity: availablity);
+          );
 
       Firestore.instance.runTransaction((Transaction t) async {
         await expertReference.add(expert.toJson());

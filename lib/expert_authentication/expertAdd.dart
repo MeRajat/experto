@@ -14,8 +14,6 @@ class Experts {
       description,
       workExperience;
   final List<DocumentReference> skills;
-  final Map<String, Map<String, DateTime>> availablity;
-  final List<Map<String, DateTime>> avail;
   bool status;
   int mobile;
 
@@ -32,8 +30,6 @@ class Experts {
     @required this.description,
     @required this.workExperience,
     @required this.skills,
-    @required this.availablity,
-    this.avail,
   }) {
     mobile = int.parse(m);
   }
@@ -47,11 +43,14 @@ class Experts {
         'Mobile': mobile,
         'Status': status,
         'Index': index,
-    "Description": description,
-    "Work Experience": workExperience,
-    "Skills": skills,
-    "Availablity": availablity,
-    "Avail": avail
+        "Description": description,
+        "Work Experience": workExperience,
+        "Skills": skills,
+        "Availablity": {
+          'slot1': {"start": null, "end": null}
+        },
+        "Available":true,
+        "Availability Mode":"normal",
       };
 }
 
