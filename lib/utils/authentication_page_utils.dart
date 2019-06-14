@@ -137,6 +137,7 @@ void showAuthSnackBar({
   @required BuildContext context,
   @required String title,
   @required leading,
+  bool persistant:true
 }) {
   Scaffold.of(context).removeCurrentSnackBar();
   Scaffold.of(context).showSnackBar(
@@ -164,7 +165,7 @@ void showAuthSnackBar({
           padding: EdgeInsets.all(5),
         ),
       ),
-      duration: Duration(hours: 1),
+      duration: (persistant)?Duration(hours: 1):Duration(seconds: 3),
     ),
   );
 }
@@ -173,7 +174,7 @@ class SignupTimeSelector extends StatelessWidget {
   final Function callbackFunc;
   final String headingText, slot;
   final Color selector1Color, selector2Color;
-  final Map<String, Map<String, DateTime>> availablity;
+  final Map availablity;
 
   SignupTimeSelector({
     @required this.callbackFunc,
@@ -189,11 +190,11 @@ class SignupTimeSelector extends StatelessWidget {
     String timeStart = (availablity == null ||
             availablity[slot]['start'] == null)
         ? "Start"
-        : '${availablity[slot]['start'].hour.toString()}:${availablity[slot]['start'].minute.toString()}';
+        : '${availablity[slot]['start'].toDate().hour.toString()}:${availablity[slot]['start'].toDate().minute.toString()}';
 
     String timeEnd = (availablity == null || availablity[slot]['end'] == null)
         ? "End"
-        : '${availablity[slot]['end'].hour.toString()}:${availablity[slot]['end'].minute.toString()}';
+        : '${availablity[slot]['end'].toDate().hour.toString()}:${availablity[slot]['end'].toDate().minute.toString()}';
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -202,8 +203,9 @@ class SignupTimeSelector extends StatelessWidget {
           style: Theme.of(context)
               .primaryTextTheme
               .body2
-              .copyWith(color: Colors.white),
+              .copyWith(color: Colors.grey[400]),
         ),
+        Padding(padding:EdgeInsets.only(left:20)),
         CustomFlatButton(
           text: timeStart,
           color: selector1Color,

@@ -17,7 +17,7 @@ class _VerticalListState extends State<VerticalList> {
   QuerySnapshot interactionSnapshot;
   List<DocumentSnapshot> experts;
   CollectionReference interaction, expert;
-  bool timedout, load;
+  bool timedout, load, checkingAvail = false, expertAvailable = true;
 
   void initState() {
     expert = Firestore.instance.collection("Experts");
@@ -75,6 +75,81 @@ class _VerticalListState extends State<VerticalList> {
     setState(() {
       load = true;
     });
+  }
+
+  Future<void> checkAvail(int index) async {
+    setState(() {
+      checkingAvail = true;
+    });
+
+    experts[index] = await experts[index].reference.get();
+
+    if (experts[index]["Availability Mode"] == 'normal') {
+      expertAvailable = experts[index]['Available'];
+    } else {
+      DateTime now = DateTime.now();
+      var expertAvailability = experts[index]["Availablity"];
+      expertAvailability.forEach((_, timeSlot) {
+        if (timeSlot['start'] != null || timeSlot['end'] != null) {
+          DateTime start = timeSlot['start'].toDate();
+          DateTime end = timeSlot['end'].toDate();
+          if (now.hour > start.hour && now.hour < end.hour) {
+            expertAvailable = true;
+          } else if (now.hour == start.hour || now.hour == end.hour) {
+            if (now.minute > start.minute && now.minute < start.minute) {
+              expertAvailable = true;
+            }
+          } else {
+            expertAvailable = false;
+          }
+        }
+      });
+    }
+
+    setState(() {
+      checkingAvail = false;
+    });
+  }
+
+  void contactOnTap(
+      {@required String secondaryText,
+      @required Widget icon,
+      @required String serviceType,
+      @required int index}) async {
+    checkingAvail = true;
+
+    if (checkingAvail) {
+      bottomSheet.showBottomSheet(
+        context: context,
+        icon: CircularProgressIndicator(),
+        secondaryText: "Checking Availablity",
+        callback: null,
+      );
+    }
+
+    await checkAvail(index);
+
+    if (expertAvailable) {
+      bottomSheet.showBottomSheet(
+        context: context,
+        icon: icon,
+        secondaryText: secondaryText,
+        callback: () {
+          contactExpert.launchSkype(
+              context: context,
+              skypeUsername: experts[index]['SkypeUser'],
+              serviceType: serviceType,
+              afterLaunchFunc: () {});
+        },
+      );
+    } else if (!expertAvailable) {
+      bottomSheet.showBottomSheet(
+        context: context,
+        icon: Icon(Icons.not_interested, size: 120),
+        secondaryText: "Expert is not available right now!",
+        callback: null,
+      );
+    }
   }
 
   @override
@@ -141,40 +216,24 @@ class _VerticalListState extends State<VerticalList> {
                             InkWell(
                               child: Icon(Icons.video_call, size: 20),
                               onTap: () {
-                                bottomSheet.showBottomSheet(
-                                  context: context,
-                                  icon: Icon(Icons.face, size: 120),
-                                  secondaryText:
-                                      "Are you sure you want to call this expert ?",
-                                  callback: () {
-                                    contactExpert.launchSkype(
-                                          context: context,
-                                          skypeUsername: experts[index]
-                                              ['SkypeUser'],
-                                          serviceType: "call",
-                                          afterLaunchFunc: () {});
-                                  },
-                                );
+                                contactOnTap(
+                                    secondaryText:
+                                        "Are you sure you want to call this expert",
+                                    serviceType: "chat",
+                                    index: index,
+                                    icon: Icon(Icons.face, size: 120));
                               },
                             ),
                             Spacer(flex: 1),
                             InkWell(
                               child: Icon(Icons.chat, size: 16),
                               onTap: () {
-                                bottomSheet.showBottomSheet(
-                                    context: context,
-                                    icon: Icon(Icons.chat_bubble_outline,
-                                        size: 120),
+                                contactOnTap(
                                     secondaryText:
-                                        "Are you sure you want to message this expert",
-                                    callback: () {
-                                      contactExpert.launchSkype(
-                                          context: context,
-                                          skypeUsername: experts[index]
-                                              ['SkypeUser'],
-                                          serviceType: "chat",
-                                          afterLaunchFunc: () {});
-                                    });
+                                        "Are you sure you want to call this expert",
+                                    serviceType: "chat",
+                                    index: index,
+                                    icon: Icon(Icons.face, size: 120));
                               },
                             ),
                           ],

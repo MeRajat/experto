@@ -10,19 +10,12 @@ List<BottomNavigationBarItem> navigationBarItems() {
       ),
       title: Text('Home'),
     ),
-    // BottomNavigationBarItem(
-    //   icon: Icon(
-    //     CupertinoIcons.settings,
-    //     size: 25,
-    //   ),
-    //   title: Text("Skill"),
-    // ),
-    // BottomNavigationBarItem(
-    //   icon: Icon(
-    //     CupertinoIcons.person,
-    //     size: 25,
-    //   ),
-    //   title: Text('Expert'),
-    // ),
+    BottomNavigationBarItem(
+      icon: Icon(
+        CupertinoIcons.settings,
+        size: 25,
+      ),
+      title: Text("Settings"),
+    ),
   ];
 }

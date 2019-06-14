@@ -94,7 +94,6 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
 
 class ContactExpert extends StatefulWidget {
   final DocumentSnapshot expert;
-
   ContactExpert(this.expert);
 
   @override
@@ -102,7 +101,9 @@ class ContactExpert extends StatefulWidget {
 }
 
 class _ContactExpert extends State<ContactExpert> {
-  final DocumentSnapshot expert;
+  bool checkingAvail = true;
+  bool expertAvailable = true;
+  DocumentSnapshot expert;
   CollectionReference interaction;
 
   _ContactExpert(this.expert) {
@@ -168,60 +169,80 @@ class _ContactExpert extends State<ContactExpert> {
     userSearchExpert.updateStatus(true);
   }
 
-  // void _showDialog(context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: new Text("Skype Required",
-  //             style: Theme.of(context).primaryTextTheme.title),
-  //         content: new Text(
-  //           "Skype is Required to use this service",
-  //           style: Theme.of(context).primaryTextTheme.body2,
-  //         ),
-  //         actions: <Widget>[
-  //           new FlatButton(
-  //             child: new Text("Close"),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> checkAvail() async {
+    setState(() {
+      checkingAvail = true;
+    });
 
-  // void _launchSkype(
-  //     BuildContext context, String skypeUsername, String serviceType) async {
-  //   final url = "skype:$skypeUsername?$serviceType";
-  //   if (await canLaunch(url)) {
-  //     await updateInteraction();
-  //     await launch(url);
-  //   } else {
-  //     _showDialog(context);
-  //   }
-  // }
+    expert = await expert.reference.get();
 
-  // void videoCall() {
-  //   startVideo = StartVideo();
-  //   Navigator.of(context, rootNavigator: true).push(
-  //     MaterialPageRoute(
-  //       builder: (BuildContext context) {
-  //         return startVideo;
-  //       },
-  //     ),
-  //   );
+    if (expert["Availability Mode"] == 'normal') {
+      expertAvailable = expert['Available'];
+    } else {
+      DateTime now = DateTime.now();
+      var expertAvailability = expert["Availablity"];
+      expertAvailability.forEach((_, timeSlot) {
+        if (timeSlot['start'] != null || timeSlot['end'] != null) {
+          DateTime start = timeSlot['start'].toDate();
+          DateTime end = timeSlot['end'].toDate();
+          if (now.hour > start.hour && now.hour < end.hour) {
+            expertAvailable = true;
+          } else if (now.hour == start.hour || now.hour == end.hour) {
+            if (now.minute > start.minute && now.minute < start.minute) {
+              expertAvailable = true;
+            }
+          } else {
+            expertAvailable = false;
+          }
+        }
+      });
+    }
 
-  // Navigator.push(
-  //  context,
-  //  MaterialPageRoute(
-  //    builder: (BuildContext context) {
-  //      return StartVideo();
-  //    },
-  //  ),
-  // );
-  //}
+    setState(() {
+      checkingAvail = false;
+    });
+  }
+
+  void contactOnTap({
+    @required String secondaryText,
+    @required Widget icon,
+    @required String serviceType,
+  }) async {
+    checkingAvail = true;
+
+    if (checkingAvail) {
+      bottomSheet.showBottomSheet(
+        context: context,
+        icon: CircularProgressIndicator(),
+        secondaryText: "Checking Availablity",
+        callback: null,
+      );
+    }
+
+    await checkAvail();
+
+    if (expertAvailable) {
+      bottomSheet.showBottomSheet(
+        context: context,
+        icon: icon,
+        secondaryText: secondaryText,
+        callback: () {
+          contactExpert.launchSkype(
+              context: context,
+              skypeUsername: expert['SkypeUser'],
+              serviceType: serviceType,
+              afterLaunchFunc: () {});
+        },
+      );
+    } else if (!expertAvailable) {
+      bottomSheet.showBottomSheet(
+        context: context,
+        icon: Icon(Icons.not_interested, size: 120),
+        secondaryText: "Expert is not available right now!",
+        callback: null,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -230,27 +251,10 @@ class _ContactExpert extends State<ContactExpert> {
       children: <Widget>[
         InkWell(
           onTap: () {
-            if (checkAvail()) {
-              bottomSheet.showBottomSheet(
-                context: context,
-                icon: Icon(Icons.face, size: 120),
-                secondaryText: "Are you sure you want to call this expert ?",
-                callback: () {
-                  contactExpert.launchSkype(
-                      context: context,
-                      skypeUsername: expert['SkypeUser'],
-                      serviceType: "call",
-                      afterLaunchFunc: () {});
-                },
-              );
-            } else {
-              bottomSheet.showBottomSheet(
-                context: context,
-                icon: Icon(Icons.not_interested, size: 120),
-                secondaryText: "Expert is not available right now!",
-                callback: null,
-              );
-            }
+            contactOnTap(
+                secondaryText: "Are you sure you want to call this expert",
+                serviceType: "call",
+                icon: Icon(Icons.face, size: 120));
           },
           child: Icon(
             Icons.video_call,
@@ -260,19 +264,12 @@ class _ContactExpert extends State<ContactExpert> {
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
             onTap: () {
-              bottomSheet.showBottomSheet(
-                  context: context,
-                  icon: Icon(Icons.chat_bubble_outline, size: 120),
+              contactOnTap(
                   secondaryText: "Are you sure you want to message this expert",
-                  callback: () {
-                    contactExpert.launchSkype(
-                        context: context,
-                        skypeUsername: expert['SkypeUser'],
-                        serviceType: "chat",
-                        afterLaunchFunc: updateInteraction);
-                  });
+                  serviceType: "chat",
+                  icon: Icon(Icons.chat_bubble_outline, size: 120));
             },
-            child: Icon(Icons.chat, size: 20),
+            child:Icon(Icons.chat,size:20)
           ),
         ),
         Padding(
@@ -295,29 +292,5 @@ class _ContactExpert extends State<ContactExpert> {
         ),
       ],
     );
-  }
-
-  bool checkAvail() {
-    DateTime now = DateTime.now();
-    bool avail = true;
-    var expertAvailability = expert["Availablity"];
-    expertAvailability.forEach((_, timeSlot) {
-      if (timeSlot['start'] != null || timeSlot['end'] != null) {
-        DateTime start = timeSlot['start'].toDate();
-        DateTime end = timeSlot['end'].toDate();
-        if (now.hour > start.hour && now.hour < end.hour) {
-          avail = true;
-        }
-        else if(now.hour == start.hour || now.hour == end.hour){
-          if(now.minute>start.minute && now.minute < start.minute){
-            avail = true;
-          }
-        }
-        else{
-          avail = false;
-        }
-      }
-    });
-    return avail;
   }
 }

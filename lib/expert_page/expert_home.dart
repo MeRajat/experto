@@ -1,6 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
+
 import "./expert_home/expert_home.dart";
+import "./settings_page/settings_page.dart";
+import './navigation_bar_items.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,16 +13,12 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   final List<Widget> pages = [
     ExpertHome(),
-    //SearchSkill(),
-    //SearchExpert(),
-    //FeedBack(),
+    SettingsPage(),
   ];
 
   final List<GlobalKey<NavigatorState>> keys = [
     GlobalKey(debugLabel: 'expert home page'),
-    //GlobalKey(debugLabel: 'expert skill page'),
-    //GlobalKey(debugLabel: 'expert page'),
-    //GlobalKey(debugLabel: 'feedback page'),
+    GlobalKey(debugLabel: 'expert settings page'),
   ];
 
   Future<bool> overrideBack(index) {
@@ -34,10 +33,13 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //tabBar: CupertinoTabBar(
-      //  items: navigationBarItems(),
-      //),
-      body: pages[0],
+      body: CupertinoTabScaffold(
+          tabBar: CupertinoTabBar(
+            items: navigationBarItems(),
+          ),
+          tabBuilder: (BuildContext context, int index){
+            return pages[index];
+          }),
     );
   }
 }

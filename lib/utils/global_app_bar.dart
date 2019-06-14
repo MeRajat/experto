@@ -46,8 +46,8 @@ class CustomAppBar extends StatelessWidget {
       floating: isFloating,
       leading: Container(
         padding: EdgeInsets.only(
-          left: 6,
-          right: 6,
+          left: 12,
+          right: 12,
         ),
         child: Image.asset(
           "assets/logo_transparent.png",
