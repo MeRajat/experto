@@ -57,12 +57,9 @@ class TrueInheritedWidget extends InheritedWidget {
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 }
 
-// class HomePage extends StatefulWidget {
-//   @override
-//   _HomePage createState() => _HomePage();
-//}
-
 class HomePage extends StatefulWidget {
+  final DocumentSnapshot user;
+  HomePage(this.user);
   @override
   _HomePage createState() => _HomePage();
 }
@@ -73,7 +70,6 @@ class _HomePage extends State<HomePage> {
     SearchSkill(),
     SearchExpert(),
     SettingsPage(),
-    //FeedBack(),
   ];
 
   final List<GlobalKey<NavigatorState>> keys = [
@@ -81,7 +77,6 @@ class _HomePage extends State<HomePage> {
     GlobalKey(debugLabel: 'user skill page'),
     GlobalKey(debugLabel: 'user expert page'),
     GlobalKey(debugLabel: 'user settings page')
-    //GlobalKey(debugLabel: 'feedback page'),
   ];
 
   Future<bool> overrideBack(index) {
@@ -96,7 +91,7 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return UserDocumentSync(
-      currentUser,
+      widget.user,
       Scaffold(
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 50.0),

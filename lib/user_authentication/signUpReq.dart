@@ -126,7 +126,7 @@ class Authenticate {
             .getDocuments();
         UserData.currentUser = userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+            context, '/user_home', ModalRoute.withName(':'),arguments:UserData.currentUser);
         formState.reset();
       } catch (e) {
         //_isSignIn = false;
@@ -163,7 +163,11 @@ class Authenticate {
         //print(userSnapshot.documents[0]["emailID"]);
         UserData.currentUser = userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+          context,
+          '/user_home',
+          ModalRoute.withName(':'),
+          arguments: UserData.currentUser,
+        );
         formState.reset();
       } catch (e) {
         //_isSignIn = false;
