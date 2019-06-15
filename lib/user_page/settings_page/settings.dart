@@ -1,8 +1,10 @@
+import 'package:experto/user_page/settings_page/profilePic.dart';
 import "package:flutter/material.dart";
+
 
 class SettingsTiles extends StatelessWidget {
   final List<List> tiles = [
-    [Icon(Icons.image), "Profile Picture", Container()],
+    [Icon(Icons.image), "Profile Picture", ProfilePicUpdate()],
     [Icon(Icons.short_text), "Username", Container()],
     [Icon(Icons.enhanced_encryption), "Password", Container()],
     [Icon(Icons.email), "Email", Container()],
@@ -10,7 +12,7 @@ class SettingsTiles extends StatelessWidget {
   ];
 
   void navigateToSetting(BuildContext context, Widget page) {
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) {
           return page;
@@ -23,7 +25,7 @@ class SettingsTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
+            (BuildContext context, int index) {
           return ListTile(
             leading: tiles[index][0],
             title: Text(

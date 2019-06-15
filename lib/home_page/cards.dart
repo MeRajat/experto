@@ -1,5 +1,3 @@
-import "package:firebase_auth/firebase_auth.dart";
-
 import 'package:experto/user_authentication/signUpReq.dart';
 import 'package:experto/user_authentication/userAdd.dart';
 import 'package:flutter/cupertino.dart';

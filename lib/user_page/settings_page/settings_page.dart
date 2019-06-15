@@ -14,14 +14,25 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
       background: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Hero(
-            tag: "profilePic",
-            child: Padding(
-              padding: EdgeInsets.only(left: 10, top: 80),
+          Container(
+            //decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(12.0)),color: Colors.red),
+            padding: EdgeInsets.only(left: 10, top: 80),
+            child: Hero(
+              tag: "profilePic",
               child: user['profilePic'] == null ? Icon(
                 Icons.person,
                 size: 110,
               ) : CachedNetworkImage(
+                imageBuilder: (context, imageProvider) =>
+                    Container(
+                      width: 80.0,
+                      height: 80.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover),
+                      ),
+                    ),
                 imageUrl: user['profilePic'],
                 height: 110, width: 110,
                 placeholder: (context, a) => CircularProgressIndicator(),
