@@ -1,20 +1,21 @@
 import 'package:experto/utils/floating_action_button.dart';
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
-import "package:cloud_firestore/cloud_firestore.dart";
 
 import "./search_skill/search_skill.dart";
 import "./search_expert/search_expert.dart";
 import "./user_home/user_home.dart";
-import "navigation_bar_items.dart";
-import 'package:experto/utils/bloc/syncDocuments.dart';
+import "./settings_page/settings_page.dart";
+import "./navigation_bar_items.dart";
 import '../user_authentication/userAdd.dart';
+import 'package:experto/utils/bloc/syncDocuments.dart';
 
 class UserDocumentSync extends StatefulWidget {
   final Widget child;
-  final DocumentSnapshot expert;
+  final DocumentSnapshot user;
 
-  UserDocumentSync(this.expert, this.child);
+  UserDocumentSync(this.user, this.child);
 
   @override
   _UserDocumentSync createState() => _UserDocumentSync();
@@ -24,34 +25,33 @@ class UserDocumentSync extends StatefulWidget {
 }
 
 class _UserDocumentSync extends State<UserDocumentSync> {
-  DocumentSnapshot expert;
+  DocumentSnapshot user;
 
   @override
   void initState() {
-    expert = widget.expert;
+    user = widget.user;
     syncDocument();
     super.initState();
   }
 
   void syncDocument() async {
     syncDocumentUser.getStatus.listen((newDocument) {
-
       setState(() {
-        expert = newDocument;
+        user = newDocument;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return TrueInheritedWidget(expert, widget.child);
+    return TrueInheritedWidget(user, widget.child);
   }
 }
 
 class TrueInheritedWidget extends InheritedWidget {
-  final DocumentSnapshot expert;
+  final DocumentSnapshot user;
 
-  TrueInheritedWidget(this.expert, child) : super(child: child);
+  TrueInheritedWidget(this.user, child) : super(child: child);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
@@ -62,8 +62,8 @@ class TrueInheritedWidget extends InheritedWidget {
 //   _HomePage createState() => _HomePage();
 //}
 
-class HomePage extends StatefulWidget{
-  @override 
+class HomePage extends StatefulWidget {
+  @override
   _HomePage createState() => _HomePage();
 }
 
@@ -72,13 +72,15 @@ class _HomePage extends State<HomePage> {
     UserHome(),
     SearchSkill(),
     SearchExpert(),
+    SettingsPage(),
     //FeedBack(),
   ];
 
   final List<GlobalKey<NavigatorState>> keys = [
-    GlobalKey(debugLabel: 'home page'),
-    GlobalKey(debugLabel: 'skill page'),
-    GlobalKey(debugLabel: 'expert page'),
+    GlobalKey(debugLabel: 'user home page'),
+    GlobalKey(debugLabel: 'user skill page'),
+    GlobalKey(debugLabel: 'user expert page'),
+    GlobalKey(debugLabel: 'user settings page')
     //GlobalKey(debugLabel: 'feedback page'),
   ];
 
@@ -94,7 +96,7 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return UserDocumentSync(
-      user,
+      currentUser,
       Scaffold(
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 50.0),
@@ -109,7 +111,7 @@ class _HomePage extends State<HomePage> {
               onWillPop: () => overrideBack(index),
               child: CupertinoTabView(
                 navigatorKey: keys[index],
-                builder: (BuildContext context) {
+                builder: (context) {
                   return pages[index];
                 },
               ),

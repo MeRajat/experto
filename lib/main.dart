@@ -5,7 +5,7 @@ import "package:flutter/material.dart";
 import "./home_page/home_page.dart";
 import "./user_authentication/signup_page.dart";
 import "./user_authentication/login_page.dart";
-import "./user_page/home_page.dart" as user;
+import "./user_page/user_home.dart" as user;
 import "./expert_authentication/login.dart" as expertLogin;
 import "./expert_authentication/signup.dart" as expertSignup;
 import './expert_page/expert_home.dart' as expertHome;

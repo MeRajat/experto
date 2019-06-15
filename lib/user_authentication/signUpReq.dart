@@ -112,14 +112,14 @@ class Authenticate {
             .createUserWithEmailAndPassword(
                 email: details[1], password: details[4]);
 
-        user = new Users(
+        currentUser = new Users(
           email: details[1],
           city: details[2],
           name: details[0],
           m: details[3],
         );
         Firestore.instance.runTransaction((Transaction t) async {
-          await userReference.add(user.toJson());
+          await userReference.add(currentUser.toJson());
         });
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[1])
@@ -133,7 +133,7 @@ class Authenticate {
         print(e);
         //formState.reset();
         details.clear();
-        user = null;
+        currentUser = null;
         isLoadingSignup.updateStatus(false);
         _ackAlert(
             context,

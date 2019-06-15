@@ -29,4 +29,4 @@ class Users {
       };
 }
 
-var user;
+var currentUser;

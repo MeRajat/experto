@@ -24,6 +24,13 @@ List<BottomNavigationBarItem> navigationBarItems() {
       ),
       title: Text('Expert'),
     ),
+    BottomNavigationBarItem(
+      icon: Icon(
+        CupertinoIcons.settings,
+        size: 25,
+      ),
+      title: Text("Settings"),
+    ),
     //BottomNavigationBarItem(
     //  icon: Icon(
     //    CupertinoIcons.news,
