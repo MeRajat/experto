@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
-
+import 'package:cached_network_image/cached_network_image.dart';
 import "package:experto/utils/global_app_bar.dart";
 import './settings.dart';
 import 'package:experto/user_page/user_home.dart';
@@ -14,11 +14,18 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
       background: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(left: 10, top: 80),
-            child: Icon(
-              Icons.person,
-              size: 110,
+          Hero(
+            tag: "profilePic",
+            child: Padding(
+              padding: EdgeInsets.only(left: 10, top: 80),
+              child: user['profilePic'] == null ? Icon(
+                Icons.person,
+                size: 110,
+              ) : CachedNetworkImage(
+                imageUrl: user['profilePic'],
+                height: 110, width: 110,
+                placeholder: (context, a) => CircularProgressIndicator(),
+              ),
             ),
           ),
           Padding(
@@ -33,10 +40,10 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     user["Name"],
                     style: Theme.of(context).textTheme.title.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          letterSpacing: -.5,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      letterSpacing: -.5,
+                    ),
                   ),
                 ),
                 Container(
@@ -44,9 +51,9 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     user["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 12,
-                        ),
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
