@@ -1,4 +1,7 @@
+import "package:firebase_auth/firebase_auth.dart";
+
 import 'package:experto/user_authentication/signUpReq.dart';
+import 'package:experto/user_authentication/userAdd.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
@@ -8,6 +11,7 @@ class CardInfo {
 
   CardInfo(this.icon, this.text, this.greetingText, this.navigatorLink);
 }
+
 class Cards extends StatelessWidget {
   final List<CardInfo> card = [
     CardInfo(
@@ -32,7 +36,7 @@ class Cards extends StatelessWidget {
       padding: EdgeInsets.only(top: 10, bottom: 40),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
+          (BuildContext context, int index) {
             return Card(
               child: InkWell(
                 onTap: () async {
@@ -57,7 +61,11 @@ class Cards extends StatelessWidget {
                   Navigator.of(context).pop();
                   if (index == 0 && signin)
                     Navigator.pushNamedAndRemoveUntil(
-                        context, '/user_home', ModalRoute.withName(':'));
+                      context,
+                      '/user_home',
+                      ModalRoute.withName(':'),
+                      arguments: UserData.currentUser,
+                    );
                   else
                     Navigator.pushNamed(context, card[index].navigatorLink);
                 },

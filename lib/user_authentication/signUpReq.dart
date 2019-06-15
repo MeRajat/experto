@@ -18,6 +18,7 @@ class Authenticate {
     getUser();
     msg = "Invalid details";
   }
+
   void clear() {
     details = new List<String>();
     getUser();
