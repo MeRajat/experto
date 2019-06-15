@@ -1,11 +1,17 @@
 import "package:flutter/material.dart";
+import "package:cloud_firestore/cloud_firestore.dart";
+
 import "package:experto/utils/global_app_bar.dart";
 import './settings.dart';
-import '../../expert_authentication/expertAdd.dart';
+import 'package:experto/expert_page/expert_home.dart';
 
 class CustomFlexibleSpaceBar extends StatelessWidget {
+  
+  
   @override
   Widget build(BuildContext context) {
+
+    DocumentSnapshot expert = ExpertDocumentSync.of(context).expert;
     return FlexibleSpaceBar(
       titlePadding: EdgeInsets.all(0),
       background: Row(
@@ -28,7 +34,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 Container(
                   width: 200,
                   child: Text(
-                    currentExpert["Name"],
+                    expert["Name"],
                     style: Theme.of(context).textTheme.title.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
@@ -39,7 +45,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 Container(
                   width: 200,
                   child: Text(
-                    currentExpert["emailID"],
+                    expert["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
                           fontStyle: FontStyle.italic,
                           fontSize: 12,

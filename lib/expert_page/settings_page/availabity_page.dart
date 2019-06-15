@@ -4,7 +4,8 @@ import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart
 import "package:cloud_firestore/cloud_firestore.dart";
 
 import "package:experto/utils/authentication_page_utils.dart";
-import '../../expert_authentication/expertAdd.dart';
+import "package:experto/expert_page/expert_home.dart";
+import "package:experto/utils/bloc/syncDocuments.dart";
 
 class Availablity extends StatefulWidget {
   @override
@@ -12,12 +13,27 @@ class Availablity extends StatefulWidget {
 }
 
 class _AvailablityState extends State<Availablity> {
+  DocumentSnapshot expert;
   GlobalKey<FormState> key = GlobalKey();
-  bool loading = false,
-      availablitySwitchValue = currentExpert["Available"],
-      scheduleSwitchValue =
-          (currentExpert['Availability Mode'] == 'schedule') ? true : false;
-  Map availablity = currentExpert['Availablity'];
+  bool loading, availablitySwitchValue, scheduleSwitchValue;
+  Map availablity;
+
+  @override
+  void didChangeDependencies() {
+    expert = ExpertDocumentSync.of(context).expert;
+    loading = false;
+    availablitySwitchValue = expert["Available"];
+    scheduleSwitchValue =
+        (expert['Availability Mode'] == 'schedule') ? true : false;
+    availablity = expert['Availablity'];
+    super.didChangeDependencies();
+  }
+
+  void syncDocument() async {
+    expert.reference.get().then((snapshot) {
+      syncDocumentExpert.updateStatus(snapshot);
+    });
+  }
 
   void onCstmBtnPressedAvail(String slotSelected, String secondarySlot) {
     DatePicker.showDatePicker(
@@ -94,8 +110,8 @@ class _AvailablityState extends State<Availablity> {
                         : (value) {
                             setState(() {
                               availablitySwitchValue = value;
-                              currentExpert.reference
-                                  .updateData({"Available": value});
+                              expert.reference.updateData({"Available": value});
+                              syncDocument();
                             });
                           },
                   ),
@@ -113,13 +129,14 @@ class _AvailablityState extends State<Availablity> {
                         () {
                           scheduleSwitchValue = value;
                           availablitySwitchValue = !value;
-                          currentExpert.reference.updateData(
+                          expert.reference.updateData(
                             {
                               "Availability Mode":
                                   (value) ? "schedule" : "normal",
                               "Available": (value) ? false : true
                             },
                           );
+                          syncDocument();
                         },
                       );
                     },
@@ -138,8 +155,9 @@ class _AvailablityState extends State<Availablity> {
                           key: key,
                           child: FormField(
                             onSaved: (_) {
-                              currentExpert.reference
+                              expert.reference
                                   .updateData({"Availablity": availablity});
+                              syncDocument();
                             },
                             validator: (_) {
                               bool error = false;

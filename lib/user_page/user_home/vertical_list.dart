@@ -230,10 +230,10 @@ class _VerticalListState extends State<VerticalList> {
                               onTap: () {
                                 contactOnTap(
                                     secondaryText:
-                                        "Are you sure you want to call this expert",
+                                        "Are you sure you want to messsage this expert",
                                     serviceType: "chat",
                                     index: index,
-                                    icon: Icon(Icons.face, size: 120));
+                                    icon: Icon(Icons.chat_bubble_outline, size: 120));
                               },
                             ),
                           ],

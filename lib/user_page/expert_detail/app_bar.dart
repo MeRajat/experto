@@ -208,6 +208,7 @@ class _ContactExpert extends State<ContactExpert> {
     @required Widget icon,
     @required String serviceType,
   }) async {
+    updateInteraction();
     checkingAvail = true;
 
     if (checkingAvail) {

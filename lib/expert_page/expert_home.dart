@@ -1,9 +1,59 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
 import "./expert_home/expert_home.dart";
 import "./settings_page/settings_page.dart";
 import './navigation_bar_items.dart';
+import '../expert_authentication/expertAdd.dart';
+import "package:experto/utils/bloc/syncDocuments.dart";
+
+class ExpertDocumentSync extends StatefulWidget{
+  final Widget child;
+  final DocumentSnapshot expert;
+
+  ExpertDocumentSync(this.expert,this.child);
+
+  @override
+  _ExpertDocumentSync createState() => _ExpertDocumentSync();
+
+  static TrueInheritedWidget of(BuildContext context) => context.inheritFromWidgetOfExactType(TrueInheritedWidget);
+
+}
+
+class _ExpertDocumentSync extends State<ExpertDocumentSync>{
+  DocumentSnapshot expert;
+
+  @override
+  void initState() {
+    expert = widget.expert;
+    syncDocument();
+    super.initState();
+  }
+  
+  void syncDocument() async {
+    syncDocumentExpert.getStatus.listen((newDocument){
+      setState(() {
+        expert = newDocument;
+      });
+    });
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return TrueInheritedWidget(expert,widget.child);
+  }
+
+}
+
+class TrueInheritedWidget extends InheritedWidget{
+  final DocumentSnapshot expert;
+
+  TrueInheritedWidget(this.expert,child):super(child:child);
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) => false;
+}
 
 class HomePage extends StatefulWidget {
   @override
@@ -32,14 +82,26 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CupertinoTabScaffold(
+    return ExpertDocumentSync(
+      currentExpert,
+      Scaffold(
+        body: CupertinoTabScaffold(
           tabBar: CupertinoTabBar(
             items: navigationBarItems(),
           ),
-          tabBuilder: (BuildContext context, int index){
-            return pages[index];
-          }),
+          tabBuilder: (BuildContext context, int index) {
+            return WillPopScope(
+              onWillPop: () => overrideBack(index),
+              child: CupertinoTabView(
+                navigatorKey: keys[index],
+                builder: (context) {
+                  return pages[index];
+                },
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

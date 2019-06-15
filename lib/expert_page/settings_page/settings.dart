@@ -13,8 +13,7 @@ class SettingsTiles extends StatelessWidget {
   ];
 
   void navigateToSetting(BuildContext context, Widget page) {
-    Navigator.push(
-      context,
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
           return page;
