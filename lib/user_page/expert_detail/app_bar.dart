@@ -208,7 +208,6 @@ class _ContactExpert extends State<ContactExpert> {
     @required Widget icon,
     @required String serviceType,
   }) async {
-    updateInteraction();
     checkingAvail = true;
 
     if (checkingAvail) {
@@ -228,6 +227,7 @@ class _ContactExpert extends State<ContactExpert> {
         icon: icon,
         secondaryText: secondaryText,
         callback: () {
+          updateInteraction();
           contactExpert.launchSkype(
               context: context,
               skypeUsername: expert['SkypeUser'],
