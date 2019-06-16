@@ -16,33 +16,29 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   DocumentSnapshot user;
   StorageTaskSnapshot taskSnapshot;
   StorageUploadTask task;
-  
+
   @override
   didChangeDependencies() {
     user = UserDocumentSync.of(context).user;
     print(user['profilePic']);
     super.didChangeDependencies();
   }
-  
+
   Future<void> imagePick() async {
     String path = await FilePicker.getFilePath(type: FileType.IMAGE);
     print(path);
-    StorageReference storageReference =
-    FirebaseStorage.instance.ref().child("/Profile Photos/" + user["emailID"]);
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child("/Profile Photos/" + user["emailID"]);
     print(storageReference.getPath().then((x) => print(x)));
     File file = File(path);
     task = storageReference.putFile(file);
     String url = await storageReference.getDownloadURL();
-    Firestore.instance
-        .collection("Users")
-        .document(user.documentID)
-        .updateData({'profilePic': url});
+    user.reference.updateData({'profilePic': url});
     print("uploaded");
     user = await user.reference.get();
     syncDocumentUser.updateStatus(user);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -70,19 +66,19 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                   size: 110,
                 )
               : taskSnapshot == null || taskSnapshot.error == 0
-              ? CachedNetworkImage(
-                  imageBuilder: (context, imageProvider) => Container(
-                        width: 350.0,
-                        height: 350.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.cover),
-                        ),
-                      ),
-                  imageUrl: user['profilePic'],
-                  placeholder: (context, a) => CircularProgressIndicator(),
-          )
-              : CircularProgressIndicator(),
+                  ? CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) => Container(
+                            width: 350.0,
+                            height: 350.0,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover),
+                            ),
+                          ),
+                      imageUrl: user['profilePic'],
+                      placeholder: (context, a) => CircularProgressIndicator(),
+                    )
+                  : CircularProgressIndicator(),
         ),
       ),
     );
