@@ -34,12 +34,15 @@ class Authenticate {
         Navigator.pushNamed(context, '/user_login');
         return false;
       } else {
-        userSnapshot = await userReference
+        userSnapshot = await Firestore.instance
+            .collection('Users')
             .where('emailID', isEqualTo: UserData.usr.email)
             .getDocuments();
+
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
             arguments: userSnapshot.documents[0]);
+
         return true;
       }
     } catch (e) {

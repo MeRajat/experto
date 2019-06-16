@@ -55,7 +55,14 @@ class Cards extends StatelessWidget {
                       });
                   await Future.delayed(Duration(seconds: 1));
                   loading = false;
-                  await authenticate.isSignIn(context);
+                  if(card[index].navigatorLink=='/user_login'){
+                    await authenticate.isSignIn(context);
+                  }
+                  else{
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context,card[index].navigatorLink);
+                  }
+                  
                 },
                 child: SizedBox(
                   height: 130,
@@ -83,9 +90,6 @@ class Cards extends StatelessWidget {
                                 textScaleFactor: 1.3,
                               ),
                             ),
-                            //Text(
-                            //  card[index].greetingText,
-                            //),
                           ],
                         ),
                       ),
