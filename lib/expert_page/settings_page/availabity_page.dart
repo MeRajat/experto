@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:flutter/rendering.dart';
 import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
 
@@ -16,7 +17,7 @@ class _AvailablityState extends State<Availablity> {
   DocumentSnapshot expert;
   GlobalKey<FormState> key = GlobalKey();
   bool loading, availablitySwitchValue, scheduleSwitchValue;
-  Map availablity;
+  Map<String, Map<String, dynamic>> availablity;
 
   @override
   void didChangeDependencies() {
@@ -25,7 +26,14 @@ class _AvailablityState extends State<Availablity> {
     availablitySwitchValue = expert["Available"];
     scheduleSwitchValue =
         (expert['Availability Mode'] == 'schedule') ? true : false;
-    availablity = expert['Availablity'];
+    availablity = {};
+    expert['Availablity'].forEach((slotName, timeSlot) {
+      availablity[slotName] = {};
+      availablity[slotName]
+          .update('start', (timeSlot)=>timeSlot['start'], ifAbsent: () => timeSlot['start']);
+      availablity[slotName]
+          .update('end',(timeSlot)=>timeSlot['end'],ifAbsent: () => timeSlot['end']);
+    });
     super.didChangeDependencies();
   }
 
@@ -62,7 +70,7 @@ class _AvailablityState extends State<Availablity> {
       slots.add(
         SignupTimeSelector(
           headingText: "Time Slot",
-          availablity: availablity,
+          availablity: timeSlot,
           slot: slotName,
           callbackFunc: onCstmBtnPressedAvail,
           selector1Color: Colors.blue,

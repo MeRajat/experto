@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:experto/utils/bloc/syncDocuments.dart';
 
 class ProfilePicUpdate extends StatefulWidget {
   @override
@@ -37,10 +38,8 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         .document(user.documentID)
         .updateData({'profilePic': url});
     print("uploaded");
-    user = await Firestore.instance
-        .collection("Users")
-        .document(user.documentID)
-        .get();
+    user = await user.reference.get();
+    syncDocumentUser.updateStatus(user);
     setState(() {
 
     });
