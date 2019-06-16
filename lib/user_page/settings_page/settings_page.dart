@@ -1,9 +1,9 @@
+import 'package:experto/user_authentication/userData.dart';
 import "package:flutter/material.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:experto/utils/global_app_bar.dart";
 import './settings.dart';
-import 'package:experto/user_page/user_home.dart';
 
 class CustomFlexibleSpaceBar extends StatelessWidget {
   @override

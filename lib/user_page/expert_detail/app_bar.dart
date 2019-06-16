@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:experto/user_authentication/userAdd.dart';
-import 'package:experto/user_page/user_home.dart';
+import 'package:experto/user_authentication/userData.dart';
 import "package:experto/utils/bloc/reload.dart";
 
 import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
 import "package:experto/utils/global_app_bar.dart";
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './feedback.dart' as expert_feedback;
 
 class AppBar extends StatelessWidget {

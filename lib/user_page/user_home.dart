@@ -8,54 +8,9 @@ import "./search_expert/search_expert.dart";
 import "./user_home/user_home.dart";
 import "./settings_page/settings_page.dart";
 import "./navigation_bar_items.dart";
-import '../user_authentication/userAdd.dart';
-import 'package:experto/utils/bloc/syncDocuments.dart';
+import '../user_authentication/userData.dart';
 
-class UserDocumentSync extends StatefulWidget {
-  final Widget child;
-  final DocumentSnapshot user;
 
-  UserDocumentSync(this.user, this.child);
-
-  @override
-  _UserDocumentSync createState() => _UserDocumentSync();
-
-  static TrueInheritedWidget of(BuildContext context) =>
-      context.inheritFromWidgetOfExactType(TrueInheritedWidget);
-}
-
-class _UserDocumentSync extends State<UserDocumentSync> {
-  DocumentSnapshot user;
-
-  @override
-  void initState() {
-    user = widget.user;
-    syncDocument();
-    super.initState();
-  }
-
-  void syncDocument() async {
-    syncDocumentUser.getStatus.listen((newDocument) {
-      setState(() {
-        user = newDocument;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TrueInheritedWidget(user, widget.child);
-  }
-}
-
-class TrueInheritedWidget extends InheritedWidget {
-  final DocumentSnapshot user;
-
-  TrueInheritedWidget(this.user, child) : super(child: child);
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) => false;
-}
 
 class HomePage extends StatefulWidget {
   final DocumentSnapshot user;

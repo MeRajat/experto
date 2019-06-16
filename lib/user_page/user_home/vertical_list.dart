@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/user_authentication/userData.dart';
+
+//import 'package:experto/user_authentication/userData.dart';
 import 'package:flutter/material.dart';
 import '../expert_detail/expert_detail.dart';
 
@@ -7,7 +9,6 @@ import 'package:experto/utils/timed_out.dart';
 import "package:experto/utils/bloc/reload.dart";
 import "package:experto/utils/contact_expert.dart" as contactExpert;
 import "package:experto/utils/bottomSheet.dart" as bottomSheet;
-import 'package:experto/user_page/user_home.dart';
 
 class VerticalList extends StatefulWidget {
   @override

@@ -5,8 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import "package:experto/utils/bloc/is_loading.dart";
 import "package:experto/utils/bloc/loading_completed.dart";
-import "package:experto/user_authentication/userAdd.dart";
-import "package:experto/user_page/user_home.dart";
+import "package:experto/user_authentication/userData.dart";
 
 class ValidateFeedback {
   int rating;
