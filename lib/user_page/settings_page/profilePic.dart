@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:experto/user_authentication/userData.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +13,13 @@ class ProfilePicUpdate extends StatefulWidget {
 
 class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   DocumentSnapshot user;
+  StorageTaskSnapshot taskSnapshot;
+  StorageUploadTask task;
   
   @override
   didChangeDependencies() {
     user = UserDocumentSync.of(context).user;
+    print(user['profilePic']);
     super.didChangeDependencies();
   }
   
@@ -25,19 +27,23 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
     String path = await FilePicker.getFilePath(type: FileType.IMAGE);
     print(path);
     StorageReference storageReference =
-        FirebaseStorage.instance.ref().child("/Profile Photos");
+    FirebaseStorage.instance.ref().child("/Profile Photos/" + user["emailID"]);
     print(storageReference.getPath().then((x) => print(x)));
     File file = File(path);
-    storageReference.putFile(file).onComplete;
+    task = storageReference.putFile(file);
     String url = await storageReference.getDownloadURL();
     Firestore.instance
         .collection("Users")
         .document(user.documentID)
         .updateData({'profilePic': url});
+    print("uploaded");
     user = await Firestore.instance
         .collection("Users")
         .document(user.documentID)
         .get();
+    setState(() {
+
+    });
   }
 
   @override
@@ -64,7 +70,8 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                   Icons.person,
                   size: 110,
                 )
-              : CachedNetworkImage(
+              : taskSnapshot == null || taskSnapshot.error == 0
+              ? CachedNetworkImage(
                   imageBuilder: (context, imageProvider) => Container(
                         width: 350.0,
                         height: 350.0,
@@ -75,7 +82,8 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                       ),
                   imageUrl: user['profilePic'],
                   placeholder: (context, a) => CircularProgressIndicator(),
-                ),
+          )
+              : CircularProgressIndicator(),
         ),
       ),
     );
