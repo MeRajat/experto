@@ -1,5 +1,7 @@
 import 'package:async/async.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/user_page/user_home.dart';
 import 'package:experto/utils/floating_action_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -13,7 +15,7 @@ class StartVideo extends StatefulWidget {
 
 class _StartVideoState extends State<StartVideo> {
   bool _isInChannel = false, _toggleView = true;
-
+  DocumentSnapshot user;
   final _infoStrings = <String>[];
   bool speaker = true,
       mic = false,
@@ -23,7 +25,14 @@ class _StartVideoState extends State<StartVideo> {
   RestartableTimer timer;
 
   @override
+  void didChangeDependencies() {
+    user = UserDocumentSync.of(context).user;
+    super.didChangeDependencies();
+  }
+  
+  @override
   void initState() {
+    
     super.initState();
     _initAgoraRtcEngine();
     _addAgoraEventHandlers();
@@ -188,7 +197,7 @@ class _StartVideoState extends State<StartVideo> {
       stateChangedInformNotification(_isInChannel);
       AgoraRtcEngine.startPreview();
       bool status = await AgoraRtcEngine.joinChannel(null, "demo", null,
-          int.parse(UserData.currentUser["Mobile"].toString().substring(2)));
+          int.parse(user["Mobile"].toString().substring(2)));
       print(status);
     }
     setState(() {});

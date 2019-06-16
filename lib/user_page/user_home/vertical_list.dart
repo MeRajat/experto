@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:experto/user_authentication/userAdd.dart';
+//import 'package:experto/user_authentication/userAdd.dart';
 import 'package:flutter/material.dart';
 import '../expert_detail/expert_detail.dart';
 
@@ -7,6 +7,7 @@ import 'package:experto/utils/timed_out.dart';
 import "package:experto/utils/bloc/reload.dart";
 import "package:experto/utils/contact_expert.dart" as contactExpert;
 import "package:experto/utils/bottomSheet.dart" as bottomSheet;
+import 'package:experto/user_page/user_home.dart';
 
 class VerticalList extends StatefulWidget {
   @override
@@ -16,8 +17,16 @@ class VerticalList extends StatefulWidget {
 class _VerticalListState extends State<VerticalList> {
   QuerySnapshot interactionSnapshot;
   List<DocumentSnapshot> experts;
+  DocumentSnapshot user;
   CollectionReference interaction, expert;
   bool timedout, load, checkingAvail = false, expertAvailable = true;
+
+  @override
+  void didChangeDependencies() {
+    user = UserDocumentSync.of(context).user;
+    getInteraction();
+    super.didChangeDependencies();
+  }
 
   void initState() {
     expert = Firestore.instance.collection("Experts");
@@ -25,7 +34,6 @@ class _VerticalListState extends State<VerticalList> {
     experts = new List<DocumentSnapshot>();
     timedout = false;
     load = false;
-    getInteraction();
     listenReload();
     super.initState();
   }
@@ -42,7 +50,6 @@ class _VerticalListState extends State<VerticalList> {
     setState(() {
       interactionSnapshot = null;
       experts = [];
-
       load = false;
       timedout = false;
       getInteraction();
@@ -55,7 +62,7 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("user", isEqualTo: UserData.currentUser["emailID"])
+        .where("user", isEqualTo: user["emailID"])
         .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
@@ -233,7 +240,8 @@ class _VerticalListState extends State<VerticalList> {
                                         "Are you sure you want to messsage this expert",
                                     serviceType: "chat",
                                     index: index,
-                                    icon: Icon(Icons.chat_bubble_outline, size: 120));
+                                    icon: Icon(Icons.chat_bubble_outline,
+                                        size: 120));
                               },
                             ),
                           ],

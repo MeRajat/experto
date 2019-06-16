@@ -23,31 +23,28 @@ class Authenticate {
     details = new List<String>();
     getUser();
     msg = "Invalid details";
-    UserData.currentUser = null;
     UserData.usr = null;
   }
 
-  Future<bool> isSignIn() async {
+  Future<bool> isSignIn(context) async {
     UserData.usr = await FirebaseAuth.instance.currentUser();
     try {
-      if (UserData.usr == null)
+      if (UserData.usr == null) {
+        Navigator.of(context).pop();
+        Navigator.pushNamed(context, '/user_login');
         return false;
-      else if (UserData.currentUser == null) {
+      } else {
         userSnapshot = await userReference
             .where('emailID', isEqualTo: UserData.usr.email)
             .getDocuments();
-        UserData.currentUser = userSnapshot.documents[0];
-        return true;
-      } else if (UserData.usr.email == UserData.currentUser["emailID"])
-        return true;
-      else {
-        userSnapshot = await userReference
-            .where('emailID', isEqualTo: UserData.usr.email)
-            .getDocuments();
-        UserData.currentUser = userSnapshot.documents[0];
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/user_home', ModalRoute.withName(':'),
+            arguments: userSnapshot.documents[0]);
         return true;
       }
     } catch (e) {
+      Navigator.of(context).pop();
+      Navigator.pushNamed(context, '/user_login');
       return false;
     }
   }
@@ -82,20 +79,6 @@ class Authenticate {
   getMobile(String x) => details.add(x);
   getEmail(String x) => details.add(x);
 
-  // Widget signInButton(String x) {
-  //   if (//_isSignIn)
-  //     return Center(child: CircularProgressIndicator());
-  //   else
-  //     return Text(
-  //       x,
-  //       style: TextStyle(
-  //         fontSize: 16,
-  //         fontWeight: FontWeight.bold,
-  //         color: Colors.black,
-  //       ),
-  //     );
-  // }
-
   Future<void> signUp(
       GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
@@ -125,14 +108,13 @@ class Authenticate {
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[1])
             .getDocuments();
-        UserData.currentUser = userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'),arguments:UserData.currentUser);
+            context, '/user_home', ModalRoute.withName(':'),
+            arguments: userSnapshot.documents[0]);
         formState.reset();
       } catch (e) {
         //_isSignIn = false;
         print(e);
-        //formState.reset();
         details.clear();
         currentUser = null;
         isLoadingSignup.updateStatus(false);
@@ -153,7 +135,6 @@ class Authenticate {
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
       Future.delayed(Duration(seconds: 5));
-      //_isSignIn = true;
       formState.save();
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -161,18 +142,14 @@ class Authenticate {
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[0])
             .getDocuments();
-        //print(userSnapshot.documents[0]["emailID"]);
-        UserData.currentUser = userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/user_home',
           ModalRoute.withName(':'),
-          arguments: UserData.currentUser,
+          arguments: userSnapshot.documents[0],
         );
         formState.reset();
       } catch (e) {
-        //_isSignIn = false;
-        //formState.reset();
         details.clear();
         isLoadingLogin.updateStatus(false);
         _ackAlert(context, "Login Failed!", e.toString().split(',')[1]);

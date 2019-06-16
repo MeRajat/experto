@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import "package:experto/utils/bloc/is_loading.dart";
 import "package:experto/utils/bloc/loading_completed.dart";
 import "package:experto/user_authentication/userAdd.dart";
+import "package:experto/user_page/user_home.dart";
 
 class ValidateFeedback {
   int rating;
@@ -108,6 +109,7 @@ class ValidateFeedback {
 
   void saveFeedback(GlobalKey<FormState> key, BuildContext context) async {
     FormState feedbackFormState = key.currentState;
+    DocumentSnapshot user = UserDocumentSync.of(context).user;
     if (feedbackFormState.validate()) {
       feedbackFormState.save();
       submiting = true;
@@ -118,11 +120,11 @@ class ValidateFeedback {
           rating: rating,
           review: review,
           expertReference: expertReference,
-          userReference: UserData.currentUser.reference,
+          userReference: user.reference,
         );
         await Firestore.instance
             .collection("Feedback")
-            .where("User", isEqualTo: UserData.currentUser.reference)
+            .where("User", isEqualTo: user.reference)
             .where("Expert", isEqualTo: expertReference)
             .getDocuments()
             .timeout(Duration(seconds: 10), onTimeout: () {

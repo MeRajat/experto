@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/user_page/user_home.dart';
 import "package:experto/utils/bloc/reload.dart";
 
 import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
 import "package:experto/utils/global_app_bar.dart";
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './feedback.dart' as expert_feedback;
 
 class AppBar extends StatelessWidget {
@@ -104,7 +106,14 @@ class _ContactExpert extends State<ContactExpert> {
   bool checkingAvail = true;
   bool expertAvailable = true;
   DocumentSnapshot expert;
+  DocumentSnapshot user;
   CollectionReference interaction;
+
+  @override
+  void didChangeDependencies() {
+    user = UserDocumentSync.of(context).user;
+    super.didChangeDependencies();
+  }
 
   _ContactExpert(this.expert) {
     getInteraction();
@@ -120,9 +129,9 @@ class _ContactExpert extends State<ContactExpert> {
     CollectionReference temp = Firestore.instance.collection("Users"),
         temp2 = Firestore.instance.collection("Experts");
     try {
-      for (int i = 0; i < UserData.currentUser["interactionID"].length; i++) {
+      for (int i = 0; i < user["interactionID"].length; i++) {
         tempsnap = await interaction
-            .where("id", isEqualTo: UserData.currentUser["interactionID"][i])
+            .where("id", isEqualTo: user["interactionID"][i])
             .getDocuments();
         if (tempsnap.documents[0]["expert"] == expert["emailID"])
           break;
@@ -145,7 +154,7 @@ class _ContactExpert extends State<ContactExpert> {
           "interactionTime": FieldValue.arrayUnion([DateTime.now()])
         });
       } else {
-        await temp.document(UserData.currentUser.documentID).updateData({
+        await temp.document(user.documentID).updateData({
           "interactionID": FieldValue.arrayUnion([id])
         });
         print(expert["emailID"]);
@@ -154,16 +163,16 @@ class _ContactExpert extends State<ContactExpert> {
         });
         await interaction.add({
           'expert': expert["emailID"],
-          'user': UserData.currentUser["emailID"],
+          'user': user["emailID"],
           'id': id,
           'interactionTime': FieldValue.arrayUnion([DateTime.now()])
         });
       }
       await temp
-          .where("emailID", isEqualTo: UserData.currentUser["emailID"])
+          .where("emailID", isEqualTo: user["emailID"])
           .getDocuments()
           .then((QuerySnapshot q) {
-        UserData.currentUser = q.documents[0];
+        user = q.documents[0];
       });
     });
     userSearchExpert.updateStatus(true);
@@ -264,14 +273,14 @@ class _ContactExpert extends State<ContactExpert> {
         Padding(
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
-            onTap: () {
-              contactOnTap(
-                  secondaryText: "Are you sure you want to message this expert",
-                  serviceType: "chat",
-                  icon: Icon(Icons.chat_bubble_outline, size: 120));
-            },
-            child:Icon(Icons.chat,size:20)
-          ),
+              onTap: () {
+                contactOnTap(
+                    secondaryText:
+                        "Are you sure you want to message this expert",
+                    serviceType: "chat",
+                    icon: Icon(Icons.chat_bubble_outline, size: 120));
+              },
+              child: Icon(Icons.chat, size: 20)),
         ),
         Padding(
           padding: EdgeInsets.only(left: 10),

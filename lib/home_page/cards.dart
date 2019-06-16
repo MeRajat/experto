@@ -54,18 +54,8 @@ class Cards extends StatelessWidget {
                         );
                       });
                   await Future.delayed(Duration(seconds: 1));
-                  bool signin = await authenticate.isSignIn();
-                  loading = true;
-                  Navigator.of(context).pop();
-                  if (index == 0 && signin)
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/user_home',
-                      ModalRoute.withName(':'),
-                      arguments: UserData.currentUser,
-                    );
-                  else
-                    Navigator.pushNamed(context, card[index].navigatorLink);
+                  loading = false;
+                  await authenticate.isSignIn(context);
                 },
                 child: SizedBox(
                   height: 130,

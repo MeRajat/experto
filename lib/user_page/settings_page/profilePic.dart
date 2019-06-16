@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/user_page/user_home.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class ProfilePicUpdate extends StatefulWidget {
   @override
@@ -13,6 +14,14 @@ class ProfilePicUpdate extends StatefulWidget {
 }
 
 class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
+  DocumentSnapshot user;
+  
+  @override
+  didChangeDependencies() {
+    user = UserDocumentSync.of(context).user;
+    super.didChangeDependencies();
+  }
+  
   Future<void> imagePick() async {
     String path = await FilePicker.getFilePath(type: FileType.IMAGE);
     print(path);
@@ -24,11 +33,11 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
     String url = await storageReference.getDownloadURL();
     Firestore.instance
         .collection("Users")
-        .document(UserData.currentUser.documentID)
+        .document(user.documentID)
         .updateData({'profilePic': url});
-    UserData.currentUser = await Firestore.instance
+    user = await Firestore.instance
         .collection("Users")
-        .document(UserData.currentUser.documentID)
+        .document(user.documentID)
         .get();
   }
 
@@ -51,7 +60,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
       body: Center(
         child: Hero(
           tag: "profilePic",
-          child: UserData.currentUser['profilePic'] == null
+          child: user['profilePic'] == null
               ? Icon(
                   Icons.person,
                   size: 110,
@@ -65,7 +74,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                               image: imageProvider, fit: BoxFit.cover),
                         ),
                       ),
-                  imageUrl: UserData.currentUser['profilePic'],
+                  imageUrl: user['profilePic'],
                   placeholder: (context, a) => CircularProgressIndicator(),
                 ),
         ),
