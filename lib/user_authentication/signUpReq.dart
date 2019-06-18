@@ -159,24 +159,5 @@ class Authenticate {
       }
     }
   }
-  Future<DocumentSnapshot> updateName(DocumentSnapshot user,GlobalKey<FormState> _formKey) async{
-    FormState formState = _formKey.currentState;
-    if (formState.validate()) {
-      isLoadingLogin.updateStatus(true);
-      Future.delayed(Duration(seconds: 5));
-      formState.save();
-      try{
-        UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
-        userUpdateInfo.displayName=details[0];
-        await UserData.usr.updateProfile(userUpdateInfo);
-        await UserData.usr.reload();
-        print(user);
-        await userReference.document(user.documentID).updateData({"Name":details[0]});
-        user=await userReference.document(user.documentID).get();
-      }
-      catch(e){}
-      return user;
-    }
-  }
 }
-var authenticate;
+

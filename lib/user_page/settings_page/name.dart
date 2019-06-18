@@ -4,7 +4,7 @@ import 'package:experto/utils/authentication_page_utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:experto/user_authentication/signUpReq.dart';
+import 'Update.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart';
 
 class Name extends StatefulWidget {
@@ -15,7 +15,7 @@ class Name extends StatefulWidget {
 class _NameState extends State<Name> {
   DocumentSnapshot user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
-  final Authenticate authenticate=new Authenticate();
+  final Update update=new Update();
 
   @override
   void didChangeDependencies() {
@@ -23,7 +23,7 @@ class _NameState extends State<Name> {
     super.didChangeDependencies();
   }
 
-  Future<void > update()async{
+  Future<void > updateData()async{
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -31,7 +31,7 @@ class _NameState extends State<Name> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    user= await authenticate.updateName(user,key);
+    user= await update.updateName(user,key);
     syncDocumentUser.updateStatus(user);
     setState(() {
       showAuthSnackBar(
@@ -68,7 +68,7 @@ class _NameState extends State<Name> {
                 child: Padding(
                   child: InputField(
                     "Enter new name",
-                    (value) {authenticate.getName(value);},
+                    (value) {update.getName(value);},
                   ),
                   padding: EdgeInsets.only(
                     left: 20,
@@ -81,7 +81,7 @@ class _NameState extends State<Name> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: () {update();},
+                  onPressed: () {updateData();},
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue[800]
                       : Colors.blue,

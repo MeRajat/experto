@@ -1,12 +1,9 @@
-import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:experto/user_authentication/userData.dart';
+import 'package:experto/user_page/settings_page/Update.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart';
 
 class ProfilePicUpdate extends StatefulWidget {
@@ -16,9 +13,8 @@ class ProfilePicUpdate extends StatefulWidget {
 
 class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   DocumentSnapshot user;
-  StorageTaskSnapshot taskSnapshot;
-  StorageUploadTask task;
   bool uploading;
+  final Update update=new Update();
 
   @override
   void initState() {
@@ -33,29 +29,15 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
     super.didChangeDependencies();
   }
 
-  Future<void> imagePick() async {
-    UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
-    String path = await FilePicker.getFilePath(type: FileType.IMAGE);
-    print(path);
-    StorageReference storageReference = FirebaseStorage.instance
-        .ref()
-        .child("/Profile Photos/" + user["emailID"]);
-    print(storageReference.getPath().then((x) => print(x)));
-    File file = File(path);
+  Future<void > updateData()async{
     setState(() {
-      uploading = true;
       showAuthSnackBar(
         context: context,
-        title: "Uploading...",
+        title: "Updating...",
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    task = storageReference.putFile(file);
-    String url = await storageReference.getDownloadURL();
-    userUpdateInfo.photoUrl=url;
-    await UserData.usr.updateProfile(userUpdateInfo);
-    await user.reference.updateData({'profilePic': url});
-    user = await user.reference.get();
+    user= await update.updateProfilePic(user);
     syncDocumentUser.updateStatus(user);
     setState(() {
       showAuthSnackBar(
@@ -64,8 +46,8 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         leading: Icon(Icons.done, color: Colors.green, size: 23),
         persistant: false,
       );
-      uploading = false;
     });
+
   }
 
   @override
@@ -75,7 +57,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
       appBar: AppBar(
         actions: <Widget>[
           FlatButton(
-              onPressed: imagePick,
+              onPressed: updateData,
               child: Icon(
                 Icons.edit,
                 color: Colors.white,
@@ -94,8 +76,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                         Icons.person,
                         size: 110,
                       )
-                    : taskSnapshot == null || taskSnapshot.error == 0
-                        ? CachedNetworkImage(
+                    :  CachedNetworkImage(
                             imageBuilder: (context, imageProvider) => Container(
                                   width: 350.0,
                                   height: 350.0,
@@ -108,8 +89,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                             imageUrl: user['profilePic'],
                             placeholder: (context, a) =>
                                 CircularProgressIndicator(),
-                          )
-                        : CircularProgressIndicator(),
+                          ),
               ),
       ),
     );
