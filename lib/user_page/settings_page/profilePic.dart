@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:experto/user_authentication/userData.dart';
+import 'package:experto/utils/authentication_page_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,13 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   DocumentSnapshot user;
   StorageTaskSnapshot taskSnapshot;
   StorageUploadTask task;
+  bool uploading;
+
+  @override
+  void initState() {
+    uploading = false;
+    super.initState();
+  }
 
   @override
   didChangeDependencies() {
@@ -32,16 +40,32 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         .child("/Profile Photos/" + user["emailID"]);
     print(storageReference.getPath().then((x) => print(x)));
     File file = File(path);
+    setState(() {
+      uploading = true;
+      showAuthSnackBar(
+        context: context,
+        title: "Uploading...",
+        leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
+      );
+    });
     task = storageReference.putFile(file);
     String url = await storageReference.getDownloadURL();
-    try{
+    try {
       user.reference.updateData({'profilePic': url});
-      }catch(e){
-        user.reference.setData({'profilePic': url});
-      }
+    } catch (e) {
+      //user.reference.setData({'profilePic': url});
+    }
     user = await user.reference.get();
     syncDocumentUser.updateStatus(user);
-    setState(() {});
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: 'Uploaded',
+        leading: Icon(Icons.done, color: Colors.green, size: 23),
+        persistant: false,
+      );
+      uploading = false;
+    });
   }
 
   @override
@@ -61,28 +85,32 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Center(
-        child: Hero(
-          tag: "profilePic",
-          child: user['profilePic'] == null
-              ? Icon(
-                  Icons.person,
-                  size: 110,
-                )
-              : taskSnapshot == null || taskSnapshot.error == 0
-                  ? CachedNetworkImage(
-                      imageBuilder: (context, imageProvider) => Container(
-                            width: 350.0,
-                            height: 350.0,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover),
-                            ),
-                          ),
-                      imageUrl: user['profilePic'],
-                      placeholder: (context, a) => CircularProgressIndicator(),
-                    )
-                  : CircularProgressIndicator(),
-        ),
+        child: uploading == true
+            ? CircularProgressIndicator()
+            : Hero(
+                tag: "profilePic",
+                child: user['profilePic'] == null
+                    ? Icon(
+                        Icons.person,
+                        size: 110,
+                      )
+                    : taskSnapshot == null || taskSnapshot.error == 0
+                        ? CachedNetworkImage(
+                            imageBuilder: (context, imageProvider) => Container(
+                                  width: 350.0,
+                                  height: 350.0,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover),
+                                  ),
+                                ),
+                            imageUrl: user['profilePic'],
+                            placeholder: (context, a) =>
+                                CircularProgressIndicator(),
+                          )
+                        : CircularProgressIndicator(),
+              ),
       ),
     );
   }

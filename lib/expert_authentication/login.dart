@@ -105,10 +105,10 @@ class _CustomForm extends State<CustomForm> {
                     ],
                   ),
                 ),
-                Step(
-                  title: Text("Press Continue To LogIn"),
-                  content: Container(),
-                ),
+                // Step(
+                //   title: Text("Press Continue To LogIn"),
+                //   content: Container(),
+                // ),
               ],
             ),
           ),

@@ -190,9 +190,9 @@ class _VerticalListState extends State<VerticalList> {
                         padding: EdgeInsets.only(top: 12, bottom: 10),
                         child: Row(
                           children: <Widget>[
-                            //Hero(
-                            //  tag: experts[index]['emailID'],
-                            //  child:
+                            Hero(
+                              tag: experts[index]['emailID'],
+                              child:
                             Text(
                               "Your Expert : ${experts[index]["Name"]}",
                               style: Theme.of(context)
@@ -202,7 +202,7 @@ class _VerticalListState extends State<VerticalList> {
                                     fontSize: 13,
                                   ),
                             ),
-                            //),
+                            ),
                           ],
                         ),
                       ),

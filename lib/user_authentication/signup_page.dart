@@ -95,10 +95,10 @@ class _CustomFormField extends State<CustomFormField> {
                     ],
                   ),
                 ),
-                Step(
-                  title: Text("Press Continue To SignUp"),
-                  content: Container(),
-                ),
+                // Step(
+                //   title: Text("Press Continue To SignUp"),
+                //   content: Container(),
+                // ),
               ],
             ),
           ),
