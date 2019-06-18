@@ -56,7 +56,6 @@ class SplashState extends State<Splash> {
               child: const Text('OPEN PLAY STORE'),
               onPressed: () {
                 try {
-                  AppAvailability.checkAvailability("com.android.vending");
                   launch("market://details?id=com.skype.raider");
                 } on PlatformException {
                   Navigator.of(context).pop();
@@ -65,7 +64,7 @@ class SplashState extends State<Splash> {
                     builder: (BuildContext context) {
                       // return object of type Dialog
                       return AlertDialog(
-                        title: new Text("Play Store not found"),
+                        title: new Text("Could not open App Store"),
                         content: new Text("Please install Skype manually"),
                         actions: <Widget>[
                           // usually buttons at the bottom of the dialog
