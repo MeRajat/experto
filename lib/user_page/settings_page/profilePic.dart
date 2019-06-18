@@ -34,8 +34,11 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
     File file = File(path);
     task = storageReference.putFile(file);
     String url = await storageReference.getDownloadURL();
-    user.reference.updateData({'profilePic': url});
-    print("uploaded");
+    try{
+      user.reference.updateData({'profilePic': url});
+      }catch(e){
+        user.reference.setData({'profilePic': url});
+      }
     user = await user.reference.get();
     syncDocumentUser.updateStatus(user);
     setState(() {});

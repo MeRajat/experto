@@ -53,7 +53,6 @@ class Cards extends StatelessWidget {
                         );
                       });
                   await Future.delayed(Duration(seconds: 1));
-                  loading = false;
                   if(card[index].navigatorLink=='/user_login'){
                     await authenticate.isSignIn(context);
                   }
