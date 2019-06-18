@@ -2,6 +2,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:experto/video_call/notification.dart';
+
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:experto/main.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -11,17 +15,41 @@ class Splash extends StatefulWidget {
 }
 
 class SplashState extends State<Splash> {
+
+
   @override
   void initState() {
     //print(MediaQuery.of(context).size.height);
     //print(MediaQuery.of(context).size.width);
     getPermissions();
+    initNotification();
     Future.delayed(Duration(seconds: 2), () {
       Navigator.of(context).pushReplacementNamed('/home_page');
     });
     super.initState();
   }
 
+  Future onSelectNotification(String payload) async {
+    MyApp.navigatorKey.currentState.push(MaterialPageRoute(builder: (context) => notificationStartVideo));
+//    await Navigator.of(context, rootNavigator: true).push(
+//      MaterialPageRoute(
+//        builder: (BuildContext context) {
+//          return notificationStartVideo;
+//        },
+//      ),
+//    );
+  }
+
+
+  void initNotification() {
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
 
 
   void getPermissions() async{

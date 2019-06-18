@@ -1,6 +1,6 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter/material.dart';
 import 'package:experto/video_call/init.dart';
+
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 StartVideo notificationStartVideo;
 
@@ -8,25 +8,6 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     new FlutterLocalNotificationsPlugin();
 
 var _isInCall = false;
-
-void initNotification(isInChannelState) {
-  var initializationSettingsAndroid =
-      new AndroidInitializationSettings('@mipmap/ic_launcher');
-  var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings = new InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOS);
-  flutterLocalNotificationsPlugin.initialize(initializationSettings,
-  onSelectNotification: onSelectNotification);
-  _isInCall = isInChannelState;
-}
-
-Future onSelectNotification(String payload) async {
-  await Navigator.push(
-      StartVideo.navigatorKey.currentState.context,
-      new MaterialPageRoute(
-        builder: (context) => notificationStartVideo,
-      ));
-}
 
 void stateChangedInformNotification(isInChannel) {
   _isInCall = isInChannel;

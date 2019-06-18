@@ -270,6 +270,7 @@ class _ContactExpert extends State<ContactExpert> {
 
   void videoCall() {
     notificationStartVideo = startVideo = StartVideo();
+    stateChangedInformNotification(true);
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (BuildContext context) {

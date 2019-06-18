@@ -27,8 +27,6 @@ class _StartVideoState extends State<StartVideo> {
     _addRenderView(0, (viewId) {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
-    initNotification(_isInChannel);
-    stateChangedInformNotification(true);
     _toggleChannel();
   }
 
