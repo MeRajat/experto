@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:experto/user_authentication/userData.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,6 +34,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   }
 
   Future<void> imagePick() async {
+    UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
     String path = await FilePicker.getFilePath(type: FileType.IMAGE);
     print(path);
     StorageReference storageReference = FirebaseStorage.instance
@@ -50,11 +52,9 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
     });
     task = storageReference.putFile(file);
     String url = await storageReference.getDownloadURL();
-    try {
-      user.reference.updateData({'profilePic': url});
-    } catch (e) {
-      //user.reference.setData({'profilePic': url});
-    }
+    userUpdateInfo.photoUrl=url;
+    await UserData.usr.updateProfile(userUpdateInfo);
+    await user.reference.updateData({'profilePic': url});
     user = await user.reference.get();
     syncDocumentUser.updateStatus(user);
     setState(() {

@@ -48,7 +48,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 Container(
                   width: 200,
                   child: Text(
-                    user["Name"],
+                    UserData.usr.displayName,
                     style: Theme.of(context).textTheme.title.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,

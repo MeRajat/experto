@@ -4,6 +4,8 @@ import 'package:experto/utils/authentication_page_utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:experto/user_authentication/signUpReq.dart';
+import 'package:experto/utils/bloc/syncDocuments.dart';
 
 class Name extends StatefulWidget {
   @override
@@ -13,11 +15,34 @@ class Name extends StatefulWidget {
 class _NameState extends State<Name> {
   DocumentSnapshot user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  final Authenticate authenticate=new Authenticate();
 
   @override
   void didChangeDependencies() {
     user = UserDocumentSync.of(context).user;
     super.didChangeDependencies();
+  }
+
+  Future<void > update()async{
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: "Updating...",
+        leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
+      );
+    });
+    user= await authenticate.updateName(user,key);
+    syncDocumentUser.updateStatus(user);
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: 'Uploaded',
+        leading: Icon(Icons.done, color: Colors.green, size: 23),
+        persistant: false,
+      );
+    });
+    Navigator.of(context).pop();
+
   }
 
   @override
@@ -43,7 +68,7 @@ class _NameState extends State<Name> {
                 child: Padding(
                   child: InputField(
                     "Enter new name",
-                    (value) {},
+                    (value) {authenticate.getName(value);},
                   ),
                   padding: EdgeInsets.only(
                     left: 20,
@@ -56,7 +81,7 @@ class _NameState extends State<Name> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {update();},
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue[800]
                       : Colors.blue,
