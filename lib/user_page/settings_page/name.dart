@@ -7,6 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'Update.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart';
 
+final Update update=new Update();
+
 class Name extends StatefulWidget {
   @override
   _NameState createState() => _NameState();
@@ -15,7 +17,6 @@ class Name extends StatefulWidget {
 class _NameState extends State<Name> {
   DocumentSnapshot user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
-  final Update update=new Update();
 
   @override
   void didChangeDependencies() {
@@ -191,6 +192,29 @@ class _PassowrdState extends State<Passowrd> {
     super.didChangeDependencies();
   }
 
+  Future<void > updateData()async{
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: "Updating...",
+        leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
+      );
+    });
+    bool stat=await update.updatePassword(key,context);
+    syncDocumentUser.updateStatus(user);
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: stat?'Updated':"Error",
+        leading: Icon(stat?Icons.done:Icons.error, color: Colors.green, size: 23),
+        persistant: false,
+      );
+    });
+    if(stat)
+    Navigator.of(context).pop();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -216,7 +240,7 @@ class _PassowrdState extends State<Passowrd> {
                     Padding(
                       child: InputField(
                         "Enter previouw password",
-                        (value) {},
+                        (value) {update.getPass(value);},
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -225,7 +249,7 @@ class _PassowrdState extends State<Passowrd> {
                     Padding(
                       child: InputField(
                         "Enter new passowrd",
-                        (value) {},
+                        (value) {update.getPass(value);},
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -234,7 +258,7 @@ class _PassowrdState extends State<Passowrd> {
                     Padding(
                       child: InputField(
                         "Confirm passowrd",
-                        (value) {},
+                        (value) {update.getPass(value);},
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -246,7 +270,7 @@ class _PassowrdState extends State<Passowrd> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: updateData,
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue[800]
                       : Colors.blue,

@@ -117,7 +117,6 @@ class Authenticate {
         formState.reset();
       } catch (e) {
         //_isSignIn = false;
-        print(e);
         details.clear();
         currentUser = null;
         isLoadingSignup.updateStatus(false);
