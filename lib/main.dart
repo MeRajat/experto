@@ -16,8 +16,10 @@ import 'Splash.dart';
 main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  static final navigatorKey = new GlobalKey<NavigatorState>();
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       initialRoute: "/",
       routes: {
         "/user_signup": (context) => SignupPage(),

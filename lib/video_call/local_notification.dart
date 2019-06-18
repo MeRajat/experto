@@ -1,23 +1,17 @@
+import 'package:experto/video_call/init.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+StartVideo notificationStartVideo;
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     new FlutterLocalNotificationsPlugin();
 
-var _isInChannel = false;
-
-void initNotification(isInChannelState) {
-  var initializationSettingsAndroid =
-      new AndroidInitializationSettings('@mipmap/ic_launcher');
-  var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings = new InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOS);
-  flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  _isInChannel = isInChannelState;
-}
+var _isInCall = false;
 
 void stateChangedInformNotification(isInChannel) {
-  _isInChannel = isInChannel;
-  if (_isInChannel) {
+  _isInCall = isInChannel;
+  if (_isInCall) {
     _showNotification();
   } else
     flutterLocalNotificationsPlugin.cancelAll();
@@ -39,7 +33,7 @@ Future<void> _showNotification() async {
   clock.start();
   while (true) {
     await Future.delayed(Duration(seconds: 1), () async {});
-    if (!_isInChannel) {
+    if (!_isInCall) {
       return;
     }
     String twoDigits(int n) {

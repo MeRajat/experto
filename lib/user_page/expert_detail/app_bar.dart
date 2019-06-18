@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_authentication/userAdd.dart';
 import "package:experto/utils/bloc/reload.dart";
-
 import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
 import 'package:experto/utils/contact_expert.dart' as contactExpert;
-
+import 'package:experto/utils/floating_action_button.dart';
+import 'package:experto/video_call/init.dart';
+import 'package:experto/video_call/local_notification.dart';
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
@@ -203,26 +204,6 @@ class _ContactExpert extends State<ContactExpert> {
   //   }
   // }
 
-  // void videoCall() {
-  //   startVideo = StartVideo();
-  //   Navigator.of(context, rootNavigator: true).push(
-  //     MaterialPageRoute(
-  //       builder: (BuildContext context) {
-  //         return startVideo;
-  //       },
-  //     ),
-  //   );
-
-  // Navigator.push(
-  //  context,
-  //  MaterialPageRoute(
-  //    builder: (BuildContext context) {
-  //      return StartVideo();
-  //    },
-  //  ),
-  // );
-  //}
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -232,16 +213,14 @@ class _ContactExpert extends State<ContactExpert> {
           onTap: () {
             if (checkAvail()) {
               bottomSheet.showBottomSheet(
-              context: context,
-              icon: Icon(Icons.face, size: 120),
-              secondaryText: "Are you sure you want to call this expert ?",
-              callback: () {
-                contactExpert.videoCall(context:context);
-            
-              },
-            );  
-            }
-            else{
+                context: context,
+                icon: Icon(Icons.face, size: 120),
+                secondaryText: "Are you sure you want to call this expert ?",
+                callback: () {
+                  contactExpert.videoCall(context: context);
+                },
+              );
+            } else {
               bottomSheet.showBottomSheet(
                 context: context,
                 icon: Icon(Icons.not_interested, size: 120),
@@ -313,13 +292,11 @@ class _ContactExpert extends State<ContactExpert> {
         DateTime end = timeSlot['end'].toDate();
         if (now.hour > start.hour && now.hour < end.hour) {
           avail = true;
-        }
-        else if (now.hour == start.hour || now.hour == end.hour) {
+        } else if (now.hour == start.hour || now.hour == end.hour) {
           if (now.minute > start.minute && now.minute < start.minute) {
             avail = true;
           }
-        }
-        else {
+        } else {
           avail = false;
         }
       }

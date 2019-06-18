@@ -6,7 +6,10 @@ import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:experto/video_call/local_notification.dart';
 
+
 class StartVideo extends StatefulWidget {
+  static final navigatorKey = new GlobalKey<NavigatorState>();
+
   @override
   _StartVideoState createState() => _StartVideoState();
 }
@@ -30,7 +33,6 @@ class _StartVideoState extends State<StartVideo> {
     _addRenderView(0, (viewId) {
       AgoraRtcEngine.setupLocalVideo(viewId, VideoRenderMode.Hidden);
     });
-    initNotification(_isInChannel);
     timer = new RestartableTimer(Duration(seconds: 5), () {
       setState(() {
         _buttonState = !_buttonState;
@@ -67,9 +69,10 @@ class _StartVideoState extends State<StartVideo> {
       floatingActionButton: _buttonState
           ? FloatingActionButton(
         onPressed: () {
+          flutterLocalNotificationsPlugin.cancelAll();
           timer.reset();
           _toggleChannel();
-          startVideo = null;
+          notificationStartVideo = startVideo = null;
           Navigator.of(context).pop();
         },
         child: Icon(Icons.call_end),
@@ -180,12 +183,10 @@ class _StartVideoState extends State<StartVideo> {
   void _toggleChannel() async {
     if (_isInChannel) {
       _isInChannel = false;
-      stateChangedInformNotification(_isInChannel);
       AgoraRtcEngine.leaveChannel();
       AgoraRtcEngine.stopPreview();
     } else {
       _isInChannel = true;
-      stateChangedInformNotification(_isInChannel);
       AgoraRtcEngine.startPreview();
       bool status = await AgoraRtcEngine.joinChannel(null, "demo", null,
           int.parse(UserData.currentUser["Mobile"].toString().substring(2)));

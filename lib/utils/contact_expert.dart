@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:experto/video_call/init.dart';
 import "package:url_launcher/url_launcher.dart";
 import 'package:experto/utils/floating_action_button.dart' as floatingButton;
+import 'package:experto/video_call/local_notification.dart';
 
 void _showDialog({@required BuildContext context}) {
   showDialog(
@@ -28,7 +29,8 @@ void _showDialog({@required BuildContext context}) {
 }
 
 void videoCall({@required BuildContext context}) {
-  floatingButton.startVideo = StartVideo();
+  notificationStartVideo = floatingButton.startVideo = StartVideo();
+  stateChangedInformNotification(true);
   Navigator.of(context, rootNavigator: true).push(
     MaterialPageRoute(
       builder: (BuildContext context) {

@@ -6,6 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'package:experto/video_call/local_notification.dart';
+import 'package:experto/main.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -20,6 +24,7 @@ class SplashState extends State<Splash> {
     //print(MediaQuery.of(context).size.height);
     //print(MediaQuery.of(context).size.width);
     getPermissions();
+    initNotification();
     Future.delayed(Duration(seconds: 2), () {
       Navigator.of(context).pushReplacementNamed('/home_page');
       getSkypeAvailability();
@@ -35,6 +40,20 @@ class SplashState extends State<Splash> {
     } on PlatformException {
       _showSkypeDialog();
     }
+  }
+
+  Future onSelectNotification(String payload) async {
+    MyApp.navigatorKey.currentState.pushNamedAndRemoveUntil(
+        "/video_call",
+        //(route) => route.settings.name == "/video_call" ? false : true); TODO: why does this not work
+        ModalRoute.withName("/user_home"));
+//    await Navigator.of(context, rootNavigator: true).push(
+//      MaterialPageRoute(
+//        builder: (BuildContext context) {
+//          return notificationStartVideo;
+//        },
+//      ),
+//    );
   }
 
   void _showSkypeDialog() async {
@@ -88,6 +107,16 @@ class SplashState extends State<Splash> {
     );
   }
 
+  void initNotification() {
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
   Future<void> getPermissions() async {
     List<PermissionGroup> permission = [
       PermissionGroup.camera,
@@ -95,7 +124,7 @@ class SplashState extends State<Splash> {
       PermissionGroup.storage
     ];
     Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions(permission);
+    await PermissionHandler().requestPermissions(permission);
     /*permission.forEach((PermissionGroup p)async{
       PermissionStatus permissionStatus = await PermissionHandler().checkPermissionStatus(p);
       if(permissionStatus.value==0){
