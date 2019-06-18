@@ -112,6 +112,29 @@ class _EmailState extends State<Email> {
     super.didChangeDependencies();
   }
 
+  Future<void > updateData()async{
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: "Updating...",
+        leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
+      );
+    });
+    user=await update.updateEmail(user,key,context);
+    if(user!=null)
+    syncDocumentUser.updateStatus(user);
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: user!=null?'Updated':"Error",
+        leading: Icon(user!=null?Icons.done:Icons.error, color: Colors.green, size: 23),
+        persistant: false,
+      );
+    });
+    if(user!=null)
+      Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,7 +160,8 @@ class _EmailState extends State<Email> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                        (value) {},
+                        (value) {update.getPass(value);},
+                        isPassword: true,
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -148,7 +172,7 @@ class _EmailState extends State<Email> {
                     Padding(
                       child: InputField(
                         "Enter new email",
-                        (value) {},
+                        (value) {update.getEmail(value);},
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -162,7 +186,7 @@ class _EmailState extends State<Email> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: updateData,
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue[800]
                       : Colors.blue,
@@ -212,7 +236,6 @@ class _PassowrdState extends State<Passowrd> {
     });
     if(stat)
     Navigator.of(context).pop();
-
   }
 
   @override

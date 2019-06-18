@@ -139,7 +139,7 @@ class Authenticate {
       Future.delayed(Duration(seconds: 5));
       formState.save();
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+        UserData.usr=await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: details[0], password: details[1]);
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[0])
