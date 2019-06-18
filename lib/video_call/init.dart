@@ -69,11 +69,11 @@ class _StartVideoState extends State<StartVideo> {
       floatingActionButton: _buttonState
           ? FloatingActionButton(
         onPressed: () {
-          flutterLocalNotificationsPlugin.cancelAll();
           timer.reset();
           _toggleChannel();
           notificationStartVideo = startVideo = null;
           Navigator.of(context).pop();
+          stateChangedInformNotification(false);
         },
         child: Icon(Icons.call_end),
         backgroundColor: Colors.red,
