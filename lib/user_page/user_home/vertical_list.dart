@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:experto/user_authentication/userData.dart';
 
-//import 'package:experto/user_authentication/userData.dart';
+import 'package:experto/user_authentication/userData.dart';
 import 'package:flutter/material.dart';
 import '../expert_detail/expert_detail.dart';
 
@@ -21,15 +20,21 @@ class _VerticalListState extends State<VerticalList> {
   DocumentSnapshot user;
   CollectionReference interaction, expert;
   bool timedout, load, checkingAvail = false, expertAvailable = true;
+  bool stateMounted;
 
   @override
   void didChangeDependencies() {
     user = UserDocumentSync.of(context).user;
-    getInteraction();
+    if (stateMounted == true) {
+      getInteraction();
+      stateMounted = false;
+    }
     super.didChangeDependencies();
   }
 
+  @override
   void initState() {
+    stateMounted = true;
     expert = Firestore.instance.collection("Experts");
     interaction = Firestore.instance.collection("Interactions");
     experts = new List<DocumentSnapshot>();
@@ -63,7 +68,7 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("user", isEqualTo: user["emailID"])
+        .where("user", isEqualTo: UserDocumentSync.of(context).user["emailID"])
         .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
@@ -72,7 +77,6 @@ class _VerticalListState extends State<VerticalList> {
       });
     });
     experts.clear();
-    print(interactionSnapshot.documents.length);
     for (int i = 0; i < interactionSnapshot.documents.length; i++) {
       QuerySnapshot q = await expert
           .where("emailID",
@@ -186,23 +190,24 @@ class _VerticalListState extends State<VerticalList> {
                         padding: EdgeInsets.only(top: 12, bottom: 10),
                         child: Row(
                           children: <Widget>[
-                            Hero(
-                              tag: experts[index]['emailID'],
-                              child: Text(
-                                "Your Expert : ${experts[index]["Name"]}",
-                                style: Theme.of(context)
-                                    .primaryTextTheme
-                                    .body2
-                                    .copyWith(
-                                      fontSize: 13,
-                                    ),
-                              ),
+                            //Hero(
+                            //  tag: experts[index]['emailID'],
+                            //  child:
+                            Text(
+                              "Your Expert : ${experts[index]["Name"]}",
+                              style: Theme.of(context)
+                                  .primaryTextTheme
+                                  .body2
+                                  .copyWith(
+                                    fontSize: 13,
+                                  ),
                             ),
+                            //),
                           ],
                         ),
                       ),
                       Hero(
-                        tag: "contact",
+                        tag: "contact${experts[index]["emailID"]}",
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
