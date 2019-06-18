@@ -74,15 +74,16 @@ class Update{
       try{
         if(details[1].compareTo(details[2])!=0){throw("Passwords don't match!");}
         else if(details[1].compareTo(details[0])==0){throw("New Password cannot be same as old!");}
-
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: UserData.usr.email, password: details[0]);
         await UserData.usr.updatePassword(details[1]);
         await UserData.usr.reload();
         return true;
       }
       catch(e){
+        print(e);
         _ackAlert(
             context,
-            "SignUp Failed!",e);
+            "SignUp Failed!",e=="Passwords don't match!"||e=="New Password cannot be same as old!"?e:"Old password is incorrect!");
         return false;
       }
     }
