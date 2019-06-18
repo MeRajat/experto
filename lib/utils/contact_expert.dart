@@ -1,7 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:experto/video_call/init.dart';
 import "package:url_launcher/url_launcher.dart";
-import 'package:experto/utils/floating_action_button.dart' as floatingButton;
 
 void _showDialog({@required BuildContext context}) {
   showDialog(
@@ -27,16 +25,7 @@ void _showDialog({@required BuildContext context}) {
   );
 }
 
-void videoCall({@required BuildContext context}) {
-  floatingButton.startVideo = StartVideo();
-  Navigator.of(context, rootNavigator: true).push(
-    MaterialPageRoute(
-      builder: (BuildContext context) {
-        return floatingButton.startVideo;
-      },
-    ),
-  );
-}
+
 
 void launchSkype({
   @required BuildContext context,
