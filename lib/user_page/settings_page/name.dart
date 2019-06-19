@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_authentication/userData.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
 import "package:flutter/material.dart";
@@ -15,7 +14,7 @@ class Name extends StatefulWidget {
 }
 
 class _NameState extends State<Name> {
-  DocumentSnapshot user;
+  UserData user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
@@ -103,7 +102,7 @@ class Email extends StatefulWidget {
 }
 
 class _EmailState extends State<Email> {
-  DocumentSnapshot user;
+  UserData user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
@@ -207,7 +206,7 @@ class Passowrd extends StatefulWidget {
 }
 
 class _PassowrdState extends State<Passowrd> {
-  DocumentSnapshot user;
+  UserData user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
@@ -224,7 +223,7 @@ class _PassowrdState extends State<Passowrd> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool stat=await update.updatePassword(key,context);
+    bool stat=await update.updatePassword(user,key,context);
     syncDocumentUser.updateStatus(user);
     setState(() {
       showAuthSnackBar(
@@ -314,7 +313,7 @@ class DeleteAccount extends StatefulWidget {
 }
 
 class _DeleteAccountState extends State<DeleteAccount> {
-  DocumentSnapshot user;
+  UserData user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override

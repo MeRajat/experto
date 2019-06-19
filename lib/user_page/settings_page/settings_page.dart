@@ -1,6 +1,5 @@
 import 'package:experto/user_authentication/userData.dart';
 import "package:flutter/material.dart";
-import "package:cloud_firestore/cloud_firestore.dart";
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:experto/utils/global_app_bar.dart";
 import './settings.dart';
@@ -8,7 +7,7 @@ import './settings.dart';
 class CustomFlexibleSpaceBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    DocumentSnapshot user = UserDocumentSync.of(context).user;
+    UserData user = UserDocumentSync.of(context).user;
     return FlexibleSpaceBar(
       titlePadding: EdgeInsets.all(0),
       background: Row(
@@ -18,7 +17,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
             padding: EdgeInsets.only(left: 10, top: 80),
             child: Hero(
               tag: "profilePic",
-              child: user['profilePic'] == null ? Icon(
+              child: user.detailsData['profilePic'] == null ? Icon(
                 Icons.person,
                 size: 110,
               ) : CachedNetworkImage(
@@ -32,7 +31,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                             image: imageProvider, fit: BoxFit.cover),
                       ),
                     ),
-                imageUrl: user['profilePic'],
+                imageUrl: user.detailsData['profilePic'],
                 height: 110, width: 110,
                 placeholder: (context, a) => CircularProgressIndicator(),
               ),
@@ -48,7 +47,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 Container(
                   width: 200,
                   child: Text(
-                    user["Name"],
+                    user.detailsData["Name"],
                     style: Theme.of(context).textTheme.title.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
@@ -59,7 +58,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 Container(
                   width: 200,
                   child: Text(
-                    user["emailID"],
+                    user.detailsData["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
                       fontStyle: FontStyle.italic,
                       fontSize: 12,

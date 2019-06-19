@@ -108,7 +108,7 @@ class ValidateFeedback {
 
   void saveFeedback(GlobalKey<FormState> key, BuildContext context) async {
     FormState feedbackFormState = key.currentState;
-    DocumentSnapshot user = UserDocumentSync.of(context).user;
+    UserData user = UserDocumentSync.of(context).user;
     if (feedbackFormState.validate()) {
       feedbackFormState.save();
       submiting = true;
@@ -119,11 +119,11 @@ class ValidateFeedback {
           rating: rating,
           review: review,
           expertReference: expertReference,
-          userReference: user.reference,
+          userReference: user.detailsData.reference,
         );
         await Firestore.instance
             .collection("Feedback")
-            .where("User", isEqualTo: user.reference)
+            .where("User", isEqualTo: user.detailsData.reference)
             .where("Expert", isEqualTo: expertReference)
             .getDocuments()
             .timeout(Duration(seconds: 10), onTimeout: () {

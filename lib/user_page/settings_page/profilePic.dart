@@ -3,7 +3,6 @@ import 'package:experto/user_authentication/userData.dart';
 import 'package:experto/user_page/settings_page/Update.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart';
 
 class ProfilePicUpdate extends StatefulWidget {
@@ -12,7 +11,7 @@ class ProfilePicUpdate extends StatefulWidget {
 }
 
 class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
-  DocumentSnapshot user;
+  UserData user;
   bool uploading;
   final Update update=new Update();
 
@@ -25,7 +24,6 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   @override
   didChangeDependencies() {
     user = UserDocumentSync.of(context).user;
-    print(user['profilePic']);
     super.didChangeDependencies();
   }
 
@@ -71,7 +69,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
             ? CircularProgressIndicator()
             : Hero(
                 tag: "profilePic",
-                child: user['profilePic'] == null
+                child: user.detailsData['profilePic'] == null
                     ? Icon(
                         Icons.person,
                         size: 110,
@@ -86,7 +84,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                                         fit: BoxFit.cover),
                                   ),
                                 ),
-                            imageUrl: user['profilePic'],
+                            imageUrl: user.detailsData['profilePic'],
                             placeholder: (context, a) =>
                                 CircularProgressIndicator(),
                           ),

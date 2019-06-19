@@ -104,7 +104,7 @@ class _ContactExpert extends State<ContactExpert> {
   bool checkingAvail = true;
   bool expertAvailable = true;
   DocumentSnapshot expert;
-  DocumentSnapshot user;
+  UserData user;
   CollectionReference interaction;
 
   @override
@@ -127,9 +127,9 @@ class _ContactExpert extends State<ContactExpert> {
     CollectionReference temp = Firestore.instance.collection("Users"),
         temp2 = Firestore.instance.collection("Experts");
     try {
-      for (int i = 0; i < user["interactionID"].length; i++) {
+      for (int i = 0; i < user.detailsData["interactionID"].length; i++) {
         tempsnap = await interaction
-            .where("id", isEqualTo: user["interactionID"][i])
+            .where("id", isEqualTo: user.detailsData["interactionID"][i])
             .getDocuments();
         if (tempsnap.documents[0]["expert"] == expert["emailID"])
           break;
@@ -152,7 +152,7 @@ class _ContactExpert extends State<ContactExpert> {
           "interactionTime": FieldValue.arrayUnion([DateTime.now()])
         });
       } else {
-        await temp.document(user.documentID).updateData({
+        await temp.document(user.detailsData.documentID).updateData({
           "interactionID": FieldValue.arrayUnion([id])
         });
         print(expert["emailID"]);
@@ -161,16 +161,16 @@ class _ContactExpert extends State<ContactExpert> {
         });
         await interaction.add({
           'expert': expert["emailID"],
-          'user': user["emailID"],
+          'user': user.detailsData["emailID"],
           'id': id,
           'interactionTime': FieldValue.arrayUnion([DateTime.now()])
         });
       }
       await temp
-          .where("emailID", isEqualTo: user["emailID"])
+          .where("emailID", isEqualTo: user.detailsData["emailID"])
           .getDocuments()
           .then((QuerySnapshot q) {
-        user = q.documents[0];
+        user.detailsData = q.documents[0];
       });
     });
     userSearchExpert.updateStatus(true);

@@ -1,4 +1,3 @@
-import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
@@ -12,7 +11,7 @@ import '../user_authentication/userData.dart';
 
 
 class HomePage extends StatefulWidget {
-  final DocumentSnapshot user;
+  final UserData user;
   HomePage(this.user);
   @override
   _HomePage createState() => _HomePage();

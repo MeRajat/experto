@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart';
 
 class UserData {
-  //static DocumentSnapshot currentUser;
-  static FirebaseUser usr;
+  DocumentSnapshot detailsData;
+  FirebaseUser profileData;
 }
 
 class UserDocumentSync extends StatefulWidget {
   final Widget child;
-  final DocumentSnapshot user;
+  final UserData user;
 
   UserDocumentSync(this.user, this.child);
 
@@ -23,7 +23,7 @@ class UserDocumentSync extends StatefulWidget {
 }
 
 class _UserDocumentSync extends State<UserDocumentSync> {
-  DocumentSnapshot user;
+  UserData user;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _UserDocumentSync extends State<UserDocumentSync> {
 }
 
 class TrueInheritedWidget extends InheritedWidget {
-  final DocumentSnapshot user;
+  final UserData user;
 
   TrueInheritedWidget(this.user, child) : super(child: child);
 

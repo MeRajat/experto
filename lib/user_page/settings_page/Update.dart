@@ -45,7 +45,7 @@ class Update{
   getMobile(String x) => details.add(x);
   getEmail(String x) => details.add(x);
 
-  Future<DocumentSnapshot> updateName(DocumentSnapshot user,GlobalKey<FormState> _formKey) async{
+  Future<UserData> updateName(UserData user,GlobalKey<FormState> _formKey) async{
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -55,18 +55,17 @@ class Update{
       try{
         UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
         userUpdateInfo.displayName=details[0];
-        await UserData.usr.updateProfile(userUpdateInfo);
-        await UserData.usr.reload();
-        print(user);
-        await user.reference.updateData({"Name":details[0]});
-        user=await user.reference.get();
+        await user.profileData.updateProfile(userUpdateInfo);
+        await user.profileData.reload();
+        await user.detailsData.reference.updateData({"Name":details[0]});
+        user.detailsData=await user.detailsData.reference.get();
       }
       catch(e){}
     }
     return user;
   }
 
-  Future<bool> updatePassword(GlobalKey<FormState> _formKey,BuildContext context) async{
+  Future<bool> updatePassword(UserData user,GlobalKey<FormState> _formKey,BuildContext context) async{
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -76,9 +75,9 @@ class Update{
       try{
         if(details[1].compareTo(details[2])!=0){throw("Passwords don't match!");}
         else if(details[1].compareTo(details[0])==0){throw("New Password cannot be same as old!");}
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: UserData.usr.email, password: details[0]);
-        await UserData.usr.updatePassword(details[1]);
-        await UserData.usr.reload();
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: user.profileData.email, password: details[0]);
+        await user.profileData.updatePassword(details[1]);
+        await user.profileData.reload();
         return true;
       }
       catch(e){
@@ -92,7 +91,7 @@ class Update{
     return false;
   }
 
-  Future<DocumentSnapshot> updateEmail(DocumentSnapshot user,GlobalKey<FormState> _formKey,BuildContext context) async{
+  Future<UserData> updateEmail(UserData user,GlobalKey<FormState> _formKey,BuildContext context) async{
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -100,12 +99,12 @@ class Update{
       Future.delayed(Duration(seconds: 5));
       formState.save();
       try{
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: UserData.usr.email, password: details[0]);
-        if(details[1].compareTo(UserData.usr.email)==0){throw("New Email cannot be same as old!");}
-        await UserData.usr.updateEmail(details[1]);
-        await UserData.usr.reload();
-        await userReference.document(user.documentID).updateData({'emailID':details[1]});
-        user=await userReference.document(user.documentID).get();
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: user.profileData.email, password: details[0]);
+        if(details[1].compareTo(user.profileData.email)==0){throw("New Email cannot be same as old!");}
+        await user.profileData.updateEmail(details[1]);
+        await user.profileData.reload();
+        await userReference.document(user.detailsData.documentID).updateData({'emailID':details[1]});
+        user.detailsData=await userReference.document(user.detailsData.documentID).get();
         return user;
       }
       catch(e){
@@ -119,7 +118,7 @@ class Update{
     return null;
   }
 
-  Future<bool> deleteAccount(DocumentSnapshot user,GlobalKey<FormState> _formKey,BuildContext context) async{
+  Future<bool> deleteAccount(UserData user,GlobalKey<FormState> _formKey,BuildContext context) async{
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -127,10 +126,10 @@ class Update{
       Future.delayed(Duration(seconds: 5));
       formState.save();
       try{
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: UserData.usr.email, password: details[0]);
-        await UserData.usr.delete();
-        //await UserData.usr.reload();
-        await userReference.document(user.documentID).delete();
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: user.profileData.email, password: details[0]);
+        await user.profileData.delete();
+        //await user.profileData.reload();
+        await userReference.document(user.detailsData.documentID).delete();
         return true;
       }
       catch(e){
@@ -144,23 +143,23 @@ class Update{
     return false;
   }
 
-  Future<DocumentSnapshot> updateProfilePic(DocumentSnapshot user) async {
+  Future<UserData> updateProfilePic(UserData user) async {
     StorageUploadTask task;
     UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
     String path = await FilePicker.getFilePath(type: FileType.IMAGE);
     print(path);
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
-        .child("/Profile Photos/" + user["emailID"]);
+        .child("/Profile Photos/" + user.detailsData["emailID"]);
     print(storageReference.getPath().then((x) => print(x)));
     File file = File(path);
     task=storageReference.putFile(file);
     await task.onComplete;
     String url = await storageReference.getDownloadURL();
     userUpdateInfo.photoUrl=url;
-    await UserData.usr.updateProfile(userUpdateInfo);
-    await userReference.document(user.documentID).updateData({'profilePic': url});
-    user = await userReference.document(user.documentID).get();
+    await user.profileData.updateProfile(userUpdateInfo);
+    await userReference.document(user.detailsData.documentID).updateData({'profilePic': url});
+    user.detailsData = await userReference.document(user.detailsData.documentID).get();
     return user;
   }
 

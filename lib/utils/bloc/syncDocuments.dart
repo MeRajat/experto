@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:experto/user_authentication/userData.dart';
 
 class SyncDocument{
-  final StreamController<DocumentSnapshot> status = StreamController<DocumentSnapshot>.broadcast();
+  final StreamController<UserData> status = StreamController<UserData>.broadcast();
 
   Stream get getStatus => status.stream;
 
-  void updateStatus(DocumentSnapshot newStatus){
+  void updateStatus(UserData newStatus){
     status.sink.add(newStatus);
   }
 

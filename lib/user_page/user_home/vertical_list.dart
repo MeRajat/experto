@@ -17,7 +17,7 @@ class VerticalList extends StatefulWidget {
 class _VerticalListState extends State<VerticalList> {
   QuerySnapshot interactionSnapshot;
   List<DocumentSnapshot> experts;
-  DocumentSnapshot user;
+  UserData user;
   CollectionReference interaction, expert;
   bool timedout, load, checkingAvail = false, expertAvailable = true;
   bool stateMounted;
@@ -68,7 +68,7 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("user", isEqualTo: UserDocumentSync.of(context).user["emailID"])
+        .where("user", isEqualTo: UserDocumentSync.of(context).user.detailsData["emailID"])
         .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {

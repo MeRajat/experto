@@ -11,9 +11,11 @@ class Authenticate {
   List<String> details;
   Future<void> Function(BuildContext context) fn;
   String msg;
+  UserData userData;
 
   Authenticate() {
     //_isSignIn = false;
+    userData=new UserData();
     details = new List<String>();
     getUser();
     msg = "Invalid details";
@@ -23,25 +25,25 @@ class Authenticate {
     details = new List<String>();
     getUser();
     msg = "Invalid details";
-    UserData.usr = null;
+    userData.profileData = null;
   }
 
   Future<bool> isSignIn(context) async {
-    UserData.usr = await FirebaseAuth.instance.currentUser();
+    userData.profileData = await FirebaseAuth.instance.currentUser();
     try {
-      if (UserData.usr == null) {
+      if (userData.profileData == null) {
         Navigator.of(context).pop();
         Navigator.pushNamed(context, '/user_login');
         return false;
       } else {
         userSnapshot = await Firestore.instance
             .collection('Users')
-            .where('emailID', isEqualTo: UserData.usr.email)
+            .where('emailID', isEqualTo: userData.profileData.email)
             .getDocuments();
-
+        userData.detailsData=userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
-            arguments: userSnapshot.documents[0]);
+            arguments: userData);
 
         return true;
       }
@@ -96,7 +98,7 @@ class Authenticate {
             .where("Mobile", isEqualTo: int.parse(details[3]))
             .getDocuments();
         if (val.documents.length != 0) throw ("Mobile Number already in use");
-        UserData.usr = await FirebaseAuth.instance
+        userData.profileData = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
         currentUser = new Users(
@@ -107,16 +109,17 @@ class Authenticate {
         );
         userUpdateInfo.displayName=details[0];
         //userUpdateInfo.photoUrl=
-        await UserData.usr.updateProfile(userUpdateInfo);
+        await userData.profileData.updateProfile(userUpdateInfo);
         Firestore.instance.runTransaction((Transaction t) async {
-          await userReference.document(UserData.usr.uid).setData(currentUser.toJson());
+          await userReference.document(userData.profileData.uid).setData(currentUser.toJson());
         });
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[1])
             .getDocuments();
+        userData.detailsData=userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
-            arguments: userSnapshot.documents[0]);
+            arguments: userData);
         formState.reset();
       } catch (e) {
         //_isSignIn = false;
@@ -141,7 +144,7 @@ class Authenticate {
       Future.delayed(Duration(seconds: 5));
       formState.save();
       try {
-        UserData.usr=await FirebaseAuth.instance.signInWithEmailAndPassword(
+        userData.profileData=await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: details[0], password: details[1]);
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[0])
