@@ -87,7 +87,7 @@ class Authenticate {
       isLoadingSignupExpert.updateStatus(true);
       userName = "expert_" + details["name"].split(" ")[0];
       String index = details['name'].substring(0, 1).toUpperCase();
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      user=await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: details['email'], password: details['password']);
       expert = new Experts(
           email: details['email'],
@@ -104,26 +104,24 @@ class Authenticate {
           );
 
       Firestore.instance.runTransaction((Transaction t) async {
-        await expertReference.add(expert.toJson());
+        await expertReference.document(user.uid).setData(expert.toJson());
       });
       expertSnapshot = await expertReference
           .where('emailID', isEqualTo: details['email'])
           .getDocuments();
       currentExpert = expertSnapshot.documents[0];
+      if(!currentExpert["Status"])
+        throw("Not Active");
       Navigator.pushNamedAndRemoveUntil(
           context, '/expert_home', ModalRoute.withName(':'));
       _formKey.forEach((form) {
         form.currentState.reset();
       });
     } catch (e) {
-      //_isSignIn = false;
-      //_formKey.forEach((form) {
-      //  form.currentState.reset();
-      //});
       details.clear();
       expert = null;
       isLoadingSignupExpert.updateStatus(false);
-      _ackAlert(context, "SignUp failed", e.toString().split(',')[1]);
+      _ackAlert(context, "SignUp failed", e=="Not Active"?e:e.toString().split(',')[1]);
     }
   }
 

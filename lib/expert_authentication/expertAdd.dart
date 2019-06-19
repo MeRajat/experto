@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 DocumentSnapshot currentExpert;
+FirebaseUser user;
 
 class Experts {
   final String name,

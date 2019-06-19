@@ -86,6 +86,7 @@ class Authenticate {
       GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
+    UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
     if (formState.validate()) {
       formState.save();
       try {
@@ -98,15 +99,17 @@ class Authenticate {
         UserData.usr = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
-
         currentUser = new Users(
           email: details[1],
           city: details[2],
           name: details[0],
           m: details[3],
         );
+        userUpdateInfo.displayName=details[0];
+        //userUpdateInfo.photoUrl=
+        await UserData.usr.updateProfile(userUpdateInfo);
         Firestore.instance.runTransaction((Transaction t) async {
-          await userReference.add(currentUser.toJson());
+          await userReference.document(UserData.usr.uid).setData(currentUser.toJson());
         });
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[1])
@@ -118,7 +121,6 @@ class Authenticate {
       } catch (e) {
         //_isSignIn = false;
         details.clear();
-        currentUser = null;
         isLoadingSignup.updateStatus(false);
         _ackAlert(
             context,
