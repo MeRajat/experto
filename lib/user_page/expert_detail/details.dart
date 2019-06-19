@@ -112,7 +112,7 @@ class _DetailState extends State<Detail> {
                 Padding(
                   padding: EdgeInsets.only(left: 20, right: 10, top: 20),
                   child: Text(
-                    "Domains",
+                    "Categories",
                     style: Theme.of(context).textTheme.title,
                     textScaleFactor: 1.2,
                   ),

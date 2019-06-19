@@ -161,7 +161,7 @@ class _Cards extends State<Cards> {
   @override
   Widget build(BuildContext context) {
     {
-      String recommendationHeaderText = "Top Domains";
+      String recommendationHeaderText = "Top Categories";
       String searchHeaderText = "Results";
 
       if (timedOut) {

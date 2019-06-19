@@ -15,7 +15,7 @@ List<BottomNavigationBarItem> navigationBarItems() {
         CupertinoIcons.settings,
         size: 25,
       ),
-      title: Text("Domains"),
+      title: Text("Categories"),
     ),
     BottomNavigationBarItem(
       icon: Icon(

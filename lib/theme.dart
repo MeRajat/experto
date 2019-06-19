@@ -167,7 +167,7 @@ class Theme {
           top: 10,
         ),
         color: Color.fromRGBO(45, 45, 45, 1),
-        elevation: 2,
+        elevation: 5,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),

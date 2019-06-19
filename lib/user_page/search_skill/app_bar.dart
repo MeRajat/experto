@@ -29,7 +29,7 @@ class AppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomAppBar(
       130,
-      'Domains',
+      'Categories',
       CustomFlexibleSpace(),
       isFloating:true,
     );
@@ -73,7 +73,7 @@ class _SkillTextField extends State<SkillTextField> {
       style: TextStyle(fontSize: 17),
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.search, size: 20),
-        hintText: 'search by domain',
+        hintText: 'search by Category',
       ),
     );
   }
