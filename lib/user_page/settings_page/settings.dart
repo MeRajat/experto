@@ -11,6 +11,7 @@ class SettingsTiles extends StatelessWidget {
     [Icon(Icons.short_text), "Name", Name()],
     [Icon(Icons.enhanced_encryption), "Password", Passowrd()],
     [Icon(Icons.email), "Email", Email()],
+    [Icon(Icons.delete_forever), "Delete Account", DeleteAccount()],
     [Icon(Icons.exit_to_app), "Logout", Container()],
   ];
 

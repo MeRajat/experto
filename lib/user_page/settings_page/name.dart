@@ -308,6 +308,110 @@ class _PassowrdState extends State<Passowrd> {
   }
 }
 
+class DeleteAccount extends StatefulWidget {
+  @override
+  _DeleteAccountState createState() => _DeleteAccountState();
+}
+
+class _DeleteAccountState extends State<DeleteAccount> {
+  DocumentSnapshot user;
+  GlobalKey<FormState> key = GlobalKey<FormState>();
+
+  @override
+  void didChangeDependencies() {
+    user = UserDocumentSync.of(context).user;
+    super.didChangeDependencies();
+  }
+
+  Future<void > updateData()async{
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: "Updating...",
+        leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
+      );
+    });
+    user=await update.updateEmail(user,key,context);
+    if(user!=null)
+    syncDocumentUser.updateStatus(user);
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: user!=null?'Updated':"Error",
+        leading: Icon(user!=null?Icons.done:Icons.error, color: Colors.green, size: 23),
+        persistant: false,
+      );
+    });
+    if(user!=null)
+      Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          "Settings",
+          style: Theme.of(context).textTheme.title,
+        ),
+      ),
+      body: Builder(
+        builder: (context) {
+          return ListView(
+            children: <Widget>[
+              Hero(
+                child:AppbarContainer("Delete Account"),
+                tag:"settingDelete Account"
+              ),
+              Form(
+                key: key,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      child: InputField(
+                        "Enter password for confirmation",
+                        (value) {update.getPass(value);},
+                        isPassword: true,
+                      ),
+                      padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: 30,
+                      ),
+                    ),
+                    Padding(
+                      child: InputField(
+                        "Enter email for confirmation",
+                        (value) {update.getEmail(value);},
+                      ),
+                      padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        bottom: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+                child: RaisedButton(
+                  onPressed: updateData,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.red[800]
+                      : Colors.red,
+                  child: Text("Delete Account"),
+                ),
+              )
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
 class AppbarContainer extends StatelessWidget {
   final String title;
 
