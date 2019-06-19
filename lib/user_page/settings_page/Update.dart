@@ -47,6 +47,7 @@ class Update{
 
   Future<DocumentSnapshot> updateName(DocumentSnapshot user,GlobalKey<FormState> _formKey) async{
     FormState formState = _formKey.currentState;
+    details.clear();
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
       Future.delayed(Duration(seconds: 5));
@@ -57,8 +58,8 @@ class Update{
         await UserData.usr.updateProfile(userUpdateInfo);
         await UserData.usr.reload();
         print(user);
-        await userReference.document(user.documentID).updateData({"Name":details[0]});
-        user=await userReference.document(user.documentID).get();
+        await user.reference.updateData({"Name":details[0]});
+        user=await user.reference.get();
       }
       catch(e){}
     }
