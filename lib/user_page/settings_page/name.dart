@@ -331,18 +331,16 @@ class _DeleteAccountState extends State<DeleteAccount> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    user=await update.updateEmail(user,key,context);
-    if(user!=null)
-    syncDocumentUser.updateStatus(user);
+    bool status=await update.deleteAccount(user,key,context);
     setState(() {
       showAuthSnackBar(
         context: context,
-        title: user!=null?'Updated':"Error",
-        leading: Icon(user!=null?Icons.done:Icons.error, color: Colors.green, size: 23),
+        title: status?'Updated':"Error",
+        leading: Icon(status?Icons.done:Icons.error, color: Colors.green, size: 23),
         persistant: false,
       );
     });
-    if(user!=null)
+    if(status)
       Navigator.of(context).pop();
   }
 

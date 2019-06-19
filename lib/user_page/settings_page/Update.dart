@@ -101,7 +101,7 @@ class Update{
       formState.save();
       try{
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: UserData.usr.email, password: details[0]);
-          if(details[1].compareTo(UserData.usr.email)==0){throw("New Email cannot be same as old!");}
+        if(details[1].compareTo(UserData.usr.email)==0){throw("New Email cannot be same as old!");}
         await UserData.usr.updateEmail(details[1]);
         await UserData.usr.reload();
         await userReference.document(user.documentID).updateData({'emailID':details[1]});
@@ -117,6 +117,31 @@ class Update{
       }
     }
     return null;
+  }
+
+  Future<bool> deleteAccount(DocumentSnapshot user,GlobalKey<FormState> _formKey,BuildContext context) async{
+    FormState formState = _formKey.currentState;
+    details.clear();
+    if (formState.validate()) {
+      isLoadingLogin.updateStatus(true);
+      Future.delayed(Duration(seconds: 5));
+      formState.save();
+      try{
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: UserData.usr.email, password: details[0]);
+        await UserData.usr.delete();
+        //await UserData.usr.reload();
+        await userReference.document(user.documentID).delete();
+        return true;
+      }
+      catch(e){
+        print(e);
+        _ackAlert(
+            context,
+            "SignUp Failed!",e=="New Email cannot be same as old!"?e:"Old password is incorrect!");
+        return false;
+      }
+    }
+    return false;
   }
 
   Future<DocumentSnapshot> updateProfilePic(DocumentSnapshot user) async {
@@ -138,4 +163,5 @@ class Update{
     user = await userReference.document(user.documentID).get();
     return user;
   }
+
 }

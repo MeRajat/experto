@@ -1,4 +1,5 @@
 import 'package:experto/user_page/settings_page/profilePic.dart';
+import 'package:experto/utils/authentication_page_utils.dart';
 import "package:firebase_auth/firebase_auth.dart";
 
 import 'package:experto/home_page/home_page.dart';
@@ -12,14 +13,29 @@ class SettingsTiles extends StatelessWidget {
     [Icon(Icons.enhanced_encryption), "Password", Passowrd()],
     [Icon(Icons.email), "Email", Email()],
     [Icon(Icons.delete_forever), "Delete Account", DeleteAccount()],
-    [Icon(Icons.exit_to_app), "Logout", Container()],
+    [Icon(Icons.exit_to_app), "Logout",null],
   ];
 
-  void logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (buildContext) => HomePage()),
-        ModalRoute.withName(':'));
+  void logOut(BuildContext context) async {
+
+      showAuthSnackBar(
+        context: context,
+        title: "Logging Out...",
+        leading: CircularProgressIndicator(),
+      );
+    await Future.delayed(Duration(seconds: 2));
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (buildContext) => HomePage()),
+          ModalRoute.withName(':'));
+    } catch (e) {
+      showAuthSnackBar(
+        context: context,
+        title: "Error...",
+        leading: Icon(Icons.error, size: 23, color: Colors.green),
+      );
+    }
   }
 
   void navigateToSetting(BuildContext context, Widget page) {
@@ -47,7 +63,7 @@ class SettingsTiles extends StatelessWidget {
               ),
               onTap: () {
                 if (tiles[index][1] == 'Logout') {
-                  logout(context);
+                  logOut(context);
                 } else {
                   navigateToSetting(context, tiles[index][2]);
                 }

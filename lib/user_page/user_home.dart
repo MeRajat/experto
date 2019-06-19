@@ -1,4 +1,3 @@
-import 'package:experto/utils/floating_action_button.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
@@ -48,10 +47,6 @@ class _HomePage extends State<HomePage> {
     return UserDocumentSync(
       widget.user,
       Scaffold(
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 50.0),
-          child: FAB(color: Colors.green),
-        ),
         body: CupertinoTabScaffold(
           tabBar: CupertinoTabBar(
             items: navigationBarItems(),
