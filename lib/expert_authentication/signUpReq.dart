@@ -124,55 +124,55 @@ class Authenticate {
   getAvailablity(Map<String, Map<String, DateTime>> x) => availablity = x;
 
   Future<void> signUp(
-      GlobalKey<FormState> _formKey, BuildContext context) async {
-    FormState formState = _formKey.currentState;
-    details.clear();
+      List<GlobalKey<FormState>> _formKey, BuildContext context) async {
+    _formKey.forEach((form) {
+      form.currentState.save();
+    });
     UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
-    if (formState.validate()) {
-      formState.save();
-      try {
-        isLoadingSignupExpert.updateStatus(true);
-        userName = "expert_" + details["name"].split(" ")[0];
-        String index = details['name'].substring(0, 1).toUpperCase();
-        expertData.profileData = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-            email: details['email'], password: details['password']);
-        currentExpert = new Experts(
-          email: details['email'],
-          city: details['city'],
-          name: details['name'],
-          skype: details['skypeUsername'],
-          userId: userName,
-          status: false,
-          m: details['mobile'],
-          index: index,
-          description: details['description'],
-          workExperience: details['workExp'],
-          skills: skills,
-        );
-        userUpdateInfo.displayName = details['name'];
-        await expertData.profileData.updateProfile(userUpdateInfo);
-        Firestore.instance.runTransaction((Transaction t) async {
-          await expertReference
-              .document(expertData.profileData.uid)
-              .setData(currentExpert.toJson());
-        });
-        expertSnapshot = await expertReference
-            .where('emailID', isEqualTo: details['email'])
-            .getDocuments();
-        expertData.detailsData = expertSnapshot.documents[0];
-        if (!currentExpert["Status"]) throw ("Not Active");
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/expert_home', ModalRoute.withName(':'),
-            arguments: expertData);
-        formState.reset();
-      } catch (e) {
-        details.clear();
-        currentExpert = null;
-        isLoadingSignupExpert.updateStatus(false);
-        _ackAlert(context, "SignUp failed",
-            e == "Not Active" ? e : e.toString().split(',')[1]);
-      }
+    try {
+      isLoadingSignupExpert.updateStatus(true);
+      userName = "expert_" + details["name"].split(" ")[0];
+      String index = details['name'].substring(0, 1).toUpperCase();
+      expertData.profileData = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: details['email'], password: details['password']);
+      currentExpert = new Experts(
+        email: details['email'],
+        city: details['city'],
+        name: details['name'],
+        skype: details['skypeUsername'],
+        userId: userName,
+        status: false,
+        m: details['mobile'],
+        index: index,
+        description: details['description'],
+        workExperience: details['workExp'],
+        skills: skills,
+      );
+      userUpdateInfo.displayName = details['name'];
+      await expertData.profileData.updateProfile(userUpdateInfo);
+      Firestore.instance.runTransaction((Transaction t) async {
+        await expertReference
+            .document(expertData.profileData.uid)
+            .setData(currentExpert.toJson());
+      });
+      expertSnapshot = await expertReference
+          .where('emailID', isEqualTo: details['email'])
+          .getDocuments();
+      expertData.detailsData = expertSnapshot.documents[0];
+      if (!expertData.detailsData["Status"]) throw ("Not Active");
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/expert_home', ModalRoute.withName(':'),
+          arguments: expertData);
+      _formKey.forEach((form) {
+        form.currentState.reset();
+      });
+    } catch (e) {
+      details.clear();
+      expertData.detailsData = null;
+      isLoadingSignupExpert.updateStatus(false);
+      _ackAlert(context, "SignUp failed",
+          e == "Not Active" ? e : e.toString().split(',')[1]);
     }
   }
 
@@ -188,13 +188,14 @@ class Authenticate {
       try {
         expertData.profileData = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-            email: details['email'], password: details['password']);
+                email: details['email'], password: details['password']);
         expertSnapshot = await expertReference
             .where('emailID', isEqualTo: details['email'])
             .getDocuments();
         if (expertSnapshot.documents[0]["Status"] == false)
           throw ("Not Active");
         //print(expertSnapshot.documents[0]["emailID"]);
+        expertData.detailsData = expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/expert_home',

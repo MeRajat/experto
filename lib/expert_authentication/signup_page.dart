@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/expert_authentication/get_all_skills.dart';
 
 import './signUpReq.dart';
 import "package:flutter/material.dart";
-import 'package:flutter/cupertino.dart';
-
 import "package:experto/utils/bloc/is_loading.dart";
-import "package:experto/utils/authentication_page_utils.dart";
 
 import './app_bar.dart' as login_page_appbar;
+import "package:experto/utils/authentication_page_utils.dart";
 
 class SignupPage extends StatelessWidget {
   @override

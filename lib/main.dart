@@ -6,7 +6,7 @@ import "./user_authentication/signup_page.dart";
 import "./user_authentication/login_page.dart";
 import "./user_page/user_home.dart" as user;
 import "./expert_authentication/login_page.dart" as expertLogin;
-import "./expert_authentication/signup.dart" as expertSignup;
+import "./expert_authentication/signup_page.dart" as expertSignup;
 import './expert_page/expert_home.dart' as expertHome;
 
 import './theme.dart';
