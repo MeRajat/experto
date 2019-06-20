@@ -33,19 +33,19 @@ class CustomForm extends StatefulWidget {
 
 class _CustomForm extends State<CustomForm> {
   final GlobalKey<FormState> _formKeyExpert = GlobalKey<FormState>();
-  Authenticate authenticate = new Authenticate();
+  final Authenticate authenticate = new Authenticate();
   bool loading = false;
-
-  @override
-  void dispose() {
-    //isLoadingLoginExpert.dispose();
-    super.dispose();
-  }
 
   @override
   void initState() {
     checkLoadingStatus();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    //isLoadingLoginExpert.dispose();
+    super.dispose();
   }
 
   void checkLoadingStatus() async {
@@ -55,6 +55,7 @@ class _CustomForm extends State<CustomForm> {
       });
       Scaffold.of(context).removeCurrentSnackBar();
       if (status) {
+        loading = true;
         showAuthSnackBar(
             context: context,
             title: "Logging In",
@@ -64,7 +65,7 @@ class _CustomForm extends State<CustomForm> {
   }
 
   void startAuthentication() {
-    //authenticate.Clear();
+    authenticate.clear();
     authenticate.signIn(_formKeyExpert, context);
   }
 
@@ -88,7 +89,7 @@ class _CustomForm extends State<CustomForm> {
               type: StepperType.vertical,
               currentStep: 0,
               onStepTapped: (int tapped) {},
-              onStepContinue: (loading) ? null : startAuthentication,
+              onStepContinue: (loading == true) ? null : startAuthentication,
               steps: [
                 Step(
                   title: Text("Enter Credentials"),
