@@ -7,7 +7,7 @@ import './settings.dart';
 class CustomFlexibleSpaceBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ExpertData expert = ExpertDocumentSync.of(context).user;
+    ExpertData expert = ExpertDocumentSync.of(context).expert;
     return FlexibleSpaceBar(
       titlePadding: EdgeInsets.all(0),
       background: Row(

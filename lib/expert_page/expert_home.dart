@@ -5,7 +5,7 @@ import "package:flutter/cupertino.dart";
 import "./expert_home/expert_home.dart";
 import "./settings_page/settings_page.dart";
 import './navigation_bar_items.dart';
-import '../expert_authentication/expertAdd.dart';
+import '../expert_authentication/expertData.dart';
 import "package:experto/utils/bloc/syncDocuments.dart";
 
 class ExpertDocumentSync extends StatefulWidget{

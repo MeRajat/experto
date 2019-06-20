@@ -1,4 +1,4 @@
-import 'package:experto/expert_authentication/expertAdd.dart';
+import 'package:experto/expert_authentication/expertData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +89,7 @@ class Authenticate {
       String index = details['name'].substring(0, 1).toUpperCase();
       user=await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: details['email'], password: details['password']);
-      expert = new Experts(
+      currentExpert = new Experts(
           email: details['email'],
           city: details['city'],
           name: details['name'],
@@ -104,7 +104,7 @@ class Authenticate {
           );
 
       Firestore.instance.runTransaction((Transaction t) async {
-        await expertReference.document(user.uid).setData(expert.toJson());
+        await expertReference.document(user.uid).setData(currentExpert.toJson());
       });
       expertSnapshot = await expertReference
           .where('emailID', isEqualTo: details['email'])
@@ -119,7 +119,7 @@ class Authenticate {
       });
     } catch (e) {
       details.clear();
-      expert = null;
+      currentExpert = null;
       isLoadingSignupExpert.updateStatus(false);
       _ackAlert(context, "SignUp failed", e=="Not Active"?e:e.toString().split(',')[1]);
     }
