@@ -13,10 +13,23 @@ class VerticalList extends StatefulWidget {
 class _VerticalListState extends State<VerticalList> {
   QuerySnapshot interactionSnapshot;
   List<DocumentSnapshot> users;
+  ExpertData expert;
   CollectionReference interaction, user;
   bool timedout, load;
+  bool stateMounted;
+
+  @override
+  void didChangeDependencies() {
+    expert = ExpertDocumentSync.of(context).expert;
+    if (stateMounted == true) {
+      getInteraction();
+      stateMounted = false;
+    }
+    super.didChangeDependencies();
+  }
 
   void initState() {
+    stateMounted = true;
     user = Firestore.instance.collection("Users");
     interaction = Firestore.instance.collection("Interactions");
     users = new List<DocumentSnapshot>();
@@ -53,7 +66,8 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("expert", isEqualTo: currentExpert["emailID"])
+        .where("expert", isEqualTo: ExpertDocumentSync.of(context).expert.detailsData["emailID"])
+        .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {
@@ -64,7 +78,7 @@ class _VerticalListState extends State<VerticalList> {
     //print(interactionSnapshot.documents.length);
     for (int i = 0; i < interactionSnapshot.documents.length; i++) {
       QuerySnapshot q = await user
-          .where("emailID", isEqualTo: interactionSnapshot.documents[0]["user"])
+          .where("emailID", isEqualTo: interactionSnapshot.documents[i]["user"])
           .getDocuments();
       users.add(q.documents[0]);
     }
