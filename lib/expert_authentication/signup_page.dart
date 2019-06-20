@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/expert_authentication/get_all_skills.dart';
+import 'package:flutter/cupertino.dart';
 
 import './signUpReq.dart';
 import "package:flutter/material.dart";
@@ -33,8 +35,9 @@ class _CustomFormField extends State<CustomFormField> {
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
   ];
-  static final Authenticate authenticate = new Authenticate();
+  final Authenticate authenticate = new Authenticate();
   bool loading = false;
+
   Map<String, DateTime> avail;
   int step = 0;
   bool isExperienced = false;
@@ -59,16 +62,16 @@ class _CustomFormField extends State<CustomFormField> {
   //List<DocumentReference> skillReference=[];
 
   @override
+  void dispose() {
+    //isLoadingSignupExpert.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     checkLoadingStatus();
     skills.getSkills();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    //isLoadingSignupExpert.dispose();
-    super.dispose();
   }
 
   void checkLoadingStatus() async {
