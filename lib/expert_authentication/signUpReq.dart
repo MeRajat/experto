@@ -26,7 +26,7 @@ class Authenticate {
     expertData = new ExpertData();
     details = {
       "name": "",
-      "passowrd": "",
+      "password": "",
       "email": "",
       "skypeUsername": "",
       "city": "",
@@ -41,7 +41,7 @@ class Authenticate {
   void clear() {
     details = {
       "name": "",
-      "passowrd": "",
+      "password": "",
       "email": "",
       "skypeUsername": "",
       "city": "",
@@ -59,11 +59,11 @@ class Authenticate {
     try {
       if (expertData.profileData == null) {
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, '/user_login');
+        Navigator.pushNamed(context, '/expert_login');
         return false;
       } else {
         expertSnapshot = await Firestore.instance
-            .collection('Users')
+            .collection('Experts')
             .where('emailID', isEqualTo: expertData.profileData.email)
             .getDocuments();
         expertData.detailsData = expertSnapshot.documents[0];

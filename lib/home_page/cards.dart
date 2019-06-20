@@ -1,4 +1,6 @@
-import 'package:experto/user_authentication/signUpReq.dart';
+import 'package:experto/user_authentication/signUpReq.dart' as user;
+import 'package:experto/expert_authentication/signUpReq.dart' as expert;
+
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
@@ -25,7 +27,8 @@ class Cards extends StatelessWidget {
     )
   ];
 
-  final Authenticate authenticate = new Authenticate();
+  final user.Authenticate authenticateUser = new user.Authenticate();
+  final expert.Authenticate authenticateExpert = new expert.Authenticate();
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +56,14 @@ class Cards extends StatelessWidget {
                         );
                       });
                   await Future.delayed(Duration(seconds: 1));
-                  if(card[index].navigatorLink=='/user_login'){
-                    await authenticate.isSignIn(context);
-                  }
-                  else{
+                  if (card[index].navigatorLink == '/user_login') {
+                    await authenticateUser.isSignIn(context);
+                  } else if (card[index].navigatorLink == '/expert_login') {
+                    await authenticateExpert.isSignIn(context);
+                  } else {
                     Navigator.pop(context);
-                    Navigator.pushNamed(context,card[index].navigatorLink);
+                    Navigator.pushNamed(context, card[index].navigatorLink);
                   }
-                  
                 },
                 child: SizedBox(
                   height: 130,

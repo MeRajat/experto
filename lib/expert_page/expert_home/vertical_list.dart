@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:experto/expert_authentication/expertData.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,6 @@ class _VerticalListState extends State<VerticalList> {
     users = new List<DocumentSnapshot>();
     timedout = false;
     load = false;
-    getInteraction();
     listenReload();
     super.initState();
   }

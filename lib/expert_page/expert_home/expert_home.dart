@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import './app_bar.dart';
 
 import "package:experto/utils/bloc/reload.dart";
-import './verticle_list.dart';
+import './vertical_list.dart';
 
 class ExpertHome extends StatelessWidget {
   @override

@@ -7,14 +7,14 @@ import 'package:experto/expert_authentication/expertData.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class Update{
+class Update {
   CollectionReference expertReference;
   Map<String, dynamic> details;
-  Update(){
+  Update() {
     //_isSignIn = false;
     details = {
       "name": "",
-      "passowrd": "",
+      "password": "",
       "email": "",
       "skypeUsername": "",
       "city": "",
@@ -64,78 +64,99 @@ class Update{
 
   getWorkExperience(String x) => details['workExp'] = x;
 
-  Future<bool> updatePassword(ExpertData expert,GlobalKey<FormState> _formKey,BuildContext context) async{
+  Future<bool> updatePassword(ExpertData expert, GlobalKey<FormState> _formKey,
+      BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
       Future.delayed(Duration(seconds: 5));
       formState.save();
-      try{
-        if(details[1].compareTo(details[2])!=0){throw("Passwords don't match!");}
-        else if(details[1].compareTo(details[0])==0){throw("New Password cannot be same as old!");}
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: expert.profileData.email, password: details[0]);
+      try {
+        if (details[1].compareTo(details[2]) != 0) {
+          throw ("Passwords don't match!");
+        } else if (details[1].compareTo(details[0]) == 0) {
+          throw ("New Password cannot be same as old!");
+        }
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: expert.profileData.email, password: details['password']);
         await expert.profileData.updatePassword(details[1]);
         await expert.profileData.reload();
         return true;
-      }
-      catch(e){
+      } catch (e) {
         print(e);
         _ackAlert(
             context,
-            "SignUp Failed!",e=="Passwords don't match!"||e=="New Password cannot be same as old!"?e:"Old password is incorrect!");
+            "SignUp Failed!",
+            e == "Passwords don't match!" ||
+                    e == "New Password cannot be same as old!"
+                ? e
+                : "Old password is incorrect!");
         return false;
       }
     }
     return false;
   }
 
-  Future<ExpertData> updateEmail(ExpertData expert,GlobalKey<FormState> _formKey,BuildContext context) async{
+  Future<ExpertData> updateEmail(ExpertData expert,
+      GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
       Future.delayed(Duration(seconds: 5));
       formState.save();
-      try{
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: expert.profileData.email, password: details[0]);
-        if(details[1].compareTo(expert.profileData.email)==0){throw("New Email cannot be same as old!");}
-        await expert.profileData.updateEmail(details[1]);
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: expert.profileData.email, password: details['password']);
+        if (details['email'].compareTo(expert.profileData.email) == 0) {
+          throw ("New Email cannot be same as old!");
+        }
+        await expert.profileData.updateEmail(details['email']);
         await expert.profileData.reload();
-        await expertReference.document(expert.detailsData.documentID).updateData({'emailID':details[1]});
-        expert.detailsData=await expertReference.document(expert.detailsData.documentID).get();
+        await expertReference
+            .document(expert.detailsData.documentID)
+            .updateData({'emailID': details['email']});
+        expert.detailsData =
+            await expertReference.document(expert.detailsData.documentID).get();
         return expert;
-      }
-      catch(e){
+      } catch (e) {
         print(e);
         _ackAlert(
             context,
-            "SignUp Failed!",e=="New Email cannot be same as old!"?e:"Old password is incorrect!");
+            "SignUp Failed!",
+            e == "New Email cannot be same as old!"
+                ? e
+                : "Old password is incorrect!");
         return null;
       }
     }
     return null;
   }
 
-  Future<bool> deleteAccount(ExpertData expert,GlobalKey<FormState> _formKey,BuildContext context) async{
+  Future<bool> deleteAccount(ExpertData expert, GlobalKey<FormState> _formKey,
+      BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
       Future.delayed(Duration(seconds: 5));
       formState.save();
-      try{
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: expert.profileData.email, password: details[0]);
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: expert.profileData.email, password: details[0]);
         await expert.profileData.delete();
         //await user.profileData.reload();
         await expertReference.document(expert.detailsData.documentID).delete();
         return true;
-      }
-      catch(e){
+      } catch (e) {
         print(e);
         _ackAlert(
             context,
-            "SignUp Failed!",e=="New Email cannot be same as old!"?e:"Old password is incorrect!");
+            "SignUp Failed!",
+            e == "New Email cannot be same as old!"
+                ? e
+                : "Old password is incorrect!");
         return false;
       }
     }
@@ -144,7 +165,7 @@ class Update{
 
   Future<ExpertData> updateProfilePic(ExpertData expert) async {
     StorageUploadTask task;
-    UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
+    UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
     String path = await FilePicker.getFilePath(type: FileType.IMAGE);
     print(path);
     StorageReference storageReference = FirebaseStorage.instance
@@ -152,14 +173,16 @@ class Update{
         .child("/Profile Photos/" + expert.detailsData["emailID"]);
     print(storageReference.getPath().then((x) => print(x)));
     File file = File(path);
-    task=storageReference.putFile(file);
+    task = storageReference.putFile(file);
     await task.onComplete;
     String url = await storageReference.getDownloadURL();
-    userUpdateInfo.photoUrl=url;
+    userUpdateInfo.photoUrl = url;
     await expert.profileData.updateProfile(userUpdateInfo);
-    await expertReference.document(expert.detailsData.documentID).updateData({'profilePic': url});
-    expert.detailsData = await expertReference.document(expert.detailsData.documentID).get();
+    await expertReference
+        .document(expert.detailsData.documentID)
+        .updateData({'profilePic': url});
+    expert.detailsData =
+        await expertReference.document(expert.detailsData.documentID).get();
     return expert;
   }
-
 }
