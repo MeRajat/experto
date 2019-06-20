@@ -186,6 +186,15 @@ class Authenticate {
       //_isSignIn = true;
       formState.save();
       try {
+        await Firestore.instance
+            .collection("Experts")
+            .where("userID", isEqualTo: details['name'])
+            .getDocuments()
+            .then((QuerySnapshot q) {
+          details['email'] = q.documents[0]["emailID"];
+        }).catchError((e) {
+          details['email'] = null;
+        });
         expertData.profileData = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: details['email'], password: details['password']);

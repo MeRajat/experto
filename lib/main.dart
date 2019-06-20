@@ -20,17 +20,21 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: {
         "/user_signup": (context) => SignupPage(),
-        // "/user_home": (context) => user.HomePage(),
+//         "/user_home": (context) => user.HomePage(),
         "/user_login": (context) => LoginPage(),
         "/expert_login": (context) => expertLogin.LoginPage(),
         "/expert_signup": (context) => expertSignup.SignupPage(),
-        "/expert_home": (context) => expertHome.HomePage(),
+//        "/expert_home": (context) => expertHome.HomePage(),
         "/home_page": (context) => HomePage(),
       },
       onGenerateRoute: (RouteSettings settings) {
         if (settings.name == '/user_home') {
          return MaterialPageRoute(builder: (BuildContext context) {
             return user.HomePage(settings.arguments);
+          });
+         } else if (settings.name == '/expert_home') {
+          return MaterialPageRoute(builder: (BuildContext context) {
+            return expertHome.HomePage(settings.arguments);
           });
         }
       },
