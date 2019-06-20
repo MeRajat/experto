@@ -213,7 +213,7 @@ class Authenticate {
             "Login Failed!",
             e == "Not Active" || e == "User not found!"
                 ? e
-                : e.toString().split(',')[1]);
+                : e.toString().split(',')[0]);
       }
     }
   }

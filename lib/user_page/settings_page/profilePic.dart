@@ -13,7 +13,7 @@ class ProfilePicUpdate extends StatefulWidget {
 class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   UserData user;
   bool uploading;
-  final Update update=new Update();
+  final Update update = new Update();
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
     super.didChangeDependencies();
   }
 
-  Future<void > updateData()async{
+  Future<void> updateData() async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -35,7 +35,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    user= await update.updateProfilePic(user);
+    user = await update.updateProfilePic(user);
     syncDocumentUser.updateStatusUser(user);
     setState(() {
       showAuthSnackBar(
@@ -45,7 +45,6 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         persistant: false,
       );
     });
-
   }
 
   @override
@@ -74,20 +73,19 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                         Icons.person,
                         size: 110,
                       )
-                    :  CachedNetworkImage(
-                            imageBuilder: (context, imageProvider) => Container(
-                                  width: 350.0,
-                                  height: 350.0,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover),
-                                  ),
-                                ),
-                            imageUrl: user.detailsData['profilePic'],
-                            placeholder: (context, a) =>
-                                CircularProgressIndicator(),
-                          ),
+                    : CachedNetworkImage(
+                        imageBuilder: (context, imageProvider) => Container(
+                              width: 350.0,
+                              height: 350.0,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover),
+                              ),
+                            ),
+                        imageUrl: user.detailsData['profilePic'],
+                        placeholder: (context, a) =>
+                            CircularProgressIndicator(),
+                      ),
               ),
       ),
     );
