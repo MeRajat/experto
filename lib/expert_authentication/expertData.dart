@@ -33,7 +33,7 @@ class _ExpertDocumentSync extends State<ExpertDocumentSync> {
   }
 
   void syncDocument() async {
-    syncDocumentUser.getStatus.listen((newDocument) {
+    syncDocumentUser.getStatusUser.listen((newDocument) {
       setState(() {
         expert = newDocument;
       });
@@ -42,7 +42,7 @@ class _ExpertDocumentSync extends State<ExpertDocumentSync> {
 
   @override
   Widget build(BuildContext context) {
-    return TrueInheritedWidget(user, widget.child);
+    return TrueInheritedWidget(expert, widget.child);
   }
 }
 

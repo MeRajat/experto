@@ -33,7 +33,7 @@ class _UserDocumentSync extends State<UserDocumentSync> {
   }
 
   void syncDocument() async {
-    syncDocumentUser.getStatus.listen((newDocument) {
+    syncDocumentUser.getStatusUser.listen((newDocument) {
       setState(() {
         user = newDocument;
       });

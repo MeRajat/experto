@@ -1,17 +1,25 @@
 import 'dart:async';
 import 'package:experto/user_authentication/userData.dart';
+import 'package:experto/expert_authentication/expertData.dart';
 
 class SyncDocument{
-  final StreamController<UserData> status = StreamController<UserData>.broadcast();
+  final StreamController<UserData> statusUser = StreamController<UserData>.broadcast();
+  final StreamController<ExpertData> statusExpert = StreamController<ExpertData>.broadcast();
 
-  Stream get getStatus => status.stream;
+  Stream get getStatusUser => statusUser.stream;
+  Stream get getStatusExpert => statusExpert.stream;
 
-  void updateStatus(UserData newStatus){
-    status.sink.add(newStatus);
+  void updateStatusUser(UserData newStatus){
+    statusUser.sink.add(newStatus);
+  }
+  
+  void updateStatusExpert(ExpertData newStatus) {
+    statusExpert.sink.add(newStatus);
   }
 
   void dispose(){
-    status.close();
+    statusUser.close();
+    statusExpert.close();
   }
 }
 

@@ -10,9 +10,7 @@ import "./availabity_page.dart";
 class SettingsTiles extends StatelessWidget {
   final List<List> tiles = [
     [Icon(Icons.image), "Profile Picture", ProfilePicUpdate()],
-    [Icon(Icons.short_text), "Username", Container()],
-    [Icon(Icons.short_text), "Name", Name()],
-    [Icon(Icons.enhanced_encryption), "Password", Passowrd()],
+    [Icon(Icons.enhanced_encryption), "Password", Password()],
     [Icon(Icons.email), "Email", Email()],
     [Icon(Icons.video_call), "Skype Username", Container()],
     [Icon(Icons.av_timer), "Availabality", Container()],

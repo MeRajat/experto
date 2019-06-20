@@ -32,7 +32,7 @@ class _ExpertDocumentSync extends State<ExpertDocumentSync>{
   }
   
   void syncDocument() async {
-    syncDocumentExpert.getStatus.listen((newDocument){
+    syncDocumentExpert.getStatusUser.listen((newDocument){
       setState(() {
         expert = newDocument;
       });

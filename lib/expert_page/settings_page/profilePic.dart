@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:experto/user_authentication/userData.dart';
-import 'package:experto/user_page/settings_page/Update.dart';
+import 'package:experto/expert_authentication/expertData.dart';
+import 'package:experto/expert_page/settings_page/Update.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart';
@@ -11,7 +11,7 @@ class ProfilePicUpdate extends StatefulWidget {
 }
 
 class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
-  UserData user;
+  ExpertData expert;
   bool uploading;
   final Update update=new Update();
 
@@ -23,7 +23,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
 
   @override
   didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
+    expert = ExpertDocumentSync.of(context).expert;
     super.didChangeDependencies();
   }
 
@@ -35,8 +35,8 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    user= await update.updateProfilePic(user);
-    syncDocumentUser.updateStatusUser(user);
+    expert= await update.updateProfilePic(expert);
+    syncDocumentExpert.updateStatusExpert(expert);
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -68,27 +68,27 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         child: uploading == true
             ? CircularProgressIndicator()
             : Hero(
-                tag: "profilePic",
-                child: user.detailsData['profilePic'] == null
-                    ? Icon(
-                        Icons.person,
-                        size: 110,
-                      )
-                    :  CachedNetworkImage(
-                            imageBuilder: (context, imageProvider) => Container(
-                                  width: 350.0,
-                                  height: 350.0,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover),
-                                  ),
-                                ),
-                            imageUrl: user.detailsData['profilePic'],
-                            placeholder: (context, a) =>
-                                CircularProgressIndicator(),
-                          ),
+          tag: "profilePic",
+          child: expert.detailsData['profilePic'] == null
+              ? Icon(
+            Icons.person,
+            size: 110,
+          )
+              :  CachedNetworkImage(
+            imageBuilder: (context, imageProvider) => Container(
+              width: 350.0,
+              height: 350.0,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover),
               ),
+            ),
+            imageUrl: expert.detailsData['profilePic'],
+            placeholder: (context, a) =>
+                CircularProgressIndicator(),
+          ),
+        ),
       ),
     );
   }

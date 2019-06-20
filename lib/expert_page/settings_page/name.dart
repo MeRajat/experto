@@ -1,4 +1,4 @@
-import 'package:experto/user_authentication/userData.dart';
+import 'package:experto/expert_authentication/expertData.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
@@ -8,106 +8,18 @@ import 'package:experto/utils/bloc/syncDocuments.dart';
 
 final Update update=new Update();
 
-class Name extends StatefulWidget {
-  @override
-  _NameState createState() => _NameState();
-}
-
-class _NameState extends State<Name> {
-  UserData user;
-  GlobalKey<FormState> key = GlobalKey<FormState>();
-
-  @override
-  void didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
-    super.didChangeDependencies();
-  }
-
-  Future<void > updateData()async{
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: "Updating...",
-        leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
-      );
-    });
-    user= await update.updateName(user,key);
-    syncDocumentUser.updateStatusUser(user);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: 'Uploaded',
-        leading: Icon(Icons.done, color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    Navigator.of(context).pop();
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          "Settings",
-          style: Theme.of(context).textTheme.title,
-        ),
-      ),
-      body: Builder(
-        builder: (context) {
-          return ListView(
-            children: <Widget>[
-              Hero(
-                child:AppbarContainer("Name"),
-                tag:"settingName"
-              ),
-              Form(
-                key: key,
-                child: Padding(
-                  child: InputField(
-                    "Enter new name",
-                    (value) {update.getName(value);},
-                  ),
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    top: 30,
-                    bottom: 20,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {updateData();},
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
-                  child: Text("Submit"),
-                ),
-              )
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
 class Email extends StatefulWidget {
   @override
   _EmailState createState() => _EmailState();
 }
 
 class _EmailState extends State<Email> {
-  UserData user;
+  ExpertData expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
+    expert = ExpertDocumentSync.of(context).expert;
     super.didChangeDependencies();
   }
 
@@ -119,18 +31,18 @@ class _EmailState extends State<Email> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    user=await update.updateEmail(user,key,context);
-    if(user!=null)
-    syncDocumentUser.updateStatusUser(user);
+    expert=await update.updateEmail(expert,key,context);
+    if(expert!=null)
+      syncDocumentUser.updateStatusExpert(expert);
     setState(() {
       showAuthSnackBar(
         context: context,
-        title: user!=null?'Updated':"Error",
-        leading: Icon(user!=null?Icons.done:Icons.error, color: Colors.green, size: 23),
+        title: expert!=null?'Updated':"Error",
+        leading: Icon(expert!=null?Icons.done:Icons.error, color: Colors.green, size: 23),
         persistant: false,
       );
     });
-    if(user!=null)
+    if(expert!=null)
       Navigator.of(context).pop();
   }
 
@@ -149,8 +61,8 @@ class _EmailState extends State<Email> {
           return ListView(
             children: <Widget>[
               Hero(
-                child:AppbarContainer("Email"),
-                tag:"settingEmail"
+                  child:AppbarContainer("Email"),
+                  tag:"settingEmail"
               ),
               Form(
                 key: key,
@@ -159,7 +71,7 @@ class _EmailState extends State<Email> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                        (value) {update.getPass(value);},
+                            (value) {update.getPass(value);},
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -171,7 +83,7 @@ class _EmailState extends State<Email> {
                     Padding(
                       child: InputField(
                         "Enter new email",
-                        (value) {update.getEmail(value);},
+                            (value) {update.getEmail(value);},
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -200,18 +112,18 @@ class _EmailState extends State<Email> {
   }
 }
 
-class Passowrd extends StatefulWidget {
+class Password extends StatefulWidget {
   @override
-  _PassowrdState createState() => _PassowrdState();
+  _PasswordState createState() => _PasswordState();
 }
 
-class _PassowrdState extends State<Passowrd> {
-  UserData user;
+class _PasswordState extends State<Password> {
+  ExpertData expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
+    expert = ExpertDocumentSync.of(context).expert;
     super.didChangeDependencies();
   }
 
@@ -223,8 +135,8 @@ class _PassowrdState extends State<Passowrd> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool stat=await update.updatePassword(user,key,context);
-    syncDocumentUser.updateStatusUser(user);
+    bool stat=await update.updatePassword(expert,key,context);
+    syncDocumentUser.updateStatusExpert(expert);
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -234,7 +146,7 @@ class _PassowrdState extends State<Passowrd> {
       );
     });
     if(stat)
-    Navigator.of(context).pop();
+      Navigator.of(context).pop();
   }
 
   @override
@@ -252,8 +164,8 @@ class _PassowrdState extends State<Passowrd> {
           return ListView(
             children: <Widget>[
               Hero(
-                child:AppbarContainer("Password"),
-                tag:"settingPassword"
+                  child:AppbarContainer("Password"),
+                  tag:"settingPassword"
               ),
               Form(
                 key: key,
@@ -262,7 +174,7 @@ class _PassowrdState extends State<Passowrd> {
                     Padding(
                       child: InputField(
                         "Enter previouw password",
-                        (value) {update.getPass(value);},
+                            (value) {update.getPass(value);},
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -271,7 +183,7 @@ class _PassowrdState extends State<Passowrd> {
                     Padding(
                       child: InputField(
                         "Enter new passowrd",
-                        (value) {update.getPass(value);},
+                            (value) {update.getPass(value);},
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -280,7 +192,7 @@ class _PassowrdState extends State<Passowrd> {
                     Padding(
                       child: InputField(
                         "Confirm passowrd",
-                        (value) {update.getPass(value);},
+                            (value) {update.getPass(value);},
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -313,12 +225,12 @@ class DeleteAccount extends StatefulWidget {
 }
 
 class _DeleteAccountState extends State<DeleteAccount> {
-  UserData user;
+  ExpertData expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
+    expert = ExpertDocumentSync.of(context).expert;
     super.didChangeDependencies();
   }
 
@@ -330,7 +242,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool status=await update.deleteAccount(user,key,context);
+    bool status=await update.deleteAccount(expert,key,context);
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -358,8 +270,8 @@ class _DeleteAccountState extends State<DeleteAccount> {
           return ListView(
             children: <Widget>[
               Hero(
-                child:AppbarContainer("Delete Account"),
-                tag:"settingDelete Account"
+                  child:AppbarContainer("Delete Account"),
+                  tag:"settingDelete Account"
               ),
               Form(
                 key: key,
@@ -368,7 +280,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                        (value) {update.getPass(value);},
+                            (value) {update.getPass(value);},
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -380,7 +292,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                     Padding(
                       child: InputField(
                         "Enter email for confirmation",
-                        (value) {update.getEmail(value);},
+                            (value) {update.getEmail(value);},
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
