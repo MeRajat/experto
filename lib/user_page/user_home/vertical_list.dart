@@ -79,10 +79,11 @@ class _VerticalListState extends State<VerticalList> {
     });
     experts.clear();
     interactionSnapshot.documents.forEach((d)async {
-      experts.add(await expert.document(d["expert"]).get());
-    });
-    setState(() {
-      load = true;
+      DocumentSnapshot doc=await expert.document(d["expert"]).get();
+      experts.add(doc);
+      setState(() {
+        load = true;
+      });
     });
   }
 
