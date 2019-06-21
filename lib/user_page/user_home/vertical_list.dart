@@ -69,7 +69,7 @@ class _VerticalListState extends State<VerticalList> {
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
         .where("user",
-            isEqualTo: DocumentSync.of(context).account.detailsData["emailID"])
+            isEqualTo: user.detailsData.documentID)
         .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
@@ -78,13 +78,9 @@ class _VerticalListState extends State<VerticalList> {
       });
     });
     experts.clear();
-    for (int i = 0; i < interactionSnapshot.documents.length; i++) {
-      QuerySnapshot q = await expert
-          .where("emailID",
-              isEqualTo: interactionSnapshot.documents[i]["expert"])
-          .getDocuments();
-      experts.add(q.documents[0]);
-    }
+    interactionSnapshot.documents.forEach((d)async {
+      experts.add(await expert.document(d["expert"]).get());
+    });
     setState(() {
       load = true;
     });

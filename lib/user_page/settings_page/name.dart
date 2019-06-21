@@ -31,7 +31,7 @@ class _NameState extends State<Name> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    user= await update.updateName(user,key);
+    user= await update.updateName(context,user,key);
     syncDocument.updateStatus(user);
     setState(() {
       showAuthSnackBar(

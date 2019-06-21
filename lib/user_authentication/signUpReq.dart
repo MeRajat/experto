@@ -7,7 +7,6 @@ import 'package:experto/global_data.dart';
 
 class Authenticate {
   CollectionReference userReference;
-  QuerySnapshot userSnapshot;
   AuthException exception;
   List<String> details;
   Future<void> Function(BuildContext context) fn;
@@ -31,17 +30,14 @@ class Authenticate {
 
   Future<bool> isSignIn(context) async {
     userData.profileData = await FirebaseAuth.instance.currentUser();
+    print(userData.profileData.toString());
     try {
       if (userData.profileData == null) {
         Navigator.of(context).pop();
         Navigator.pushNamed(context, '/user_login');
         return false;
       } else {
-        userSnapshot = await Firestore.instance
-            .collection('Users')
-            .where('emailID', isEqualTo: userData.profileData.email)
-            .getDocuments();
-        userData.detailsData=userSnapshot.documents[0];
+        userData.detailsData = await userReference.document(userData.profileData.uid).get();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
             arguments: userData);
@@ -103,7 +99,7 @@ class Authenticate {
             .createUserWithEmailAndPassword(
             email: details[1], password: details[4]);
         currentUser = new Users(
-          email: details[1],
+       //   email: details[1],
           city: details[2],
           name: details[0],
           m: details[3],
@@ -114,10 +110,7 @@ class Authenticate {
         Firestore.instance.runTransaction((Transaction t) async {
           await userReference.document(userData.profileData.uid).setData(currentUser.toJson());
         });
-        userSnapshot = await userReference
-            .where('emailID', isEqualTo: details[1])
-            .getDocuments();
-        userData.detailsData=userSnapshot.documents[0];
+        userData.detailsData = await userReference.document(userData.profileData.uid).get();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
             arguments: userData);
@@ -147,10 +140,9 @@ class Authenticate {
       try {
         userData.profileData=await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: details[0], password: details[1]);
-        userSnapshot = await userReference
-            .where('emailID', isEqualTo: details[0])
-            .getDocuments();
-        userData.detailsData = userSnapshot.documents[0];
+        userData.detailsData = await userReference.document(userData.profileData.uid).get();
+        print(userData.detailsData);
+        print(userData.detailsData.data);
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/user_home',

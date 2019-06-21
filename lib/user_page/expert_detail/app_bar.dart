@@ -125,14 +125,12 @@ class _ContactExpert extends State<ContactExpert> {
   Future<void> updateInteraction() async {
     int id;
     QuerySnapshot tempsnap;
-    CollectionReference temp = Firestore.instance.collection("Users"),
-        temp2 = Firestore.instance.collection("Experts");
     try {
       for (int i = 0; i < user.detailsData["interactionID"].length; i++) {
         tempsnap = await interaction
             .where("id", isEqualTo: user.detailsData["interactionID"][i])
             .getDocuments();
-        if (tempsnap.documents[0]["expert"] == expert["emailID"])
+        if (tempsnap.documents[0]["expert"] == expert.documentID)
           break;
         else
           tempsnap = null;
@@ -147,32 +145,25 @@ class _ContactExpert extends State<ContactExpert> {
         id = snapshot.documents.length;
       });
       if (tempsnap != null) {
-        await interaction
-            .document(tempsnap.documents[0].documentID)
-            .updateData({
+        await tempsnap.documents[0].reference.updateData({
           "interactionTime": FieldValue.arrayUnion([DateTime.now()])
         });
       } else {
-        await temp.document(user.detailsData.documentID).updateData({
+        await user.detailsData.reference.updateData({
           "interactionID": FieldValue.arrayUnion([id])
         });
         print(expert["emailID"]);
-        await temp2.document(expert.documentID).updateData({
+        await expert.reference.updateData({
           "interactionID": FieldValue.arrayUnion([id])
         });
         await interaction.add({
-          'expert': expert["emailID"],
-          'user': user.detailsData["emailID"],
+          'expert': expert.documentID,
+          'user': user.detailsData.documentID,
           'id': id,
           'interactionTime': FieldValue.arrayUnion([DateTime.now()])
         });
       }
-      await temp
-          .where("emailID", isEqualTo: user.detailsData["emailID"])
-          .getDocuments()
-          .then((QuerySnapshot q) {
-        user.detailsData = q.documents[0];
-      });
+      user.detailsData=await user.detailsData.reference.get();
     });
     userSearchExpert.updateStatus(true);
   }

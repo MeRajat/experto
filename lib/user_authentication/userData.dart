@@ -13,12 +13,12 @@ class TrueInheritedWidget extends InheritedWidget {
 }
 
 class Users {
-  final String name, email, city, m;
+  final String name, city, m;
   int mobile;
 
   Users({
     @required this.name,
-    @required this.email,
+//    @required this.email,
     @required this.city,
     @required this.m,
     this.mobile = 0,
@@ -28,7 +28,7 @@ class Users {
 
   Map<String, dynamic> toJson() => {
         'Name': name,
-        'emailID': email,
+       // 'emailID': email,
         'City': city,
         'Mobile': mobile,
       };
