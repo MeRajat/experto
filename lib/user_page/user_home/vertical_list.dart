@@ -68,7 +68,8 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("user", isEqualTo: DocumentSync.of(context).account.detailsData["emailID"])
+        .where("user",
+            isEqualTo: DocumentSync.of(context).account.detailsData["emailID"])
         .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
@@ -172,6 +173,13 @@ class _VerticalListState extends State<VerticalList> {
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
+              int lastInteractionIndex = interactionSnapshot
+                      .documents[index]['interactionTime'].length -
+                  1;
+              DateTime lastInteractionDate = interactionSnapshot
+                  .documents[index]['interactionTime'][lastInteractionIndex]
+                  .toDate(); //.toString();
+              String lastInteraction = lastInteractionDate.toString().split('.')[0]; 
               return Card(
                 child: Container(
                   padding:
@@ -180,7 +188,7 @@ class _VerticalListState extends State<VerticalList> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Noname",
+                        experts[index]['Name'],
                         style: Theme.of(context)
                             .textTheme
                             .title
@@ -192,16 +200,15 @@ class _VerticalListState extends State<VerticalList> {
                           children: <Widget>[
                             Hero(
                               tag: experts[index]['emailID'],
-                              child:
-                            Text(
-                              "Your Expert : ${experts[index]["Name"]}",
-                              style: Theme.of(context)
-                                  .primaryTextTheme
-                                  .body2
-                                  .copyWith(
-                                    fontSize: 13,
-                                  ),
-                            ),
+                              child: Text(
+                                "Last interaction : $lastInteraction",
+                                style: Theme.of(context)
+                                    .primaryTextTheme
+                                    .body2
+                                    .copyWith(
+                                      fontSize: 13,
+                                    ),
+                              ),
                             ),
                           ],
                         ),
