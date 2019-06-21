@@ -207,7 +207,7 @@ class Update {
     print(path);
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
-        .child("/Profile Photos/" + expert.profileData.uid);
+        .child("/Expert Profile Photos/" + expert.profileData.uid);
     print(storageReference.getPath().then((x) => print(x)));
     File file = File(path);
     task = storageReference.putFile(file);
@@ -215,7 +215,7 @@ class Update {
     String url = await storageReference.getDownloadURL();
     userUpdateInfo.photoUrl = url;
     await expert.profileData.updateProfile(userUpdateInfo);
-    expert.detailsData =await expert.detailsData.reference.get();
+    expert.profileData =await FirebaseAuth.instance.currentUser();
     return expert;
   }
 }

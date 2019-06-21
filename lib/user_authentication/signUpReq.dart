@@ -38,6 +38,8 @@ class Authenticate {
         return false;
       } else {
         userData.detailsData = await userReference.document(userData.profileData.uid).get();
+        if(!userData.detailsData.exists)
+          throw("error");
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
             arguments: userData);

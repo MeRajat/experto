@@ -84,6 +84,7 @@ class _VerticalListState extends State<VerticalList> {
         load = true;
       });
     }
+    print(interactionSnapshot.documents.length);
     if(interactionSnapshot.documents.length==0)
       setState(() {
         load = true;

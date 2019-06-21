@@ -64,6 +64,8 @@ class Authenticate {
         return false;
       } else {
         expertData.detailsData = await expertReference.document(expertData.profileData.uid).get();
+        if(!expertData.detailsData.exists)
+          throw("error");
         Navigator.pushNamedAndRemoveUntil(
             context, '/expert_home', ModalRoute.withName(':'),
             arguments: expertData);

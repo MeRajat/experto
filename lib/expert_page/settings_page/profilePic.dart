@@ -69,7 +69,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
             ? CircularProgressIndicator()
             : Hero(
           tag: "profilePic",
-          child: expert.detailsData['profilePic'] == null
+          child: expert.profileData.photoUrl == null
               ? Icon(
             Icons.person,
             size: 110,
@@ -84,7 +84,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                     fit: BoxFit.cover),
               ),
             ),
-            imageUrl: expert.detailsData['profilePic'],
+            imageUrl: expert.profileData.photoUrl,
             placeholder: (context, a) =>
                 CircularProgressIndicator(),
           ),
