@@ -56,7 +56,7 @@ class Update{
         UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
         userUpdateInfo.displayName=details[0];
         await user.profileData.updateProfile(userUpdateInfo);
-        await user.profileData.reload();
+        user.profileData=await FirebaseAuth.instance.currentUser();
         await user.detailsData.reference.updateData({"Name":details[0]});
         user.detailsData=await user.detailsData.reference.get();
       }
@@ -80,7 +80,7 @@ class Update{
         else if(details[1].compareTo(details[0])==0){throw("New Password cannot be same as old!");}
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: user.profileData.email, password: details[0]);
         await user.profileData.updatePassword(details[1]);
-        await user.profileData.reload();
+        user.profileData=await FirebaseAuth.instance.currentUser();
         return true;
       }
       catch(e){
@@ -105,7 +105,7 @@ class Update{
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: user.profileData.email, password: details[0]);
         if(details[1].compareTo(user.profileData.email)==0){throw("New Email cannot be same as old!");}
         await user.profileData.updateEmail(details[1]);
-        await user.profileData.reload();
+        user.profileData=await FirebaseAuth.instance.currentUser();
 //        await userReference.document(user.detailsData.documentID).updateData({'emailID':details[1]});
 //        user.detailsData=await userReference.document(user.detailsData.documentID).get();
         return user;
@@ -131,7 +131,7 @@ class Update{
       try{
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: user.profileData.email, password: details[0]);
         await user.profileData.delete();
-        //await user.profileData.reload();
+        //user.profileData=await FirebaseAuth.instance.currentUser();
         await userReference.document(user.detailsData.documentID).delete();
         return true;
       }
@@ -160,7 +160,8 @@ class Update{
     String url = await storageReference.getDownloadURL();
     userUpdateInfo.photoUrl=url;
     await user.profileData.updateProfile(userUpdateInfo);
-    await user.profileData.reload();
+    user.profileData=await FirebaseAuth.instance.currentUser();
+    print(user.profileData.toString());
     return user;
   }
 

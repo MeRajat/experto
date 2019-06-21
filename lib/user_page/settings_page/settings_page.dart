@@ -8,6 +8,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Data user = DocumentSync.of(context).account;
+    print(user.detailsData.data);
     return FlexibleSpaceBar(
       titlePadding: EdgeInsets.all(0),
       background: Row(
@@ -17,7 +18,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
             padding: EdgeInsets.only(left: 10, top: 80),
             child: Hero(
               tag: "profilePic",
-              child: user.detailsData['profilePic'] == null ? Icon(
+              child: user.profileData.photoUrl == null ? Icon(
                 Icons.person,
                 size: 110,
               ) : CachedNetworkImage(
@@ -31,7 +32,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                             image: imageProvider, fit: BoxFit.cover),
                       ),
                     ),
-                imageUrl: user.detailsData['profilePic'],
+                imageUrl: user.profileData.photoUrl,
                 height: 110, width: 110,
                 placeholder: (context, a) => CircularProgressIndicator(),
               ),
@@ -47,7 +48,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 Container(
                   width: 200,
                   child: Text(
-                    user.detailsData["Name"],
+                    user.profileData.displayName,
                     style: Theme.of(context).textTheme.title.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
@@ -58,7 +59,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 Container(
                   width: 200,
                   child: Text(
-                    user.detailsData["emailID"],
+                    user.profileData.email,
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
                       fontStyle: FontStyle.italic,
                       fontSize: 12,
