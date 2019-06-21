@@ -56,7 +56,7 @@ class Update {
 
   setNewPass(String x) => newPass = x;
 
-  getCity(String x) => details['city'] = x;
+  setCity(String x) => details['city'] = x;
 
   setSkype(String x) => details['skypeUsername'] = x;
 
@@ -161,11 +161,47 @@ class Update {
         });
         expert.detailsData =
             await expertReference.document(expert.detailsData.documentID).get();
-        print(expert.detailsData.data['SkypeUser'] +
-            ", skypeUsername" +
-            expert.detailsData.data['skypeUsername']);
         return true;
-      } on PlatformException catch (e){
+      } on PlatformException catch (e) {
+        if (e.code == "ERROR_WRONG_PASSWORD") {
+          _ackAlert(context, "Update Failed", "Incorrect Password entered");
+          return false;
+        }
+        throw e;
+      } catch (e) {
+        print(e);
+        _ackAlert(context, "Update Failed!", e);
+        return false;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> updateCity(
+      Data expert, GlobalKey<FormState> _formKey, BuildContext context) async {
+    FormState formState = _formKey.currentState;
+    details.clear();
+    if (formState.validate()) {
+      isLoadingLogin.updateStatus(true);
+      Future.delayed(Duration(seconds: 5));
+      formState.save();
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: expert.profileData.email, password: details['password']);
+        print("Before update: City: " + expert.detailsData.data["City"]);
+        if (details['city'].compareTo(expert.detailsData.data["City"]) == 0) {
+          throw ("New City cannot be same as old!");
+        }
+        Firestore.instance.runTransaction((Transaction t) async {
+          await expertReference
+              .document(expert.detailsData.documentID)
+              .updateData({"City": details['city']});
+        });
+        expert.detailsData =
+            await expertReference.document(expert.detailsData.documentID).get();
+        print("After update: City: " + expert.detailsData.data["City"]);
+        return true;
+      } on PlatformException catch (e) {
         if (e.code == "ERROR_WRONG_PASSWORD") {
           _ackAlert(context, "Update Failed", "Incorrect Password entered");
           return false;

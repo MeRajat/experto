@@ -12,14 +12,14 @@ class SettingsTiles extends StatelessWidget {
     [Icon(Icons.image), "Profile Picture", ProfilePicUpdate()],
     [Icon(Icons.enhanced_encryption), "Password", Password()],
     [Icon(Icons.email), "Email", Email()],
+    [Icon(Icons.location_city), "City", City()],
     [Icon(Icons.video_call), "Skype Username", Skype()],
     [Icon(Icons.av_timer), "Availabality", Availablity()],
     [Icon(Icons.delete_forever), "Delete Account", DeleteAccount()],
-    [Icon(Icons.exit_to_app), "Logout",null],
+    [Icon(Icons.exit_to_app), "Logout", null],
   ];
 
   void logOut(BuildContext context) async {
-
     showAuthSnackBar(
       context: context,
       title: "Logging Out...",
@@ -54,7 +54,7 @@ class SettingsTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
+        (BuildContext context, int index) {
           return Hero(
             tag: "setting" + tiles[index][1],
             child: ListTile(
