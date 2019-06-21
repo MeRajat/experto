@@ -9,6 +9,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
   Widget build(BuildContext context) {
     Data user = DocumentSync.of(context).account;
     print(user.detailsData.data);
+    print(user.profileData.toString());
     return FlexibleSpaceBar(
       titlePadding: EdgeInsets.all(0),
       background: Row(

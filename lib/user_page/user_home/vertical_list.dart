@@ -85,6 +85,10 @@ class _VerticalListState extends State<VerticalList> {
         load = true;
       });
     });
+    if(interactionSnapshot.documents.length==0)
+      setState(() {
+        load = true;
+      });
   }
 
   Future<void> checkAvail(int index) async {

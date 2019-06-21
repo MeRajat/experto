@@ -63,11 +63,7 @@ class Authenticate {
         Navigator.pushNamed(context, '/expert_login');
         return false;
       } else {
-        expertSnapshot = await Firestore.instance
-            .collection('Experts')
-            .where('emailID', isEqualTo: expertData.profileData.email)
-            .getDocuments();
-        expertData.detailsData = expertSnapshot.documents[0];
+        expertData.detailsData = await expertReference.document(expertData.profileData.uid).get();
         Navigator.pushNamedAndRemoveUntil(
             context, '/expert_home', ModalRoute.withName(':'),
             arguments: expertData);
@@ -157,22 +153,12 @@ class Authenticate {
             .document(expertData.profileData.uid)
             .setData(currentExpert.toJson());
       });
-      expertSnapshot = await expertReference
-          .where('emailID', isEqualTo: details['email'])
-          .getDocuments();
-      expertData.detailsData = expertSnapshot.documents[0];
-      if (!expertData.detailsData["Status"]) throw ("Not Active");
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/expert_home', ModalRoute.withName(':'),
-          arguments: expertData);
-      _formKey.forEach((form) {
-        form.currentState.reset();
-      });
+     throw ("Not Active");
     } catch (e) {
       details.clear();
       expertData.detailsData = null;
       isLoadingSignupExpert.updateStatus(false);
-      _ackAlert(context, "SignUp failed",
+      _ackAlert(context,e == "Not Active"?"In Review" :"SignUp failed",
           e == "Not Active" ? e : e.toString().split(',')[1]);
     }
   }
@@ -192,20 +178,17 @@ class Authenticate {
             .where("userID", isEqualTo: details['name'])
             .getDocuments()
             .then((QuerySnapshot q) {
+              if(q.documents.isEmpty)
+                throw("User not found!");
+              if(q.documents[0]["Status"]==false)
+                throw("Not Active");
           details['email'] = q.documents[0]["emailID"];
-        }).catchError((e) {
-          details['email'] = null;
         });
         expertData.profileData = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: details['email'], password: details['password']);
-        expertSnapshot = await expertReference
-            .where('emailID', isEqualTo: details['email'])
-            .getDocuments();
-        if (expertSnapshot.documents[0]["Status"] == false)
-          throw ("Not Active");
-        
-        expertData.detailsData = expertSnapshot.documents[0];
+        expertData.detailsData = await expertReference
+            .document(expertData.profileData.uid).get();
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/expert_home',

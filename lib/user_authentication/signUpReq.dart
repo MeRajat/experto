@@ -110,6 +110,7 @@ class Authenticate {
         Firestore.instance.runTransaction((Transaction t) async {
           await userReference.document(userData.profileData.uid).setData(currentUser.toJson());
         });
+        userData.profileData=await FirebaseAuth.instance.currentUser();
         userData.detailsData = await userReference.document(userData.profileData.uid).get();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
