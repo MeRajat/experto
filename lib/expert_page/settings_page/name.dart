@@ -68,7 +68,7 @@ class _EmailState extends State<Email> {
                       child: InputField(
                         "Enter password for confirmation",
                         (value) {
-                          update.getPass(value);
+                          update.setPass(value);
                         },
                         isPassword: true,
                       ),
@@ -82,7 +82,7 @@ class _EmailState extends State<Email> {
                       child: InputField(
                         "Enter new email",
                         (value) {
-                          update.getEmail(value);
+                          update.setEmail(value);
                         },
                       ),
                       padding: EdgeInsets.only(
@@ -170,9 +170,9 @@ class _PasswordState extends State<Password> {
                   children: <Widget>[
                     Padding(
                       child: InputField(
-                        "Enter previouw password",
+                        "Enter previous password",
                         (value) {
-                          update.getPass(value);
+                          update.setPass(value);
                         },
                         isPassword: true,
                       ),
@@ -183,7 +183,7 @@ class _PasswordState extends State<Password> {
                       child: InputField(
                         "Enter new passowrd",
                         (value) {
-                          update.getPass(value);
+                          update.setNewPass(value);
                         },
                         isPassword: true,
                       ),
@@ -194,7 +194,7 @@ class _PasswordState extends State<Password> {
                       child: InputField(
                         "Confirm passowrd",
                         (value) {
-                          update.getPass(value);
+                          update.setRetypedPass(value);
                         },
                         isPassword: true,
                       ),
@@ -282,7 +282,7 @@ class _SkypeState extends State<Skype> {
                       child: InputField(
                         "Enter password for confirmation",
                         (value) {
-                          update.getPass(value);
+                          update.setPass(value);
                         },
                         isPassword: true,
                       ),
@@ -293,7 +293,7 @@ class _SkypeState extends State<Skype> {
                       child: InputField(
                         "Enter new Skype username",
                         (value) {
-                          update.getSkype(value);
+                          update.setSkype(value);
                         },
                       ),
                       padding: EdgeInsets.only(
@@ -381,7 +381,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                       child: InputField(
                         "Enter password for confirmation",
                         (value) {
-                          update.getPass(value);
+                          update.setPass(value);
                         },
                         isPassword: true,
                       ),
@@ -395,7 +395,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                       child: InputField(
                         "Enter email for confirmation",
                         (value) {
-                          update.getEmail(value);
+                          update.setEmail(value);
                         },
                       ),
                       padding: EdgeInsets.only(

@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 class Update {
   CollectionReference expertReference;
   Map<String, dynamic> details;
+  String retypedPass, newPass;
   Update() {
     //_isSignIn = false;
     details = {
@@ -49,17 +50,19 @@ class Update {
     );
   }
 
-  getName(String x) => details['name'] = x;
+  setPass(String x) => details['password'] = x;
 
-  getPass(String x) => details['password'] = x;
+  setRetypedPass(String x) => retypedPass = x;
+
+  setNewPass(String x) => newPass = x;
 
   getCity(String x) => details['city'] = x;
 
-  getSkype(String x) => details['skypeUsername'] = x;
+  setSkype(String x) => details['skypeUsername'] = x;
 
   getMobile(String x) => details['mobile'] = x;
 
-  getEmail(String x) => details['email'] = x;
+  setEmail(String x) => details['email'] = x;
 
   getDescription(String x) => details['description'] = x;
 
@@ -74,14 +77,14 @@ class Update {
       Future.delayed(Duration(seconds: 5));
       formState.save();
       try {
-        if (details[1].compareTo(details[2]) != 0) {
+        if (newPass.compareTo(retypedPass) != 0) {
           throw ("Passwords don't match!");
-        } else if (details[1].compareTo(details[0]) == 0) {
+        } else if (newPass.compareTo(details['password']) == 0) {
           throw ("New Password cannot be same as old!");
         }
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: expert.profileData.email, password: details['password']);
-        await expert.profileData.updatePassword(details[1]);
+        await expert.profileData.updatePassword(newPass);
         await expert.profileData.reload();
         return true;
       } catch (e) {
@@ -187,7 +190,7 @@ class Update {
       formState.save();
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: expert.profileData.email, password: details[0]);
+            email: expert.profileData.email, password: details['password']);
         await expert.profileData.delete();
         //await user.profileData.reload();
         await expertReference.document(expert.detailsData.documentID).delete();
