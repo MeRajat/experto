@@ -12,7 +12,7 @@ class SettingsTiles extends StatelessWidget {
     [Icon(Icons.image), "Profile Picture", ProfilePicUpdate()],
     [Icon(Icons.enhanced_encryption), "Password", Password()],
     [Icon(Icons.email), "Email", Email()],
-    [Icon(Icons.video_call), "Skype Username", Container()],
+    [Icon(Icons.video_call), "Skype Username", Skype()],
     [Icon(Icons.av_timer), "Availabality", Availablity()],
     [Icon(Icons.delete_forever), "Delete Account", DeleteAccount()],
     [Icon(Icons.exit_to_app), "Logout",null],

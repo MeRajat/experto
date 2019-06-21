@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'Update.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart' as sync;
 
-final Update update=new Update();
+final Update update = new Update();
 
 class Email extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _EmailState extends State<Email> {
     super.didChangeDependencies();
   }
 
-  Future<void > updateData()async{
+  Future<void> updateData() async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -31,19 +31,18 @@ class _EmailState extends State<Email> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    expert=await update.updateEmail(expert,key,context);
-    if(expert!=null)
-      sync.syncDocument.updateStatus(expert);
+    expert = await update.updateEmail(expert, key, context);
+    if (expert != null) sync.syncDocument.updateStatus(expert);
     setState(() {
       showAuthSnackBar(
         context: context,
-        title: expert!=null?'Updated':"Error",
-        leading: Icon(expert!=null?Icons.done:Icons.error, color: Colors.green, size: 23),
+        title: expert != null ? 'Updated' : "Error",
+        leading: Icon(expert != null ? Icons.done : Icons.error,
+            color: Colors.green, size: 23),
         persistant: false,
       );
     });
-    if(expert!=null)
-      Navigator.of(context).pop();
+    if (expert != null) Navigator.of(context).pop();
   }
 
   @override
@@ -60,10 +59,7 @@ class _EmailState extends State<Email> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(
-                  child:AppbarContainer("Email"),
-                  tag:"settingEmail"
-              ),
+              Hero(child: AppbarContainer("Email"), tag: "settingEmail"),
               Form(
                 key: key,
                 child: Column(
@@ -71,7 +67,9 @@ class _EmailState extends State<Email> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                            (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -83,7 +81,9 @@ class _EmailState extends State<Email> {
                     Padding(
                       child: InputField(
                         "Enter new email",
-                            (value) {update.getEmail(value);},
+                        (value) {
+                          update.getEmail(value);
+                        },
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -127,7 +127,7 @@ class _PasswordState extends State<Password> {
     super.didChangeDependencies();
   }
 
-  Future<void > updateData()async{
+  Future<void> updateData() async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -135,18 +135,18 @@ class _PasswordState extends State<Password> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool stat=await update.updatePassword(expert,key,context);
+    bool stat = await update.updatePassword(expert, key, context);
     sync.syncDocument.updateStatus(expert);
     setState(() {
       showAuthSnackBar(
         context: context,
-        title: stat?'Updated':"Error",
-        leading: Icon(stat?Icons.done:Icons.error, color: Colors.green, size: 23),
+        title: stat ? 'Updated' : "Error",
+        leading: Icon(stat ? Icons.done : Icons.error,
+            color: Colors.green, size: 23),
         persistant: false,
       );
     });
-    if(stat)
-      Navigator.of(context).pop();
+    if (stat) Navigator.of(context).pop();
   }
 
   @override
@@ -163,10 +163,7 @@ class _PasswordState extends State<Password> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(
-                  child:AppbarContainer("Password"),
-                  tag:"settingPassword"
-              ),
+              Hero(child: AppbarContainer("Password"), tag: "settingPassword"),
               Form(
                 key: key,
                 child: Column(
@@ -174,7 +171,9 @@ class _PasswordState extends State<Password> {
                     Padding(
                       child: InputField(
                         "Enter previouw password",
-                            (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -183,7 +182,9 @@ class _PasswordState extends State<Password> {
                     Padding(
                       child: InputField(
                         "Enter new passowrd",
-                            (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -192,11 +193,111 @@ class _PasswordState extends State<Password> {
                     Padding(
                       child: InputField(
                         "Confirm passowrd",
-                            (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 20),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+                child: RaisedButton(
+                  onPressed: updateData,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.blue[800]
+                      : Colors.blue,
+                  child: Text("Submit"),
+                ),
+              )
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class Skype extends StatefulWidget {
+  @override
+  _SkypeState createState() => _SkypeState();
+}
+
+class _SkypeState extends State<Skype> {
+  Data expert;
+  GlobalKey<FormState> key = GlobalKey<FormState>();
+
+  @override
+  void didChangeDependencies() {
+    expert = DocumentSync.of(context).account;
+    super.didChangeDependencies();
+  }
+
+  Future<void> updateData() async {
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: "Updating...",
+        leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
+      );
+    });
+    bool stat = await update.updateSkype(expert, key, context);
+    sync.syncDocument.updateStatus(expert);
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: stat ? 'Updated' : "Error",
+        leading: Icon(stat ? Icons.done : Icons.error,
+            color: Colors.green, size: 23),
+        persistant: false,
+      );
+    });
+    if (stat) Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          "Settings",
+          style: Theme.of(context).textTheme.title,
+        ),
+      ),
+      body: Builder(
+        builder: (context) {
+          return ListView(
+            children: <Widget>[
+              Hero(child: AppbarContainer("Skype"), tag: "settingSkyoe"),
+              Form(
+                key: key,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      child: InputField(
+                        "Enter password for confirmation",
+                        (value) {
+                          update.getPass(value);
+                        },
+                        isPassword: true,
+                      ),
+                      padding: EdgeInsets.only(
+                          left: 20, right: 20, top: 30, bottom: 5),
+                    ),
+                    Padding(
+                      child: InputField(
+                        "Enter new Skype username",
+                        (value) {
+                          update.getSkype(value);
+                        },
+                      ),
+                      padding: EdgeInsets.only(
+                          left: 20, right: 20, top: 0, bottom: 5),
                     ),
                   ],
                 ),
@@ -234,7 +335,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
     super.didChangeDependencies();
   }
 
-  Future<void > updateData()async{
+  Future<void> updateData() async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -242,17 +343,17 @@ class _DeleteAccountState extends State<DeleteAccount> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool status=await update.deleteAccount(expert,key,context);
+    bool status = await update.deleteAccount(expert, key, context);
     setState(() {
       showAuthSnackBar(
         context: context,
-        title: status?'Updated':"Error",
-        leading: Icon(status?Icons.done:Icons.error, color: Colors.green, size: 23),
+        title: status ? 'Updated' : "Error",
+        leading: Icon(status ? Icons.done : Icons.error,
+            color: Colors.green, size: 23),
         persistant: false,
       );
     });
-    if(status)
-      Navigator.of(context).pop();
+    if (status) Navigator.of(context).pop();
   }
 
   @override
@@ -270,9 +371,8 @@ class _DeleteAccountState extends State<DeleteAccount> {
           return ListView(
             children: <Widget>[
               Hero(
-                  child:AppbarContainer("Delete Account"),
-                  tag:"settingDelete Account"
-              ),
+                  child: AppbarContainer("Delete Account"),
+                  tag: "settingDelete Account"),
               Form(
                 key: key,
                 child: Column(
@@ -280,7 +380,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                            (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -292,7 +394,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
                     Padding(
                       child: InputField(
                         "Enter email for confirmation",
-                            (value) {update.getEmail(value);},
+                        (value) {
+                          update.getEmail(value);
+                        },
                       ),
                       padding: EdgeInsets.only(
                         left: 20,

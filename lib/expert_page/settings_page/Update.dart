@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:experto/global_data.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 
 class Update {
   CollectionReference expertReference;
@@ -64,8 +65,8 @@ class Update {
 
   getWorkExperience(String x) => details['workExp'] = x;
 
-  Future<bool> updatePassword(Data expert, GlobalKey<FormState> _formKey,
-      BuildContext context) async {
+  Future<bool> updatePassword(
+      Data expert, GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -98,8 +99,8 @@ class Update {
     return false;
   }
 
-  Future<Data> updateEmail(Data expert,
-      GlobalKey<FormState> _formKey, BuildContext context) async {
+  Future<Data> updateEmail(
+      Data expert, GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -134,8 +135,50 @@ class Update {
     return null;
   }
 
-  Future<bool> deleteAccount(Data expert, GlobalKey<FormState> _formKey,
-      BuildContext context) async {
+  Future<bool> updateSkype(
+      Data expert, GlobalKey<FormState> _formKey, BuildContext context) async {
+    FormState formState = _formKey.currentState;
+    details.clear();
+    if (formState.validate()) {
+      isLoadingLogin.updateStatus(true);
+      Future.delayed(Duration(seconds: 5));
+      formState.save();
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: expert.profileData.email, password: details['password']);
+        if (details['skypeUsername']
+                .compareTo(expert.detailsData.data["SkypeUser"]) ==
+            0) {
+          throw ("New Skype username cannot be same as old!");
+        }
+        Firestore.instance.runTransaction((Transaction t) async {
+          await expertReference
+              .document(expert.detailsData.documentID)
+              .updateData({"SkypeUser": details['skypeUsername']});
+        });
+        expert.detailsData =
+            await expertReference.document(expert.detailsData.documentID).get();
+        print(expert.detailsData.data['SkypeUser'] +
+            ", skypeUsername" +
+            expert.detailsData.data['skypeUsername']);
+        return true;
+      } on PlatformException catch (e){
+        if (e.code == "ERROR_WRONG_PASSWORD") {
+          _ackAlert(context, "Update Failed", "Incorrect Password entered");
+          return false;
+        }
+        throw e;
+      } catch (e) {
+        print(e);
+        _ackAlert(context, "Update Failed!", e);
+        return false;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> deleteAccount(
+      Data expert, GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
