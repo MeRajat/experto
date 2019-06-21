@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import "package:experto/utils/bloc/is_loading.dart";
+import 'package:experto/global_data.dart';
 
 class Authenticate {
   CollectionReference expertReference;
@@ -15,7 +16,7 @@ class Authenticate {
   List<Map<String, DateTime>> avail = new List<Map<String, DateTime>>();
   String userName;
   String msg;
-  ExpertData expertData;
+  Data expertData;
 
   //bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
@@ -23,7 +24,7 @@ class Authenticate {
   Authenticate() {
     //_isSignIn = false;
     //details = new List<String>();
-    expertData = new ExpertData();
+    expertData = new Data();
     details = {
       "name": "",
       "password": "",
@@ -203,13 +204,13 @@ class Authenticate {
             .getDocuments();
         if (expertSnapshot.documents[0]["Status"] == false)
           throw ("Not Active");
-        //print(expertSnapshot.documents[0]["emailID"]);
+        
         expertData.detailsData = expertSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/expert_home',
           ModalRoute.withName(':'),
-          arguments: expertSnapshot.documents[0],
+          arguments: expertData,
         );
         formState.reset();
       } catch (e) {

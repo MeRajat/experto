@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/user_authentication/userData.dart';
 import "package:experto/utils/bloc/reload.dart";
+import 'package:experto/global_data.dart';
 
 import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
 import 'package:experto/utils/contact_expert.dart' as contactExpert;
@@ -104,12 +105,12 @@ class _ContactExpert extends State<ContactExpert> {
   bool checkingAvail = true;
   bool expertAvailable = true;
   DocumentSnapshot expert;
-  UserData user;
+  Data user;
   CollectionReference interaction;
 
   @override
   void didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
+    user = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 

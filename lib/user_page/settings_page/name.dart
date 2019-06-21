@@ -1,10 +1,10 @@
-import 'package:experto/user_authentication/userData.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'Update.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart';
+import 'package:experto/global_data.dart';
 
 final Update update=new Update();
 
@@ -14,12 +14,12 @@ class Name extends StatefulWidget {
 }
 
 class _NameState extends State<Name> {
-  UserData user;
+  Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
+    user = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 
@@ -32,7 +32,7 @@ class _NameState extends State<Name> {
       );
     });
     user= await update.updateName(user,key);
-    syncDocumentUser.updateStatusUser(user);
+    syncDocument.updateStatus(user);
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -102,12 +102,12 @@ class Email extends StatefulWidget {
 }
 
 class _EmailState extends State<Email> {
-  UserData user;
+  Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
+    user = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 
@@ -121,7 +121,7 @@ class _EmailState extends State<Email> {
     });
     user=await update.updateEmail(user,key,context);
     if(user!=null)
-    syncDocumentUser.updateStatusUser(user);
+    syncDocument.updateStatus(user);
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -206,12 +206,12 @@ class Passowrd extends StatefulWidget {
 }
 
 class _PassowrdState extends State<Passowrd> {
-  UserData user;
+  Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
+    user = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 
@@ -224,7 +224,7 @@ class _PassowrdState extends State<Passowrd> {
       );
     });
     bool stat=await update.updatePassword(user,key,context);
-    syncDocumentUser.updateStatusUser(user);
+    syncDocument.updateStatus(user);
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -313,12 +313,12 @@ class DeleteAccount extends StatefulWidget {
 }
 
 class _DeleteAccountState extends State<DeleteAccount> {
-  UserData user;
+  Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    user = UserDocumentSync.of(context).user;
+    user = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 

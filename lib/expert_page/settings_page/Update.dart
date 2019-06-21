@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/utils/bloc/is_loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:experto/expert_authentication/expertData.dart';
+import 'package:experto/global_data.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -64,7 +64,7 @@ class Update {
 
   getWorkExperience(String x) => details['workExp'] = x;
 
-  Future<bool> updatePassword(ExpertData expert, GlobalKey<FormState> _formKey,
+  Future<bool> updatePassword(Data expert, GlobalKey<FormState> _formKey,
       BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
@@ -98,7 +98,7 @@ class Update {
     return false;
   }
 
-  Future<ExpertData> updateEmail(ExpertData expert,
+  Future<Data> updateEmail(Data expert,
       GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
@@ -134,7 +134,7 @@ class Update {
     return null;
   }
 
-  Future<bool> deleteAccount(ExpertData expert, GlobalKey<FormState> _formKey,
+  Future<bool> deleteAccount(Data expert, GlobalKey<FormState> _formKey,
       BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
@@ -163,7 +163,7 @@ class Update {
     return false;
   }
 
-  Future<ExpertData> updateProfilePic(ExpertData expert) async {
+  Future<Data> updateProfilePic(Data expert) async {
     StorageUploadTask task;
     UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
     String path = await FilePicker.getFilePath(type: FileType.IMAGE);

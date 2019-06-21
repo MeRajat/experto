@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:experto/expert_authentication/expertData.dart';
+import 'package:experto/global_data.dart';
 import 'package:flutter/material.dart';
 
 import 'package:experto/utils/timed_out.dart';
 import "package:experto/utils/bloc/reload.dart";
+import 'package:experto/global_data.dart';
 
 class VerticalList extends StatefulWidget {
   @override
@@ -14,14 +15,14 @@ class VerticalList extends StatefulWidget {
 class _VerticalListState extends State<VerticalList> {
   QuerySnapshot interactionSnapshot;
   List<DocumentSnapshot> users;
-  ExpertData expert;
+  Data expert;
   CollectionReference interaction, user;
   bool timedout, load;
   bool stateMounted;
 
   @override
   void didChangeDependencies() {
-    expert = ExpertDocumentSync.of(context).expert;
+    expert = DocumentSync.of(context).account;
     if (stateMounted == true) {
       getInteraction();
       stateMounted = false;
@@ -66,7 +67,7 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("expert", isEqualTo: ExpertDocumentSync.of(context).expert.detailsData["emailID"])
+        .where("expert", isEqualTo: DocumentSync.of(context).account.detailsData["emailID"])
         .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {

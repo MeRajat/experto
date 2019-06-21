@@ -1,53 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
-import 'package:experto/utils/bloc/syncDocuments.dart';
 
-class UserData {
-  DocumentSnapshot detailsData;
-  FirebaseUser profileData;
-}
-
-class UserDocumentSync extends StatefulWidget {
-  final Widget child;
-  final UserData user;
-
-  UserDocumentSync(this.user, this.child);
-
-  @override
-  _UserDocumentSync createState() => _UserDocumentSync();
-
-  static TrueInheritedWidget of(BuildContext context) =>
-      context.inheritFromWidgetOfExactType(TrueInheritedWidget);
-}
-
-class _UserDocumentSync extends State<UserDocumentSync> {
-  UserData user;
-
-  @override
-  void initState() {
-    user = widget.user;
-    syncDocument();
-    super.initState();
-  }
-
-  void syncDocument() async {
-    syncDocumentUser.getStatusUser.listen((newDocument) {
-      setState(() {
-        user = newDocument;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TrueInheritedWidget(user, widget.child);
-  }
-}
+import 'package:experto/global_data.dart';
 
 class TrueInheritedWidget extends InheritedWidget {
-  final UserData user;
+  final Data user;
 
   TrueInheritedWidget(this.user, child) : super(child: child);
 

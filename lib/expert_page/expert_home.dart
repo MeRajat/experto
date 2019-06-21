@@ -4,11 +4,11 @@ import "package:flutter/cupertino.dart";
 import "./expert_home/expert_home.dart";
 import "./settings_page/settings_page.dart";
 import './navigation_bar_items.dart';
-import '../expert_authentication/expertData.dart';
+import 'package:experto/global_data.dart';
 
 
 class HomePage extends StatefulWidget {
-  final ExpertData expert;
+  final Data expert;
   HomePage(this.expert);
   @override
   _HomePage createState() => _HomePage();
@@ -36,7 +36,7 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ExpertDocumentSync(
+    return DocumentSync(
       widget.expert,
       Scaffold(
         body: CupertinoTabScaffold(

@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:experto/expert_authentication/expertData.dart';
+import 'package:experto/global_data.dart';
 import 'package:experto/expert_page/settings_page/Update.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ class ProfilePicUpdate extends StatefulWidget {
 }
 
 class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
-  ExpertData expert;
+  Data expert;
   bool uploading;
   final Update update=new Update();
 
@@ -23,7 +23,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
 
   @override
   didChangeDependencies() {
-    expert = ExpertDocumentSync.of(context).expert;
+    expert = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 
@@ -36,7 +36,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
       );
     });
     expert= await update.updateProfilePic(expert);
-    syncDocumentExpert.updateStatusExpert(expert);
+    syncDocument.updateStatus(expert);
     setState(() {
       showAuthSnackBar(
         context: context,

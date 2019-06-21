@@ -6,12 +6,12 @@ import "./search_expert/search_expert.dart";
 import "./user_home/user_home.dart";
 import "./settings_page/settings_page.dart";
 import "./navigation_bar_items.dart";
-import '../user_authentication/userData.dart';
+import 'package:experto/global_data.dart';
 
 
 
 class HomePage extends StatefulWidget {
-  final UserData user;
+  final Data user;
   HomePage(this.user);
   @override
   _HomePage createState() => _HomePage();
@@ -43,7 +43,7 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return UserDocumentSync(
+    return DocumentSync(
       widget.user,
       Scaffold(
         body: CupertinoTabScaffold(

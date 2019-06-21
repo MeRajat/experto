@@ -1,10 +1,10 @@
-import 'package:experto/expert_authentication/expertData.dart';
+import 'package:experto/global_data.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'Update.dart';
-import 'package:experto/utils/bloc/syncDocuments.dart';
+import 'package:experto/utils/bloc/syncDocuments.dart' as sync;
 
 final Update update=new Update();
 
@@ -14,12 +14,12 @@ class Email extends StatefulWidget {
 }
 
 class _EmailState extends State<Email> {
-  ExpertData expert;
+  Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    expert = ExpertDocumentSync.of(context).expert;
+    expert = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 
@@ -33,7 +33,7 @@ class _EmailState extends State<Email> {
     });
     expert=await update.updateEmail(expert,key,context);
     if(expert!=null)
-      syncDocumentUser.updateStatusExpert(expert);
+      sync.syncDocument.updateStatus(expert);
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -118,12 +118,12 @@ class Password extends StatefulWidget {
 }
 
 class _PasswordState extends State<Password> {
-  ExpertData expert;
+  Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    expert = ExpertDocumentSync.of(context).expert;
+    expert = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 
@@ -136,7 +136,7 @@ class _PasswordState extends State<Password> {
       );
     });
     bool stat=await update.updatePassword(expert,key,context);
-    syncDocumentUser.updateStatusExpert(expert);
+    sync.syncDocument.updateStatus(expert);
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -225,12 +225,12 @@ class DeleteAccount extends StatefulWidget {
 }
 
 class _DeleteAccountState extends State<DeleteAccount> {
-  ExpertData expert;
+  Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   @override
   void didChangeDependencies() {
-    expert = ExpertDocumentSync.of(context).expert;
+    expert = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 

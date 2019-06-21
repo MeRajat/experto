@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import "package:experto/utils/bloc/is_loading.dart";
 import "package:experto/utils/bloc/loading_completed.dart";
-import "package:experto/user_authentication/userData.dart";
+import 'package:experto/global_data.dart';
 
 class ValidateFeedback {
   int rating;
@@ -108,7 +108,7 @@ class ValidateFeedback {
 
   void saveFeedback(GlobalKey<FormState> key, BuildContext context) async {
     FormState feedbackFormState = key.currentState;
-    UserData user = UserDocumentSync.of(context).user;
+    Data user = DocumentSync.of(context).account;
     if (feedbackFormState.validate()) {
       feedbackFormState.save();
       submiting = true;

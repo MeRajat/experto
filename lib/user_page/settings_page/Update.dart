@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/utils/bloc/is_loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:experto/user_authentication/userData.dart';
+import 'package:experto/global_data.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -45,7 +45,7 @@ class Update{
   getMobile(String x) => details.add(x);
   getEmail(String x) => details.add(x);
 
-  Future<UserData> updateName(UserData user,GlobalKey<FormState> _formKey) async{
+  Future<Data> updateName(Data user,GlobalKey<FormState> _formKey) async{
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -65,7 +65,7 @@ class Update{
     return user;
   }
 
-  Future<bool> updatePassword(UserData user,GlobalKey<FormState> _formKey,BuildContext context) async{
+  Future<bool> updatePassword(Data user,GlobalKey<FormState> _formKey,BuildContext context) async{
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -91,7 +91,7 @@ class Update{
     return false;
   }
 
-  Future<UserData> updateEmail(UserData user,GlobalKey<FormState> _formKey,BuildContext context) async{
+  Future<Data> updateEmail(Data user,GlobalKey<FormState> _formKey,BuildContext context) async{
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -118,7 +118,7 @@ class Update{
     return null;
   }
 
-  Future<bool> deleteAccount(UserData user,GlobalKey<FormState> _formKey,BuildContext context) async{
+  Future<bool> deleteAccount(Data user,GlobalKey<FormState> _formKey,BuildContext context) async{
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -143,7 +143,7 @@ class Update{
     return false;
   }
 
-  Future<UserData> updateProfilePic(UserData user) async {
+  Future<Data> updateProfilePic(Data user) async {
     StorageUploadTask task;
     UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
     String path = await FilePicker.getFilePath(type: FileType.IMAGE);

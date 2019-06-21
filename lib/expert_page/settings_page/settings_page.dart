@@ -1,4 +1,4 @@
-import 'package:experto/expert_authentication/expertData.dart';
+import 'package:experto/global_data.dart';
 import "package:flutter/material.dart";
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:experto/utils/global_app_bar.dart";
@@ -7,7 +7,7 @@ import './settings.dart';
 class CustomFlexibleSpaceBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ExpertData expert = ExpertDocumentSync.of(context).expert;
+    Data expert = DocumentSync.of(context).account;
     return FlexibleSpaceBar(
       titlePadding: EdgeInsets.all(0),
       background: Row(

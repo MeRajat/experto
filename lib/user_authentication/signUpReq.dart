@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import "package:experto/utils/bloc/is_loading.dart";
+import 'package:experto/global_data.dart';
 
 class Authenticate {
   CollectionReference userReference;
@@ -11,11 +12,11 @@ class Authenticate {
   List<String> details;
   Future<void> Function(BuildContext context) fn;
   String msg;
-  UserData userData;
+  Data userData;
 
   Authenticate() {
     //_isSignIn = false;
-    userData=new UserData();
+    userData=new Data();
     details = new List<String>();
     getUser();
     msg = "Invalid details";
@@ -149,11 +150,12 @@ class Authenticate {
         userSnapshot = await userReference
             .where('emailID', isEqualTo: details[0])
             .getDocuments();
+        userData.detailsData = userSnapshot.documents[0];
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/user_home',
           ModalRoute.withName(':'),
-          arguments: userSnapshot.documents[0],
+          arguments: userData,
         );
         formState.reset();
       } catch (e) {
