@@ -14,6 +14,7 @@ class SettingsTiles extends StatelessWidget {
     [Icon(Icons.email), "Email", Email()],
     [Icon(Icons.description), "Description", Description()],
     [Icon(Icons.location_city), "City", City()],
+    [Icon(Icons.work), "Work Experience", WorkExperience()],
     [Icon(Icons.video_call), "Skype Username", Skype()],
     [Icon(Icons.av_timer), "Availabality", Availablity()],
     [Icon(Icons.delete_forever), "Delete Account", DeleteAccount()],

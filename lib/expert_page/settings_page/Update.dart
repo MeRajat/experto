@@ -66,7 +66,7 @@ class Update {
 
   setDescription(String x) => details['Description'] = x;
 
-  getWorkExperience(String x) => details['Work Experience'] = x;
+  setWorkExperience(String x) => details['Work Experience'] = x;
 
   Future<bool> updatePassword(
       Data expert, GlobalKey<FormState> _formKey, BuildContext context) async {
