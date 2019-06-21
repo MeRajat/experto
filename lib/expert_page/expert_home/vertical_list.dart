@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:experto/utils/timed_out.dart';
 import "package:experto/utils/bloc/reload.dart";
-import 'package:experto/global_data.dart';
 
 class VerticalList extends StatefulWidget {
   @override
@@ -67,7 +66,7 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("expert", isEqualTo: DocumentSync.of(context).account.detailsData["emailID"])
+        .where("expert", isEqualTo: expert.profileData.uid)
         .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
@@ -78,14 +77,17 @@ class _VerticalListState extends State<VerticalList> {
     users.clear();
     //print(interactionSnapshot.documents.length);
     for (int i = 0; i < interactionSnapshot.documents.length; i++) {
-      QuerySnapshot q = await user
-          .where("emailID", isEqualTo: interactionSnapshot.documents[i]["user"])
-          .getDocuments();
-      users.add(q.documents[0]);
+      DocumentSnapshot q = await user
+          .document(interactionSnapshot.documents[i]["user"]).get();
+      users.add(q);
+      setState(() {
+        load = true;
+      });
     }
-    setState(() {
-      load = true;
-    });
+    if(interactionSnapshot.documents.length==0)
+      setState(() {
+        load = true;
+      });
   }
 
   @override

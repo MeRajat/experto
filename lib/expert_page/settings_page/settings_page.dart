@@ -17,7 +17,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
             padding: EdgeInsets.only(left: 10, top: 80),
             child: Hero(
               tag: "profilePic",
-              child: expert.detailsData['profilePic'] == null ? Icon(
+              child: expert.profileData.photoUrl == null ? Icon(
                 Icons.person,
                 size: 110,
               ) : CachedNetworkImage(
@@ -31,7 +31,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                             image: imageProvider, fit: BoxFit.cover),
                       ),
                     ),
-                imageUrl: expert.detailsData['profilePic'],
+                imageUrl: expert.profileData.photoUrl,
                 height: 110, width: 110,
                 placeholder: (context, a) => CircularProgressIndicator(),
               ),
@@ -47,7 +47,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 Container(
                   width: 200,
                   child: Text(
-                    expert.detailsData["Name"],
+                    expert.profileData.displayName,
                     style: Theme.of(context).textTheme.title.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
@@ -58,7 +58,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 Container(
                   width: 200,
                   child: Text(
-                    expert.detailsData["emailID"],
+                    expert.profileData.email,
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
                       fontStyle: FontStyle.italic,
                       fontSize: 12,

@@ -85,7 +85,7 @@ class Update {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: expert.profileData.email, password: details['password']);
         await expert.profileData.updatePassword(newPass);
-        await expert.profileData.reload();
+        expert.profileData=await FirebaseAuth.instance.currentUser();
         return true;
       } catch (e) {
         print(e);
@@ -117,12 +117,9 @@ class Update {
           throw ("New Email cannot be same as old!");
         }
         await expert.profileData.updateEmail(details['emailID']);
-        await expert.profileData.reload();
-        await expertReference
-            .document(expert.detailsData.documentID)
-            .updateData({'emailID': details['emailID']});
-        expert.detailsData =
-            await expertReference.document(expert.detailsData.documentID).get();
+        expert.profileData=await FirebaseAuth.instance.currentUser();
+        await expert.detailsData.reference.updateData({'emailID': details['emailID']});
+        expert.detailsData =await expert.detailsData.reference.get();
         return expert;
       } catch (e) {
         print(e);
@@ -154,12 +151,9 @@ class Update {
           throw ("New " + field + "cannot be same as old!");
         }
         Firestore.instance.runTransaction((Transaction t) async {
-          await expertReference
-              .document(expert.detailsData.documentID)
-              .updateData({field: details[field]});
+          await expert.detailsData.reference.updateData({field: details[field]});
         });
-        expert.detailsData =
-            await expertReference.document(expert.detailsData.documentID).get();
+        expert.detailsData =await expert.detailsData.reference.get();
         print("After update: " + field + ": " + expert.detailsData.data[field]);
         return true;
       } on PlatformException catch (e) {
@@ -213,7 +207,7 @@ class Update {
     print(path);
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
-        .child("/Profile Photos/" + expert.detailsData["emailID"]);
+        .child("/Profile Photos/" + expert.profileData.uid);
     print(storageReference.getPath().then((x) => print(x)));
     File file = File(path);
     task = storageReference.putFile(file);
@@ -221,11 +215,7 @@ class Update {
     String url = await storageReference.getDownloadURL();
     userUpdateInfo.photoUrl = url;
     await expert.profileData.updateProfile(userUpdateInfo);
-    await expertReference
-        .document(expert.detailsData.documentID)
-        .updateData({'profilePic': url});
-    expert.detailsData =
-        await expertReference.document(expert.detailsData.documentID).get();
+    expert.detailsData =await expert.detailsData.reference.get();
     return expert;
   }
 }
