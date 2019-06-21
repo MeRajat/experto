@@ -15,14 +15,14 @@ class Update {
   Update() {
     //_isSignIn = false;
     details = {
-      "name": "",
+      "Name": "",
       "password": "",
-      "email": "",
-      "skypeUsername": "",
-      "city": "",
-      "mobile": '',
-      "description": "",
-      "workExp": ''
+      "emailID": "",
+      "SkypeUser": "",
+      "City": "",
+      "Mobile": '',
+      "Description": "",
+      "Work Experience": ''
     };
     getExpert();
   }
@@ -56,17 +56,17 @@ class Update {
 
   setNewPass(String x) => newPass = x;
 
-  setCity(String x) => details['city'] = x;
+  setCity(String x) => details['City'] = x;
 
-  setSkype(String x) => details['skypeUsername'] = x;
+  setSkype(String x) => details['SkypeUser'] = x;
 
-  getMobile(String x) => details['mobile'] = x;
+  getMobile(String x) => details['Mobile'] = x;
 
-  setEmail(String x) => details['email'] = x;
+  setEmail(String x) => details['emailID'] = x;
 
-  getDescription(String x) => details['description'] = x;
+  setDescription(String x) => details['Description'] = x;
 
-  getWorkExperience(String x) => details['workExp'] = x;
+  getWorkExperience(String x) => details['Work Experience'] = x;
 
   Future<bool> updatePassword(
       Data expert, GlobalKey<FormState> _formKey, BuildContext context) async {
@@ -113,14 +113,14 @@ class Update {
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: expert.profileData.email, password: details['password']);
-        if (details['email'].compareTo(expert.profileData.email) == 0) {
+        if (details['emailID'].compareTo(expert.profileData.email) == 0) {
           throw ("New Email cannot be same as old!");
         }
-        await expert.profileData.updateEmail(details['email']);
+        await expert.profileData.updateEmail(details['emailID']);
         await expert.profileData.reload();
         await expertReference
             .document(expert.detailsData.documentID)
-            .updateData({'emailID': details['email']});
+            .updateData({'emailID': details['emailID']});
         expert.detailsData =
             await expertReference.document(expert.detailsData.documentID).get();
         return expert;
@@ -138,8 +138,8 @@ class Update {
     return null;
   }
 
-  Future<bool> updateSkype(
-      Data expert, GlobalKey<FormState> _formKey, BuildContext context) async {
+  Future<bool> updateField(Data expert, String field,
+      GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
     if (formState.validate()) {
@@ -149,57 +149,18 @@ class Update {
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: expert.profileData.email, password: details['password']);
-        if (details['skypeUsername']
-                .compareTo(expert.detailsData.data["SkypeUser"]) ==
-            0) {
-          throw ("New Skype username cannot be same as old!");
+        print("Before update: " + field + ": " + expert.detailsData.data[field]);
+        if (details[field].compareTo(expert.detailsData.data[field]) == 0) {
+          throw ("New " + field + "cannot be same as old!");
         }
         Firestore.instance.runTransaction((Transaction t) async {
           await expertReference
               .document(expert.detailsData.documentID)
-              .updateData({"SkypeUser": details['skypeUsername']});
+              .updateData({field: details[field]});
         });
         expert.detailsData =
             await expertReference.document(expert.detailsData.documentID).get();
-        return true;
-      } on PlatformException catch (e) {
-        if (e.code == "ERROR_WRONG_PASSWORD") {
-          _ackAlert(context, "Update Failed", "Incorrect Password entered");
-          return false;
-        }
-        throw e;
-      } catch (e) {
-        print(e);
-        _ackAlert(context, "Update Failed!", e);
-        return false;
-      }
-    }
-    return false;
-  }
-
-  Future<bool> updateCity(
-      Data expert, GlobalKey<FormState> _formKey, BuildContext context) async {
-    FormState formState = _formKey.currentState;
-    details.clear();
-    if (formState.validate()) {
-      isLoadingLogin.updateStatus(true);
-      Future.delayed(Duration(seconds: 5));
-      formState.save();
-      try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: expert.profileData.email, password: details['password']);
-        print("Before update: City: " + expert.detailsData.data["City"]);
-        if (details['city'].compareTo(expert.detailsData.data["City"]) == 0) {
-          throw ("New City cannot be same as old!");
-        }
-        Firestore.instance.runTransaction((Transaction t) async {
-          await expertReference
-              .document(expert.detailsData.documentID)
-              .updateData({"City": details['city']});
-        });
-        expert.detailsData =
-            await expertReference.document(expert.detailsData.documentID).get();
-        print("After update: City: " + expert.detailsData.data["City"]);
+        print("After update: " + field + ": " + expert.detailsData.data[field]);
         return true;
       } on PlatformException catch (e) {
         if (e.code == "ERROR_WRONG_PASSWORD") {

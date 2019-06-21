@@ -245,7 +245,7 @@ class _SkypeState extends State<Skype> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool stat = await update.updateSkype(expert, key, context);
+    bool stat = await update.updateField(expert, "SkypeUser", key, context);
     sync.syncDocument.updateStatus(expert);
     setState(() {
       showAuthSnackBar(
@@ -343,7 +343,7 @@ class _CityState extends State<City> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool stat = await update.updateCity(expert, key, context);
+    bool stat = await update.updateField(expert, "City", key, context);
     sync.syncDocument.updateStatus(expert);
     setState(() {
       showAuthSnackBar(
@@ -393,6 +393,115 @@ class _CityState extends State<City> {
                             (value) {
                           update.setCity(value);
                         },
+                      ),
+                      padding: EdgeInsets.only(
+                          left: 20, right: 20, top: 0, bottom: 5),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+                child: RaisedButton(
+                  onPressed: updateData,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.blue[800]
+                      : Colors.blue,
+                  child: Text("Submit"),
+                ),
+              )
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class Description extends StatefulWidget {
+  @override
+  _DescriptionState createState() => _DescriptionState();
+}
+
+class _DescriptionState extends State<Description> {
+  Data expert;
+  GlobalKey<FormState> key = GlobalKey<FormState>();
+
+  @override
+  void didChangeDependencies() {
+    expert = DocumentSync.of(context).account;
+    super.didChangeDependencies();
+  }
+
+  Future<void> updateData() async {
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: "Updating...",
+        leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
+      );
+    });
+    bool stat = await update.updateField(expert, "Description", key, context);
+    sync.syncDocument.updateStatus(expert);
+    setState(() {
+      showAuthSnackBar(
+        context: context,
+        title: stat ? 'Updated' : "Error",
+        leading: Icon(stat ? Icons.done : Icons.error,
+            color: Colors.green, size: 23),
+        persistant: false,
+      );
+    });
+    if (stat) Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          "Settings",
+          style: Theme.of(context).textTheme.title,
+        ),
+      ),
+      body: Builder(
+        builder: (context) {
+          return ListView(
+            children: <Widget>[
+              Hero(child: AppbarContainer("Description"), tag: "settingDescription"),
+              Form(
+                key: key,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      child: InputField(
+                        "Enter password for confirmation",
+                            (value) {
+                          update.setPass(value);
+                        },
+                        isPassword: true,
+                      ),
+                      padding: EdgeInsets.only(
+                          left: 20, right: 20, top: 30, bottom: 5),
+                    ),
+                    Padding(
+                      /*child: InputField(
+                        "Enter new City",
+                            (value) {
+                          update.setCity(value);
+                        },
+                      ),*/
+                      child: InputField(
+                        "Enter new Brief Discription",
+                        (value) {
+                          update.setDescription(value);
+                        },
+                        inputType: TextInputType.multiline,
+                        minLines: 2,
+                        maxLines: null,
+                        maxLength: 150,
+                        inputAction: TextInputAction.newline,
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 5),
