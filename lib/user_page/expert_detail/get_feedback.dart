@@ -14,7 +14,7 @@ class ValidateFeedback {
   CollectionReference feedbackCollection;
   QuerySnapshot feedbackSnapshot;
   Feedback feedback;
-  DocumentReference expertReference;
+  String expertReference;
 
   ValidateFeedback(DocumentSnapshot expertSnapshot) {
     getexpert(expertSnapshot);
@@ -103,7 +103,7 @@ class ValidateFeedback {
   }
 
   void getexpert(DocumentSnapshot expertSnapshot) {
-    expertReference = expertSnapshot.reference;
+    expertReference = expertSnapshot.documentID;
   }
 
   void saveFeedback(GlobalKey<FormState> key, BuildContext context) async {
@@ -119,11 +119,11 @@ class ValidateFeedback {
           rating: rating,
           review: review,
           expertReference: expertReference,
-          userReference: user.detailsData.reference,
+          userReference: user.detailsData.documentID,
         );
         await Firestore.instance
             .collection("Feedback")
-            .where("User", isEqualTo: user.detailsData.reference)
+            .where("User", isEqualTo: user.detailsData.documentID)
             .where("Expert", isEqualTo: expertReference)
             .getDocuments()
             .timeout(Duration(seconds: 10), onTimeout: () {
@@ -131,7 +131,7 @@ class ValidateFeedback {
         }).catchError((e) {
           throw TimeoutException;
         }).then((QuerySnapshot feedbackSnapshot) async {
-          if (feedbackSnapshot.documents.length == 0) {
+          if (feedbackSnapshot.documents.isEmpty) {
             updatedPreviousFeedback = false;
             await Firestore.instance.runTransaction((Transaction t) async {
               await feedbackCollection.add(feedback.toJson());
@@ -143,7 +143,6 @@ class ValidateFeedback {
             );
           }
         });
-
         submitted = true;
         feedbackSubmissionCompleted.updateStatus(true);
       } catch (e) {
@@ -161,9 +160,7 @@ class ValidateFeedback {
 
 class Feedback {
   int rating;
-  String review;
-  DocumentReference expertReference;
-  DocumentReference userReference;
+  String review, expertReference, userReference;
   Feedback({
     @required this.rating,
     @required this.review,
