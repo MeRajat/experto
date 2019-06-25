@@ -17,7 +17,7 @@ class Authenticate {
   String userName;
   String msg;
   Data expertData;
-
+    //_isSignIn = false;
   //bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
 

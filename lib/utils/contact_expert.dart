@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import "package:url_launcher/url_launcher.dart";
 
@@ -25,8 +26,6 @@ void _showDialog({@required BuildContext context}) {
   );
 }
 
-
-
 void launchSkype({
   @required BuildContext context,
   @required String skypeUsername,
@@ -39,5 +38,33 @@ void launchSkype({
     await launch(url);
   } else {
     _showDialog(context: context);
+  }
+}
+
+Future<bool> checkAvail(DocumentSnapshot expert) async {
+  bool avail = true;
+  expert = await expert.reference.get();
+
+  if (expert["Availability Mode"] == 'normal') {
+    return await Future.value(expert['Available']);
+  } else {
+    DateTime now = DateTime.now();
+    var expertAvailability = expert["Availablity"];
+    expertAvailability.forEach((_, timeSlot) {
+      if (timeSlot['start'] != null || timeSlot['end'] != null) {
+        DateTime start = timeSlot['start'].toDate();
+        DateTime end = timeSlot['end'].toDate();
+        if (now.hour > start.hour && now.hour < end.hour) {
+          avail = true;
+        } else if (now.hour == start.hour || now.hour == end.hour) {
+          if (now.minute > start.minute && now.minute < start.minute) {
+            avail = true;
+          }
+        } else {
+          avail = false;
+        }
+      }
+    });
+    return avail;
   }
 }

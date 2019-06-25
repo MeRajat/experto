@@ -78,7 +78,7 @@ class ValidateFeedback {
             elevation: 5,
             highlightElevation: 5,
             color: (Theme.of(context).brightness == Brightness.dark)
-                ? Color.fromRGBO(42, 123, 249, 1)
+                ? Colors.blue[800]
                 : Colors.blue,
           ),
         ),

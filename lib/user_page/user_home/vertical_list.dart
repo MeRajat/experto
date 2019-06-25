@@ -68,8 +68,7 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("user",
-            isEqualTo: user.profileData.uid)
+        .where("user", isEqualTo: user.profileData.uid)
         .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
@@ -78,47 +77,21 @@ class _VerticalListState extends State<VerticalList> {
       });
     });
     experts.clear();
-    interactionSnapshot.documents.forEach((d)async {
-      DocumentSnapshot doc=await expert.document(d["expert"]).get();
+    interactionSnapshot.documents.forEach((d) async {
+      DocumentSnapshot doc = await expert.document(d["expert"]).get();
       experts.add(doc);
       setState(() {
         load = true;
       });
     });
-    if(interactionSnapshot.documents.length==0)
+    if (interactionSnapshot.documents.length == 0)
       setState(() {
         load = true;
       });
   }
 
   Future<void> checkAvail(int index) async {
-    setState(() {
-      checkingAvail = true;
-    });
-
-    experts[index] = await experts[index].reference.get();
-
-    if (experts[index]["Availability Mode"] == 'normal') {
-      expertAvailable = experts[index]['Available'];
-    } else {
-      DateTime now = DateTime.now();
-      var expertAvailability = experts[index]["Availablity"];
-      expertAvailability.forEach((_, timeSlot) {
-        if (timeSlot['start'] != null || timeSlot['end'] != null) {
-          DateTime start = timeSlot['start'].toDate();
-          DateTime end = timeSlot['end'].toDate();
-          if (now.hour > start.hour && now.hour < end.hour) {
-            expertAvailable = true;
-          } else if (now.hour == start.hour || now.hour == end.hour) {
-            if (now.minute > start.minute && now.minute < start.minute) {
-              expertAvailable = true;
-            }
-          } else {
-            expertAvailable = false;
-          }
-        }
-      });
-    }
+    expertAvailable = await contactExpert.checkAvail(experts[index]);
 
     setState(() {
       checkingAvail = false;
@@ -180,7 +153,8 @@ class _VerticalListState extends State<VerticalList> {
               DateTime lastInteractionDate = interactionSnapshot
                   .documents[index]['interactionTime'][lastInteractionIndex]
                   .toDate(); //.toString();
-              String lastInteraction = lastInteractionDate.toString().split('.')[0]; 
+              String lastInteraction =
+                  lastInteractionDate.toString().split('.')[0];
               return Card(
                 child: Container(
                   padding:
@@ -207,7 +181,11 @@ class _VerticalListState extends State<VerticalList> {
                                     .primaryTextTheme
                                     .body2
                                     .copyWith(
-                                      fontSize: 13,
+                                      fontSize: 12,
+                                      color: (Theme.of(context).brightness ==
+                                              Brightness.dark)
+                                          ? Colors.grey[400]
+                                          : Colors.grey[800],
                                     ),
                               ),
                             ),

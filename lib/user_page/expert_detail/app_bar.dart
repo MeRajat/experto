@@ -172,30 +172,8 @@ class _ContactExpert extends State<ContactExpert> {
       checkingAvail = true;
     });
 
-    expert = await expert.reference.get();
-
-    if (expert["Availability Mode"] == 'normal') {
-      expertAvailable = expert['Available'];
-    } else {
-      DateTime now = DateTime.now();
-      var expertAvailability = expert["Availablity"];
-      expertAvailability.forEach((_, timeSlot) {
-        if (timeSlot['start'] != null || timeSlot['end'] != null) {
-          DateTime start = timeSlot['start'].toDate();
-          DateTime end = timeSlot['end'].toDate();
-          if (now.hour > start.hour && now.hour < end.hour) {
-            expertAvailable = true;
-          } else if (now.hour == start.hour || now.hour == end.hour) {
-            if (now.minute > start.minute && now.minute < start.minute) {
-              expertAvailable = true;
-            }
-          } else {
-            expertAvailable = false;
-          }
-        }
-      });
-    }
-
+    expertAvailable = await contactExpert.checkAvail(expert);
+    
     setState(() {
       checkingAvail = false;
     });
