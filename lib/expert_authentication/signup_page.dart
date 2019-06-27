@@ -194,7 +194,7 @@ class _CustomFormField extends State<CustomFormField> {
                   child: Column(
                     children: <Widget>[
                       InputField(
-                        "Breif Discription",
+                        "About Me",
                         authenticate.getDescription,
                         inputType: TextInputType.multiline,
                         minLines: 2,
@@ -203,7 +203,7 @@ class _CustomFormField extends State<CustomFormField> {
                         inputAction: TextInputAction.newline,
                       ),
                       InputField(
-                        "Previous Experience",
+                        "Work Experience",
                         authenticate.getWorkExperience,
                         inputType: TextInputType.multiline,
                         minLines: 2,

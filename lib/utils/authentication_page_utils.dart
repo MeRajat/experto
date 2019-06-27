@@ -247,7 +247,7 @@ class SignupSkillSelector extends StatelessWidget {
         ),
         Text(
             (skillsSelected[correspondingSkill]['name'] == ''
-                ? "Required"
+                ? (correspondingSkill == 'skill1') ? "Required" : "Optional"
                 : skillsSelected[correspondingSkill]['name']),
             style:
                 Theme.of(context).primaryTextTheme.body2.copyWith(color: color))

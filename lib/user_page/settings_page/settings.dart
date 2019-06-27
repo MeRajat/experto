@@ -8,12 +8,12 @@ import "package:flutter/material.dart";
 
 class SettingsTiles extends StatelessWidget {
   final List<List> tiles = [
-    [Icon(Icons.image,color:Colors.blue), "Profile Picture", ProfilePicUpdate()],
-    [Icon(Icons.short_text,color:Colors.teal), "Name", Name()],
-    [Icon(Icons.enhanced_encryption,color:Colors.green), "Password", Passowrd()],
-    [Icon(Icons.email,color:Colors.purple[300]), "Email", Email()],
-    [Icon(Icons.delete_forever,color:Colors.red), "Delete Account", DeleteAccount()],
-    [Icon(Icons.exit_to_app,color:Colors.teal), "Logout",null],
+    [Icons.image, "Profile Picture", ProfilePicUpdate()],
+    [Icons.short_text, "Name", Name()],
+    [Icons.enhanced_encryption, "Password", Passowrd()],
+    [Icons.email, "Email", Email()],
+    [Icons.delete_forever, "Delete Account", DeleteAccount()],
+    [Icons.exit_to_app, "Logout",null],
   ];
 
   void logOut(BuildContext context) async {
@@ -56,7 +56,7 @@ class SettingsTiles extends StatelessWidget {
           return Hero(
             tag: "setting" + tiles[index][1],
             child: ListTile(
-              leading: tiles[index][0],
+              leading: Icon(tiles[index][0],color:Theme.of(context).accentColor),
               title: Text(
                 tiles[index][1],
                 style: Theme.of(context).primaryTextTheme.body2.copyWith(fontSize: 15),
