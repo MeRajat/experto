@@ -8,12 +8,12 @@ import "package:flutter/material.dart";
 
 class SettingsTiles extends StatelessWidget {
   final List<List> tiles = [
-    [Icon(Icons.image), "Profile Picture", ProfilePicUpdate()],
-    [Icon(Icons.short_text), "Name", Name()],
-    [Icon(Icons.enhanced_encryption), "Password", Passowrd()],
-    [Icon(Icons.email), "Email", Email()],
-    [Icon(Icons.delete_forever), "Delete Account", DeleteAccount()],
-    [Icon(Icons.exit_to_app), "Logout",null],
+    [Icon(Icons.image,color:Colors.blue), "Profile Picture", ProfilePicUpdate()],
+    [Icon(Icons.short_text,color:Colors.teal), "Name", Name()],
+    [Icon(Icons.enhanced_encryption,color:Colors.green), "Password", Passowrd()],
+    [Icon(Icons.email,color:Colors.purple[300]), "Email", Email()],
+    [Icon(Icons.delete_forever,color:Colors.red), "Delete Account", DeleteAccount()],
+    [Icon(Icons.exit_to_app,color:Colors.teal), "Logout",null],
   ];
 
   void logOut(BuildContext context) async {
@@ -59,7 +59,7 @@ class SettingsTiles extends StatelessWidget {
               leading: tiles[index][0],
               title: Text(
                 tiles[index][1],
-                style: Theme.of(context).primaryTextTheme.body1,
+                style: Theme.of(context).primaryTextTheme.body2.copyWith(fontSize: 15),
               ),
               onTap: () {
                 if (tiles[index][1] == 'Logout') {

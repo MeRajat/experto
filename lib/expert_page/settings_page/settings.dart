@@ -63,7 +63,7 @@ class SettingsTiles extends StatelessWidget {
               leading: tiles[index][0],
               title: Text(
                 tiles[index][1],
-                style: Theme.of(context).primaryTextTheme.body1,
+                style: Theme.of(context).primaryTextTheme.body2.copyWith(fontSize: 15),
               ),
               onTap: () {
                 if (tiles[index][1] == 'Logout') {

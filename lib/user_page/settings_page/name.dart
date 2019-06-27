@@ -85,7 +85,7 @@ class _NameState extends State<Name> {
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue[800]
                       : Colors.blue,
-                  child: Text("Submit"),
+                  child: Text("Submit",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.white)),
                 ),
               )
             ],
@@ -189,7 +189,7 @@ class _EmailState extends State<Email> {
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue[800]
                       : Colors.blue,
-                  child: Text("Submit"),
+                  child: Text("Submit",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.white)),
                 ),
               )
             ],
@@ -296,7 +296,7 @@ class _PassowrdState extends State<Passowrd> {
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue[800]
                       : Colors.blue,
-                  child: Text("Submit"),
+                  child: Text("Submit",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.white)),
                 ),
               )
             ],
@@ -398,7 +398,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.red[800]
                       : Colors.red,
-                  child: Text("Delete Account"),
+                  child: Text("Delete Account",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.white)),
                 ),
               )
             ],

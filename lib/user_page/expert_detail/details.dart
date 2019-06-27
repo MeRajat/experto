@@ -62,18 +62,24 @@ class _DetailState extends State<Detail> {
       sliver: SliverList(
         delegate: SliverChildListDelegate([
           Card(
-            color: available == true
-                ? Theme.of(context).brightness == Brightness.dark
-                    ? Colors.green[800]
-                    : Colors.green
-                : Theme.of(context).brightness == Brightness.dark
-                    ? Colors.red[800]
-                    : Colors.red,
+            color: (checkingAvail == true)
+                ? Colors.blue
+                : (available == true)
+                    ? Theme.of(context).brightness == Brightness.dark
+                        ? Colors.green[800]
+                        : Colors.green
+                    : Theme.of(context).brightness == Brightness.dark
+                        ? Colors.red[800]
+                        : Colors.red,
             child: Padding(
               padding:
                   EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
               child: checkingAvail
-                  ? LinearProgressIndicator()
+                  ? LinearProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.blue,
+                      ),
+                    )
                   : Row(
                       children: <Widget>[
                         Padding(
