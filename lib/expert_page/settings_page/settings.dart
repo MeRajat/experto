@@ -9,16 +9,16 @@ import "./availabity_page.dart";
 
 class SettingsTiles extends StatelessWidget {
   final List<List> tiles = [
-    [Icon(Icons.image), "Profile Picture", ProfilePicUpdate()],
-    [Icon(Icons.enhanced_encryption), "Password", Password()],
-    [Icon(Icons.email), "Email", Email()],
-    [Icon(Icons.description), "Description", Description()],
-    [Icon(Icons.location_city), "City", City()],
-    [Icon(Icons.work), "Work Experience", WorkExperience()],
-    [Icon(Icons.video_call), "Skype Username", Skype()],
-    [Icon(Icons.av_timer), "Availabality", Availablity()],
-    [Icon(Icons.delete_forever), "Delete Account", DeleteAccount()],
-    [Icon(Icons.exit_to_app), "Logout", null],
+    [Icons.image, "Profile Picture", ProfilePicUpdate()],
+    [Icons.enhanced_encryption, "Password", Password()],
+    [Icons.email, "Email", Email()],
+    [Icons.description, "Description", Description()],
+    [Icons.location_city, "City", City()],
+    [Icons.work, "Work Experience", WorkExperience()],
+    [Icons.video_call, "Skype Username", Skype()],
+    [Icons.av_timer, "Availabality", Availablity()],
+    [Icons.delete_forever, "Delete Account", DeleteAccount()],
+    [Icons.exit_to_app, "Logout", null],
   ];
 
   void logOut(BuildContext context) async {
@@ -60,7 +60,7 @@ class SettingsTiles extends StatelessWidget {
           return Hero(
             tag: "setting" + tiles[index][1],
             child: ListTile(
-              leading: tiles[index][0],
+              leading: Icon(tiles[index][0],color:Theme.of(context).accentColor),
               title: Text(
                 tiles[index][1],
                 style: Theme.of(context).primaryTextTheme.body2.copyWith(fontSize: 15),

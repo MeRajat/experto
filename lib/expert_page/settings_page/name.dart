@@ -303,7 +303,7 @@ class _SkypeState extends State<Skype> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+                padding: EdgeInsets.only(top:10,left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
                   color: Theme.of(context).brightness == Brightness.dark
@@ -401,7 +401,7 @@ class _CityState extends State<City> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+                padding: EdgeInsets.only(top:10,left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
                   color: Theme.of(context).brightness == Brightness.dark
@@ -510,7 +510,7 @@ class _DescriptionState extends State<Description> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+                padding: EdgeInsets.only(top:10,left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
                   color: Theme.of(context).brightness == Brightness.dark
@@ -619,7 +619,7 @@ class _WorkExperienceState extends State<WorkExperience> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+                padding: EdgeInsets.only(top:10,left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
                   color: Theme.of(context).brightness == Brightness.dark
