@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
 class InputField extends StatelessWidget {
-  final String hintText;
+  final String hintText, initailValue;
   final TextInputType inputType;
   final bool isPassword;
   final void Function(String) fn;
@@ -18,6 +18,7 @@ class InputField extends StatelessWidget {
     this.maxLines: 2,
     this.inputAction: TextInputAction.next,
     this.maxLength: 0,
+    this.initailValue:''
   });
 
   @override
@@ -31,6 +32,7 @@ class InputField extends StatelessWidget {
           padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
           child: TextFormField(
             obscureText: isPassword,
+            initialValue: initailValue,
             validator: (value) {
               if (value.isEmpty) {
                 return 'please enter this field';

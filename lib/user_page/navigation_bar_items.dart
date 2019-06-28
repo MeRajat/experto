@@ -5,28 +5,28 @@ List<BottomNavigationBarItem> navigationBarItems() {
   return <BottomNavigationBarItem>[
     BottomNavigationBarItem(
       icon: Icon(
-        CupertinoIcons.home,
+        Icons.home,
         size: 25,
       ),
       title: Text('Home'),
     ),
     BottomNavigationBarItem(
       icon: Icon(
-        CupertinoIcons.settings,
+        Icons.category,
         size: 25,
       ),
       title: Text("Categories"),
     ),
     BottomNavigationBarItem(
       icon: Icon(
-        CupertinoIcons.person,
+        CupertinoIcons.person_solid,
         size: 25,
       ),
       title: Text('Expert'),
     ),
     BottomNavigationBarItem(
       icon: Icon(
-        CupertinoIcons.settings,
+        CupertinoIcons.settings_solid,
         size: 25,
       ),
       title: Text("Settings"),

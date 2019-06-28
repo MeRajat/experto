@@ -486,14 +486,8 @@ class _DescriptionState extends State<Description> {
                           left: 20, right: 20, top: 30, bottom: 5),
                     ),
                     Padding(
-                      /*child: InputField(
-                        "Enter new City",
-                            (value) {
-                          update.setCity(value);
-                        },
-                      ),*/
                       child: InputField(
-                        "Enter new Brief Discription",
+                        "Enter new Discription",
                         (value) {
                           update.setDescription(value);
                         },
@@ -501,6 +495,7 @@ class _DescriptionState extends State<Description> {
                         minLines: 2,
                         maxLines: null,
                         maxLength: 150,
+                        initailValue: expert.detailsData["Description"],
                         inputAction: TextInputAction.newline,
                       ),
                       padding: EdgeInsets.only(
@@ -610,6 +605,7 @@ class _WorkExperienceState extends State<WorkExperience> {
                         minLines: 2,
                         maxLines: null,
                         maxLength: 150,
+                        initailValue: expert.detailsData['Work Experience'],
                         inputAction: TextInputAction.newline,
                       ),
                       padding: EdgeInsets.only(
