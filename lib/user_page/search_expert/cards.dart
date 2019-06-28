@@ -90,6 +90,7 @@ class _Cards extends State<Cards> {
   void getQuerySet(String searchQuery) async {
     QuerySnapshot searchSnapshot = await expert
         .where("Index", isEqualTo: searchQuery.toUpperCase())
+        .where("Status",isEqualTo: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {});
 
