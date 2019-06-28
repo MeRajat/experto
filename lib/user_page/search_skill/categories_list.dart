@@ -12,7 +12,6 @@ class SearchResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(results.length);
     return SliverPadding(
       padding: EdgeInsets.only(top: 20, bottom: 80),
       sliver: SliverList(
@@ -36,7 +35,7 @@ class SearchResults extends StatelessWidget {
                 ],
               );
             } else {
-              status?CustomCard(results[index]):CustomCategoryCard(results[index]);
+              return status?CustomCard(results[index]):CustomCategoryCard(results[index]);
             }
           },
           childCount: results.length,
