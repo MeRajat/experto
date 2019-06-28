@@ -90,6 +90,7 @@ class _CustomForm extends State<CustomForm> {
               currentStep: 0,
               onStepTapped: (int tapped) {},
               onStepContinue: (loading == true) ? null : startAuthentication,
+              onStepCancel: (loading == true) ? null : () {Navigator.of(context).pop();},
               steps: [
                 Step(
                   title: Text("Enter Credentials"),
