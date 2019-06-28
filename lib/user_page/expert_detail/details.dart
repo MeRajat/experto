@@ -77,7 +77,7 @@ class _DetailState extends State<Detail> {
               child: checkingAvail
                   ? LinearProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.blue,
+                        Colors.white,
                       ),
                     )
                   : Row(

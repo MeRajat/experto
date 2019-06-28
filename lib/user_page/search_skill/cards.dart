@@ -105,7 +105,7 @@ class _Cards extends State<Cards> {
   void getQuerySet(String searchQuery) async {
     QuerySnapshot searchSnapshot = await Firestore.instance
         .collection("Skills")
-        .where("Index", isEqualTo: searchQuery.toUpperCase())
+        .where("Index", arrayContains: searchQuery.toUpperCase())
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {});
 
