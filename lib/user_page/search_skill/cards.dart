@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
 
-import './search_result_cards.dart';
+import './categories_list.dart';
 import "package:experto/utils/bloc/search_bloc.dart";
 import "package:experto/utils/bloc/reload.dart";
 import "package:experto/utils/bloc/is_searching.dart";
@@ -20,7 +20,7 @@ class _Cards extends State<Cards> {
   String searchString = '';
   bool resultAvailable = false, timedOut = false, loading = false;
   List<DocumentSnapshot> querySetResult = [], tempResult = [], topSkills = [];
-  QuerySnapshot searchSnapshot, topSkillSnapshot;
+  QuerySnapshot searchSnapshot, categorySnapshot;
   DocumentReference skillReference;
 
   @override
@@ -44,8 +44,8 @@ class _Cards extends State<Cards> {
       loading = true;
     });
 
-    topSkillSnapshot = await Firestore.instance
-        .collection('TopSkills')
+    categorySnapshot = await Firestore.instance
+        .collection('Categories')
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {
@@ -54,7 +54,7 @@ class _Cards extends State<Cards> {
     }).then((snapshot) async {
       for (int i = 0; i < snapshot.documents.length; i++) {
         skillReference = snapshot.documents[i].data['Skill'];
-        topSkills.add(await skillReference.get());
+        topSkills.add(snapshot.documents[i]);
       }
       setState(() {
         loading = false;
@@ -180,11 +180,11 @@ class _Cards extends State<Cards> {
       }
 
       if (searchingStatus == 0) {
-        return SearchResults(topSkills, recommendationHeaderText);
+        return SearchResults(topSkills, recommendationHeaderText,false);
       }
 
       if (searchingStatus == 1 && resultAvailable) {
-        return SearchResults(tempResult, searchHeaderText);
+        return SearchResults(tempResult, searchHeaderText,true);
       }
 
       if (searchingStatus == 1 && !resultAvailable) {

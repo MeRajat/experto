@@ -37,16 +37,6 @@ class AppBar extends StatelessWidget {
 }
 
 class ExpertTextField extends StatefulWidget {
-  final List experts = [
-    'Pravin Gupta',
-    'Rahul Saini',
-    'Anand Panwal',
-    'Himanshu Pandey',
-    'Nihal Sharma',
-    'Rahul Gupta',
-    'Dhruv Khosla',
-  ];
-
   @override
   _ExpertTextField createState() => _ExpertTextField();
 }
