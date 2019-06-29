@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import './card.dart';
-import './categorycard.dart';
+import './category_card.dart';
 
 class SearchResults extends StatelessWidget {
   final List<DocumentSnapshot> results;
   final String headerText;
-  bool status;
+  final bool status;
   SearchResults(this.results, this.headerText,this.status);
 
   @override
