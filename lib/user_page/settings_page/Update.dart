@@ -161,7 +161,8 @@ class Update{
     userUpdateInfo.photoUrl=url;
     await user.profileData.updateProfile(userUpdateInfo);
     user.profileData=await FirebaseAuth.instance.currentUser();
-    print(user.profileData.toString());
+    await userReference.document(user.detailsData.documentID).updateData({'profilePic': url});
+    user.detailsData = await userReference.document(user.detailsData.documentID).get();
     return user;
   }
 

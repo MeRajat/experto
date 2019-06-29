@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:experto/utils/bloc/reload.dart";
 import 'package:experto/global_data.dart';
@@ -42,9 +43,26 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
             tag: expert['emailID'],
             child: Padding(
               padding: EdgeInsets.only(left: 10, top: 80),
-              child: Icon(
+              child: expert["profilePic"]==null?Icon(
                 Icons.person,
                 size: 110,
+              ):CachedNetworkImage(
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 80.0,
+                  height: 80.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                imageUrl: expert["profilePic"],
+                height: 110,
+                width: 110,
+                placeholder: (context, a) => Center(
+                  widthFactor: 2.1,
+                  child: CircularProgressIndicator(),
+                ),
               ),
             ),
           ),
@@ -60,10 +78,10 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     expert["Name"],
                     style: Theme.of(context).textTheme.title.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          letterSpacing: -.5,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      letterSpacing: -.5,
+                    ),
                   ),
                 ),
                 Container(
@@ -71,9 +89,9 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     expert["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 12,
-                        ),
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
                 Padding(
@@ -173,7 +191,7 @@ class _ContactExpert extends State<ContactExpert> {
     });
 
     expertAvailable = await contactExpert.checkAvail(expert);
-    
+
     setState(() {
       checkingAvail = false;
     });
@@ -243,7 +261,7 @@ class _ContactExpert extends State<ContactExpert> {
               onTap: () {
                 contactOnTap(
                     secondaryText:
-                        "Are you sure you want to message this expert",
+                    "Are you sure you want to message this expert",
                     serviceType: "chat",
                     icon: Icon(Icons.chat_bubble_outline, size: 120));
               },
@@ -255,8 +273,8 @@ class _ContactExpert extends State<ContactExpert> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (
-                  BuildContext context,
-                ) {
+                    BuildContext context,
+                    ) {
                   return expert_feedback.Feedback(expert);
                 }),
               );

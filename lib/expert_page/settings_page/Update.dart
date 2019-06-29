@@ -215,6 +215,8 @@ class Update {
     String url = await storageReference.getDownloadURL();
     userUpdateInfo.photoUrl = url;
     await expert.profileData.updateProfile(userUpdateInfo);
+    await expertReference.document(expert.detailsData.documentID).updateData({'profilePic': url});
+    expert.detailsData = await expertReference.document(expert.detailsData.documentID).get();
     expert.profileData =await FirebaseAuth.instance.currentUser();
     return expert;
   }
