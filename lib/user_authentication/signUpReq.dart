@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import "package:experto/utils/bloc/is_loading.dart";
 import 'package:experto/global_data.dart';
+import "package:shared_preferences/shared_preferences.dart";
 
 class Authenticate {
   CollectionReference userReference;
@@ -15,7 +16,7 @@ class Authenticate {
 
   Authenticate() {
     //_isSignIn = false;
-    userData=new Data();
+    userData = new Data();
     details = new List<String>();
     getUser();
     msg = "Invalid details";
@@ -28,18 +29,23 @@ class Authenticate {
     userData.profileData = null;
   }
 
+  void updateConfig() async {
+    final pref = await SharedPreferences.getInstance();
+    final String key = "account_type";
+    pref.setString(key, "user");
+  }
+
   Future<bool> isSignIn(context) async {
     userData.profileData = await FirebaseAuth.instance.currentUser();
-    print(userData.profileData.toString());
     try {
       if (userData.profileData == null) {
         Navigator.of(context).pop();
         Navigator.pushNamed(context, '/user_login');
         return false;
       } else {
-        userData.detailsData = await userReference.document(userData.profileData.uid).get();
-        if(!userData.detailsData.exists)
-          throw("error");
+        userData.detailsData =
+            await userReference.document(userData.profileData.uid).get();
+        if (!userData.detailsData.exists) throw ("error");
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
             arguments: userData);
@@ -87,7 +93,7 @@ class Authenticate {
       GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
     details.clear();
-    UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
+    UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
     if (formState.validate()) {
       formState.save();
       try {
@@ -99,21 +105,25 @@ class Authenticate {
         if (val.documents.length != 0) throw ("Mobile Number already in use");
         userData.profileData = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
-            email: details[1], password: details[4]);
+                email: details[1], password: details[4]);
         currentUser = new Users(
-       //   email: details[1],
+          //   email: details[1],
           city: details[2],
           name: details[0],
           m: details[3],
         );
-        userUpdateInfo.displayName=details[0];
+        userUpdateInfo.displayName = details[0];
         //userUpdateInfo.photoUrl=
         await userData.profileData.updateProfile(userUpdateInfo);
         Firestore.instance.runTransaction((Transaction t) async {
-          await userReference.document(userData.profileData.uid).setData(currentUser.toJson());
+          await userReference
+              .document(userData.profileData.uid)
+              .setData(currentUser.toJson());
         });
-        userData.profileData=await FirebaseAuth.instance.currentUser();
-        userData.detailsData = await userReference.document(userData.profileData.uid).get();
+        userData.profileData = await FirebaseAuth.instance.currentUser();
+        userData.detailsData =
+            await userReference.document(userData.profileData.uid).get();
+        updateConfig();
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
             arguments: userData);
@@ -141,11 +151,12 @@ class Authenticate {
       Future.delayed(Duration(seconds: 5));
       formState.save();
       try {
-        userData.profileData=await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: details[0], password: details[1]);
-        userData.detailsData = await userReference.document(userData.profileData.uid).get();
-        print(userData.detailsData);
-        print(userData.detailsData.data);
+        userData.profileData = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: details[0], password: details[1]);
+        userData.detailsData =
+            await userReference.document(userData.profileData.uid).get();
+        updateConfig();
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/user_home',
@@ -161,4 +172,3 @@ class Authenticate {
     }
   }
 }
-

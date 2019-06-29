@@ -2,6 +2,7 @@ import 'package:experto/expert_authentication/expertData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import "package:shared_preferences/shared_preferences.dart";
 
 import "package:experto/utils/bloc/is_loading.dart";
 import 'package:experto/global_data.dart';
@@ -17,7 +18,7 @@ class Authenticate {
   String userName;
   String msg;
   Data expertData;
-    //_isSignIn = false;
+  //_isSignIn = false;
   //bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
 
@@ -55,6 +56,12 @@ class Authenticate {
     expertData.profileData = null;
   }
 
+  void updateConfig() async {
+    final pref = await SharedPreferences.getInstance();
+    final String key = "account_type";
+    pref.setString(key, "expert");
+  }
+
   Future<bool> isSignIn(context) async {
     expertData.profileData = await FirebaseAuth.instance.currentUser();
     try {
@@ -63,9 +70,9 @@ class Authenticate {
         Navigator.pushNamed(context, '/expert_login');
         return false;
       } else {
-        expertData.detailsData = await expertReference.document(expertData.profileData.uid).get();
-        if(!expertData.detailsData.exists)
-          throw("error");
+        expertData.detailsData =
+            await expertReference.document(expertData.profileData.uid).get();
+        if (!expertData.detailsData.exists) throw ("error");
         Navigator.pushNamedAndRemoveUntil(
             context, '/expert_home', ModalRoute.withName(':'),
             arguments: expertData);
@@ -155,12 +162,12 @@ class Authenticate {
             .document(expertData.profileData.uid)
             .setData(currentExpert.toJson());
       });
-     throw ("Not Active");
+      throw ("Not Active");
     } catch (e) {
       details.clear();
       expertData.detailsData = null;
       isLoadingSignupExpert.updateStatus(false);
-      _ackAlert(context,e == "Not Active"?"In Review" :"SignUp failed",
+      _ackAlert(context, e == "Not Active" ? "In Review" : "SignUp failed",
           e == "Not Active" ? e : e.toString().split(',')[1]);
     }
   }
@@ -180,17 +187,16 @@ class Authenticate {
             .where("userID", isEqualTo: details['name'])
             .getDocuments()
             .then((QuerySnapshot q) {
-              if(q.documents.isEmpty)
-                throw("User not found!");
-              if(q.documents[0]["Status"]==false)
-                throw("Not Active");
+          if (q.documents.isEmpty) throw ("User not found!");
+          if (q.documents[0]["Status"] == false) throw ("Not Active");
           details['email'] = q.documents[0]["emailID"];
         });
         expertData.profileData = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: details['email'], password: details['password']);
-        expertData.detailsData = await expertReference
-            .document(expertData.profileData.uid).get();
+        expertData.detailsData =
+            await expertReference.document(expertData.profileData.uid).get();
+        updateConfig();
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/expert_home',
@@ -199,8 +205,6 @@ class Authenticate {
         );
         formState.reset();
       } catch (e) {
-        //_isSignIn = false;
-        //formState.reset();
         details.clear();
         isLoadingLoginExpert.updateStatus(false);
         _ackAlert(
