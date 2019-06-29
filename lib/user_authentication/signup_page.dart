@@ -78,6 +78,7 @@ class _CustomFormField extends State<CustomFormField> {
               physics: BouncingScrollPhysics(),
               type: StepperType.vertical,
               currentStep: 0,
+              onStepCancel: Navigator.of(context).pop,
               onStepTapped: (int tapped) {},
               onStepContinue: (loading) ? null : startAuthentication,
               steps: [

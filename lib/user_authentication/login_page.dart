@@ -87,6 +87,7 @@ class _CustomForm extends State<CustomForm> {
               physics: BouncingScrollPhysics(),
               type: StepperType.vertical,
               currentStep: 0,
+              onStepCancel: Navigator.of(context).pop,
               onStepTapped: (int tapped) {},
               onStepContinue: (loading == true) ? null : startAuthentication,
               steps: [
