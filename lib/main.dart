@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
           });
         }
       },
-      darkTheme: theme.darkTheme(),
+      darkTheme: theme.lightTheme(),
       theme: theme.lightTheme(),
       home: Splash(),
     );

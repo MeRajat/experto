@@ -19,24 +19,29 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
             padding: EdgeInsets.only(left: 10, top: 80),
             child: Hero(
               tag: "profilePic",
-              child: user.profileData.photoUrl == null ? Icon(
-                Icons.person,
-                size: 110,
-              ) : CachedNetworkImage(
-                imageBuilder: (context, imageProvider) =>
-                    Container(
-                      width: 80.0,
-                      height: 80.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover),
-                      ),
+              child: user.profileData.photoUrl == null
+                  ? Icon(
+                      Icons.person,
+                      size: 110,
+                    )
+                  : CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) => Container(
+                            width: 80.0,
+                            height: 80.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover),
+                            ),
+                          ),
+                      imageUrl: user.profileData.photoUrl,
+                      height: 110,
+                      width: 110,
+                      placeholder: (context, a) => Center(
+                            widthFactor: 2.1,
+                            child: CircularProgressIndicator(),
+                          ),
                     ),
-                imageUrl: user.profileData.photoUrl,
-                height: 110, width: 110,
-                placeholder: (context, a) => CircularProgressIndicator(),
-              ),
             ),
           ),
           Padding(
@@ -51,10 +56,10 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     user.profileData.displayName,
                     style: Theme.of(context).textTheme.title.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      letterSpacing: -.5,
-                    ),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          letterSpacing: -.5,
+                        ),
                   ),
                 ),
                 Container(
@@ -62,9 +67,9 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     user.profileData.email,
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
-                      fontStyle: FontStyle.italic,
-                      fontSize: 12,
-                    ),
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12,
+                        ),
                   ),
                 ),
               ],

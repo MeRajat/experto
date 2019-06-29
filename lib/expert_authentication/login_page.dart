@@ -90,12 +90,13 @@ class _CustomForm extends State<CustomForm> {
               currentStep: 0,
               onStepTapped: (int tapped) {},
               onStepContinue: (loading == true) ? null : startAuthentication,
+              onStepCancel: (loading == true) ? null : () {Navigator.of(context).pop();},
               steps: [
                 Step(
                   title: Text("Enter Credentials"),
                   content: Column(
                     children: <Widget>[
-                      InputField("Enter Your Username", authenticate.getName),
+                      InputField("Enter Your Username", authenticate.getEmail),
                       InputField("Enter Your Password", authenticate.getPass,
                           isPassword: true),
                       SignupPageRedirect(

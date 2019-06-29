@@ -168,6 +168,17 @@ class _CustomFormField extends State<CustomFormField> {
                       }
                     }
                   },
+            onStepCancel: (loading == true)
+                ? null
+                : () {
+                    if (step > 0) {
+                        setState(() {
+                          step -= 1;
+                        });
+                    } else {
+                      Navigator.of(context).pop();
+                    }
+                  },
             steps: [
               Step(
                 title: Text("Basic Information"),

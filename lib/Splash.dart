@@ -1,11 +1,13 @@
-import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:experto/user_authentication/signUpReq.dart' as user;
+import 'package:experto/expert_authentication/signUpReq.dart' as expert;
 
 class Splash extends StatefulWidget {
   @override
@@ -17,20 +19,31 @@ class Splash extends StatefulWidget {
 class SplashState extends State<Splash> {
   @override
   void initState() {
-    //print(MediaQuery.of(context).size.height);
-    //print(MediaQuery.of(context).size.width);
     getPermissions();
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacementNamed('/home_page');
-      getSkypeAvailability();
+    getSkypeAvailability();
+    Future.delayed(Duration(seconds: 1),(){
+      autoLogin();
     });
     super.initState();
+  }
+
+  void autoLogin() async {
+    final user.Authenticate authenticateUser = new user.Authenticate();
+    final expert.Authenticate authenticateExpert = new expert.Authenticate();
+    final pref = await SharedPreferences.getInstance();
+    if (pref.getString("account_type") == null) {
+      Navigator.of(context).pushReplacementNamed('/home_page');
+    } else {
+      pref.getString("account_type") == "user"
+          ? await authenticateUser.isSignIn(context)
+          : await authenticateExpert.isSignIn(context);
+    }
   }
 
   void getSkypeAvailability() async {
     try {
       await AppAvailability.checkAvailability("com.skype.raider");
-      if(!(await AppAvailability.isAppEnabled("com.skype.raider")))
+      if (!(await AppAvailability.isAppEnabled("com.skype.raider")))
         _showSkypeDialog();
     } on PlatformException {
       _showSkypeDialog();
@@ -108,12 +121,16 @@ class SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(50.0),
-        child: new Center(
-          child:
-          Hero(tag: "logo", child:  Image.asset("assets/logo_transparent.png",)),
+        child: Center(
+          child: Hero(
+            tag: "logo",
+            child: Image.asset(
+              "assets/logo_transparent.png",
+            ),
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:experto/expert_page/settings_page/profilePic.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
 import "package:firebase_auth/firebase_auth.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 import 'package:experto/home_page/home_page.dart';
 import 'package:experto/expert_page/settings_page/name.dart';
@@ -17,6 +18,7 @@ class SettingsTiles extends StatelessWidget {
     [Icons.work, "Work Experience", WorkExperience()],
     [Icons.video_call, "Skype Username", Skype()],
     [Icons.av_timer, "Availabality", Availablity()],
+    [Icons.category,"Skills",Skills()],
     [Icons.delete_forever, "Delete Account", DeleteAccount()],
     [Icons.exit_to_app, "Logout", null],
   ];
@@ -27,6 +29,10 @@ class SettingsTiles extends StatelessWidget {
       title: "Logging Out...",
       leading: CircularProgressIndicator(),
     );
+
+    final pref = await SharedPreferences.getInstance();
+    await pref.setString("account_type", null);
+
     await Future.delayed(Duration(seconds: 2));
     try {
       await FirebaseAuth.instance.signOut();

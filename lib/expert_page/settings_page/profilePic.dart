@@ -13,7 +13,7 @@ class ProfilePicUpdate extends StatefulWidget {
 class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   Data expert;
   bool uploading;
-  final Update update=new Update();
+  final Update update = new Update();
 
   @override
   void initState() {
@@ -27,17 +27,19 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
     super.didChangeDependencies();
   }
 
-  Future<void > updateData()async{
+  Future<void> updateData() async {
     setState(() {
+      uploading = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    expert= await update.updateProfilePic(expert);
+    expert = await update.updateProfilePic(expert);
     syncDocument.updateStatus(expert);
     setState(() {
+      uploading = false;
       showAuthSnackBar(
         context: context,
         title: 'Uploaded',
@@ -45,7 +47,6 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         persistant: false,
       );
     });
-
   }
 
   @override
@@ -68,27 +69,26 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         child: uploading == true
             ? CircularProgressIndicator()
             : Hero(
-          tag: "profilePic",
-          child: expert.profileData.photoUrl == null
-              ? Icon(
-            Icons.person,
-            size: 110,
-          )
-              :  CachedNetworkImage(
-            imageBuilder: (context, imageProvider) => Container(
-              width: 350.0,
-              height: 350.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover),
+                tag: "profilePic",
+                child: expert.profileData.photoUrl == null
+                    ? Icon(
+                        Icons.person,
+                        size: 110,
+                      )
+                    : CachedNetworkImage(
+                        imageBuilder: (context, imageProvider) => Container(
+                              width: 350.0,
+                              height: 350.0,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover),
+                              ),
+                            ),
+                        imageUrl: expert.profileData.photoUrl,
+                        placeholder: (context, a) =>
+                            Center(child:CircularProgressIndicator()),
+                      ),
               ),
-            ),
-            imageUrl: expert.profileData.photoUrl,
-            placeholder: (context, a) =>
-                CircularProgressIndicator(),
-          ),
-        ),
       ),
     );
   }

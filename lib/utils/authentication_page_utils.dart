@@ -2,23 +2,21 @@ import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
 class InputField extends StatelessWidget {
-  final String hintText;
+  final String hintText, initailValue;
   final TextInputType inputType;
   final bool isPassword;
   final void Function(String) fn;
   final int minLines, maxLines, maxLength;
   final TextInputAction inputAction;
 
-  InputField(
-    this.hintText,
-    this.fn, {
-    this.inputType: TextInputType.text,
-    this.isPassword: false,
-    this.minLines: 1,
-    this.maxLines: 2,
-    this.inputAction: TextInputAction.next,
-    this.maxLength: 0,
-  });
+  InputField(this.hintText, this.fn,
+      {this.inputType: TextInputType.text,
+      this.isPassword: false,
+      this.minLines: 1,
+      this.maxLines: 2,
+      this.inputAction: TextInputAction.next,
+      this.maxLength: 0,
+      this.initailValue: ''});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +29,7 @@ class InputField extends StatelessWidget {
           padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
           child: TextFormField(
             obscureText: isPassword,
+            initialValue: initailValue,
             validator: (value) {
               if (value.isEmpty) {
                 return 'please enter this field';
@@ -83,8 +82,11 @@ class CustomFlatButton extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          color: color,
-        ),
+            color: (color == Colors.white)
+                ? Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black
+                : color),
       ),
       onPressed: onPressedFunction,
     );

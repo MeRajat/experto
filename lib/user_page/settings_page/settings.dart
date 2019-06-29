@@ -5,6 +5,7 @@ import "package:firebase_auth/firebase_auth.dart";
 import 'package:experto/home_page/home_page.dart';
 import 'package:experto/user_page/settings_page/name.dart';
 import "package:flutter/material.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 class SettingsTiles extends StatelessWidget {
   final List<List> tiles = [
@@ -23,6 +24,10 @@ class SettingsTiles extends StatelessWidget {
         title: "Logging Out...",
         leading: CircularProgressIndicator(),
       );
+    
+    final pref = await SharedPreferences.getInstance();
+    await pref.setString("account_type", null);
+
     await Future.delayed(Duration(seconds: 2));
     try {
       await FirebaseAuth.instance.signOut();

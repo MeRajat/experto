@@ -276,15 +276,16 @@ class _VerticalListState extends State<VerticalList> {
       );
     } else {
       return SliverPadding(
-          padding: EdgeInsets.all(20),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Center(child: CircularProgressIndicator());
-              },
-              childCount: 1,
-            ),
-          ));
+        padding: EdgeInsets.all(20),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              return Center(child: CircularProgressIndicator());
+            },
+            childCount: 1,
+          ),
+        ),
+      );
     }
   }
 }

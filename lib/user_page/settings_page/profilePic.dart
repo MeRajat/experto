@@ -28,7 +28,9 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   }
 
   Future<void> updateData() async {
+    
     setState(() {
+      uploading = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -38,6 +40,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
     user = await update.updateProfilePic(user);
     sync.syncDocument.updateStatus(user);
     setState(() {
+      uploading = false;
       showAuthSnackBar(
         context: context,
         title: 'Uploaded',

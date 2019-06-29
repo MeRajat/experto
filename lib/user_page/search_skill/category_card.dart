@@ -85,8 +85,8 @@ class _CustomCardState extends State<CustomCategoryCard> {
                             left: 5,
                             top: 5,
                           ),
-                          width: 45,
-                          height: 45,
+                          width: 42,
+                          height: 42,
                           child: CachedNetworkImage(
                             imageUrl: skill["IconURL"],
                             placeholder: (BuildContext context, string) => Center(
@@ -110,14 +110,14 @@ class _CustomCardState extends State<CustomCategoryCard> {
                                 child: Text(
                                   skill['Name'],
                                   style: Theme.of(context).textTheme.title.copyWith(
-                                    fontSize: 17,
+                                    fontSize: 15,
                                   ),
                                 ),
                               ),
                               Text(
                                 skill['tagLine'],
                                 style: Theme.of(context).primaryTextTheme.body2.copyWith(
-                                  fontSize: 12,
+                                  fontSize: 11,
                                   color: (Theme.of(context).brightness ==
                                       Brightness.dark)
                                       ? Colors.grey[400]
