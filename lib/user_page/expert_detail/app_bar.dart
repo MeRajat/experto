@@ -44,28 +44,30 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
             tag: expert['emailID'],
             child: Padding(
               padding: EdgeInsets.only(left: 10, top: 80),
-              child: expert["profilePic"]==null?Icon(
-                Icons.person,
-                size: 110,
-              ):CachedNetworkImage(
-                imageBuilder: (context, imageProvider) => Container(
-                  margin:EdgeInsets.only(left:10,right:5),
-                  width: 90.0,
-                  height: 90.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover),
-                  ),
-                ),
-                imageUrl: expert["profilePic"],
-                height: 110,
-                width: 110,
-                placeholder: (context, a) => Center(
-                  widthFactor: 2.1,
-                  child: CircularProgressIndicator(),
-                ),
-              ),
+              child: (expert["profilePic"] == null)
+                  ? Icon(
+                      Icons.person,
+                      size: 110,
+                    )
+                  : CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) => Container(
+                            margin: EdgeInsets.only(left: 10, right: 5),
+                            width: 90.0,
+                            height: 90.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover),
+                            ),
+                          ),
+                      imageUrl: expert["profilePic"],
+                      height: 110,
+                      width: 110,
+                      placeholder: (context, a) => Center(
+                            widthFactor: 2.1,
+                            child: CircularProgressIndicator(),
+                          ),
+                    ),
             ),
           ),
           Padding(
@@ -80,10 +82,10 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     expert["Name"],
                     style: Theme.of(context).textTheme.title.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      letterSpacing: -.5,
-                    ),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          letterSpacing: -.5,
+                        ),
                   ),
                 ),
                 Container(
@@ -91,9 +93,9 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     expert["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
-                      fontStyle: FontStyle.italic,
-                      fontSize: 12,
-                    ),
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12,
+                        ),
                   ),
                 ),
                 Padding(
@@ -146,17 +148,17 @@ class _ContactExpert extends State<ContactExpert> {
     bool interactionAlreadyAvailable = false;
     QuerySnapshot tempsnap;
     try {
-        tempsnap = await interaction
-            .where("user", isEqualTo: user.detailsData.documentID)
-            .getDocuments();
-        tempsnap.documents.forEach((document){
-          if (document["expert"] == expert.documentID){
-            interactionAlreadyAvailable = true;
-          }
-        });
-        if(!interactionAlreadyAvailable){
-          tempsnap = null;
+      tempsnap = await interaction
+          .where("user", isEqualTo: user.detailsData.documentID)
+          .getDocuments();
+      tempsnap.documents.forEach((document) {
+        if (document["expert"] == expert.documentID) {
+          interactionAlreadyAvailable = true;
         }
+      });
+      if (!interactionAlreadyAvailable) {
+        tempsnap = null;
+      }
     } catch (e) {
       tempsnap = null;
     }
@@ -185,7 +187,7 @@ class _ContactExpert extends State<ContactExpert> {
       }
       Data newUser = Data();
       newUser.profileData = user.profileData;
-      newUser.detailsData=await user.detailsData.reference.get();
+      newUser.detailsData = await user.detailsData.reference.get();
       syncDocument.updateStatus(newUser);
     });
     userSearchExpert.updateStatus(true);
@@ -267,7 +269,7 @@ class _ContactExpert extends State<ContactExpert> {
               onTap: () {
                 contactOnTap(
                     secondaryText:
-                    "Are you sure you want to message this expert",
+                        "Are you sure you want to message this expert",
                     serviceType: "chat",
                     icon: Icon(Icons.chat_bubble_outline, size: 120));
               },
@@ -279,8 +281,8 @@ class _ContactExpert extends State<ContactExpert> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (
-                    BuildContext context,
-                    ) {
+                  BuildContext context,
+                ) {
                   return expert_feedback.Feedback(expert);
                 }),
               );

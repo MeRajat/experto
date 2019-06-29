@@ -4,8 +4,8 @@ import 'package:experto/utils/bloc/is_loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:experto/global_data.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import "package:image_picker/image_picker.dart";
 
 class Update{
   CollectionReference userReference;
@@ -149,12 +149,10 @@ class Update{
   Future<Data> updateProfilePic(Data user) async {
     StorageUploadTask task;
     UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
-    String path = await FilePicker.getFilePath(type: FileType.IMAGE);
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
         .child("/Profile Photos/" + user.profileData.uid);
-    print(storageReference.getPath().then((x) => print(x)));
-    File file = File(path);
+    File file = await ImagePicker.pickImage(source: ImageSource.gallery,maxHeight: 1000,maxWidth: 1000);
     task=storageReference.putFile(file);
     await task.onComplete;
     String url = await storageReference.getDownloadURL();
