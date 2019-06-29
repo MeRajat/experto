@@ -184,7 +184,7 @@ class Authenticate {
       try {
         await Firestore.instance
             .collection("Experts")
-            .where("userID", isEqualTo: details['name'])
+            .where("emailID", isEqualTo: details['email'])
             .getDocuments()
             .then((QuerySnapshot q) {
           if (q.documents.isEmpty) throw ("User not found!");

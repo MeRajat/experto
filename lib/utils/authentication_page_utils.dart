@@ -9,17 +9,14 @@ class InputField extends StatelessWidget {
   final int minLines, maxLines, maxLength;
   final TextInputAction inputAction;
 
-  InputField(
-    this.hintText,
-    this.fn, {
-    this.inputType: TextInputType.text,
-    this.isPassword: false,
-    this.minLines: 1,
-    this.maxLines: 2,
-    this.inputAction: TextInputAction.next,
-    this.maxLength: 0,
-    this.initailValue:''
-  });
+  InputField(this.hintText, this.fn,
+      {this.inputType: TextInputType.text,
+      this.isPassword: false,
+      this.minLines: 1,
+      this.maxLines: 2,
+      this.inputAction: TextInputAction.next,
+      this.maxLength: 0,
+      this.initailValue: ''});
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +82,11 @@ class CustomFlatButton extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          color: color,
-        ),
+            color: (color == Colors.white)
+                ? Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black
+                : color),
       ),
       onPressed: onPressedFunction,
     );

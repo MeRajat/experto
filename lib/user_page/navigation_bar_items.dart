@@ -19,14 +19,14 @@ List<BottomNavigationBarItem> navigationBarItems() {
     ),
     BottomNavigationBarItem(
       icon: Icon(
-        CupertinoIcons.person_solid,
+        Icons.person,
         size: 25,
       ),
       title: Text('Expert'),
     ),
     BottomNavigationBarItem(
       icon: Icon(
-        CupertinoIcons.settings_solid,
+        Icons.settings,
         size: 25,
       ),
       title: Text("Settings"),
