@@ -604,7 +604,7 @@ class _WorkExperienceState extends State<WorkExperience> {
                         inputType: TextInputType.multiline,
                         minLines: 2,
                         maxLines: null,
-                        maxLength: 150,
+                        maxLength: 250,
                         initailValue: expert.detailsData['Work Experience'],
                         inputAction: TextInputAction.newline,
                       ),

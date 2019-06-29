@@ -219,7 +219,7 @@ class _CustomFormField extends State<CustomFormField> {
                         inputType: TextInputType.multiline,
                         minLines: 2,
                         maxLines: null,
-                        maxLength: 150,
+                        maxLength: 250,
                         inputAction: TextInputAction.newline,
                       ),
                     ],

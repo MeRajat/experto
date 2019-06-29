@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:experto/utils/bloc/reload.dart";
 import 'package:experto/global_data.dart';
+import 'package:experto/utils/bloc/syncDocuments.dart';
 
 import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
 import 'package:experto/utils/contact_expert.dart' as contactExpert;
@@ -48,8 +49,9 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 size: 110,
               ):CachedNetworkImage(
                 imageBuilder: (context, imageProvider) => Container(
-                  width: 80.0,
-                  height: 80.0,
+                  margin:EdgeInsets.only(left:10,right:5),
+                  width: 90.0,
+                  height: 90.0,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
@@ -141,20 +143,22 @@ class _ContactExpert extends State<ContactExpert> {
 
   Future<void> updateInteraction() async {
     int id;
+    bool interactionAlreadyAvailable = false;
     QuerySnapshot tempsnap;
     try {
-      for (int i = 0; i < user.detailsData["interactionID"].length; i++) {
         tempsnap = await interaction
-            .where("id", isEqualTo: user.detailsData["interactionID"][i])
+            .where("user", isEqualTo: user.detailsData.documentID)
             .getDocuments();
-        if (tempsnap.documents[0]["expert"] == expert.documentID)
-          break;
-        else
+        tempsnap.documents.forEach((document){
+          if (document["expert"] == expert.documentID){
+            interactionAlreadyAvailable = true;
+          }
+        });
+        if(!interactionAlreadyAvailable){
           tempsnap = null;
-      }
+        }
     } catch (e) {
       tempsnap = null;
-      print("doesnt exist");
     }
 
     await Firestore.instance.runTransaction((Transaction t) async {
@@ -169,7 +173,6 @@ class _ContactExpert extends State<ContactExpert> {
         await user.detailsData.reference.updateData({
           "interactionID": FieldValue.arrayUnion([id])
         });
-        print(expert["emailID"]);
         await expert.reference.updateData({
           "interactionID": FieldValue.arrayUnion([id])
         });
@@ -180,7 +183,10 @@ class _ContactExpert extends State<ContactExpert> {
           'interactionTime': FieldValue.arrayUnion([DateTime.now()])
         });
       }
-      user.detailsData=await user.detailsData.reference.get();
+      Data newUser = Data();
+      newUser.profileData = user.profileData;
+      newUser.detailsData=await user.detailsData.reference.get();
+      syncDocument.updateStatus(newUser);
     });
     userSearchExpert.updateStatus(true);
   }
