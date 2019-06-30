@@ -32,7 +32,7 @@ class CustomCard extends StatelessWidget {
                 tag: expert["emailID"],
                 child:expert["profilePic"] == null ? Icon(
                             Icons.person,
-                            size: 70,
+                            size: 80,
                           )
                         : CachedNetworkImage(
                             imageBuilder: (context, imageProvider) => Container(
@@ -40,18 +40,19 @@ class CustomCard extends StatelessWidget {
                                   height: 80.0,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
+                                    color: Colors.grey[400],
                                     image: DecorationImage(
                                         image: imageProvider,
                                         fit: BoxFit.cover),
                                   ),
                                 ),
                             imageUrl: expert["profilePic"],
-                            height: 70,
-                            width: 70,
-                            placeholder: (context, a) => Center(
-                                  widthFactor: 2.1,
-                                  child: CircularProgressIndicator(),
-                                ),
+                            height: 80,
+                            width: 80,
+//                            placeholder: (context, a) => Center(
+//                                  widthFactor: 2.1,
+//                                  child: CircularProgressIndicator(),
+//                                ),
                           ),
               ),
               Container(

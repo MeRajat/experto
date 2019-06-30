@@ -27,8 +27,8 @@ class SplashState extends State<Splash> {
     await Future.wait([
       getPermissions(),
       getSkypeAvailability(),
+      Future.delayed(Duration(seconds: 1)),
     ]);
-    await Future.delayed(Duration(seconds: 1));
     autoLogin();
   }
 

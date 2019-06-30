@@ -44,7 +44,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
             tag: expert['emailID'],
             child: Padding(
               padding: EdgeInsets.only(left: 10, top: 80),
-              child: (expert["profilePic"] == null)
+              child: (expert["profilePicThumb"] == null)
                   ? Icon(
                       Icons.person,
                       size: 110,
@@ -56,17 +56,18 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                             height: 90.0,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
+                              color: Colors.grey[400],
                               image: DecorationImage(
                                   image: imageProvider, fit: BoxFit.cover),
                             ),
                           ),
-                      imageUrl: expert["profilePic"],
+                      imageUrl: expert["profilePicThumb"],
                       height: 110,
                       width: 110,
-                      placeholder: (context, a) => Center(
-                            widthFactor: 2.1,
-                            child: CircularProgressIndicator(),
-                          ),
+//                      placeholder: (context, a) => Center(
+//                            widthFactor: 2.1,
+//                            child: CircularProgressIndicator(),
+//                          ),
                     ),
             ),
           ),
