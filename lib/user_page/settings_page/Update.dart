@@ -106,6 +106,7 @@ class Update{
         if(details[1].compareTo(user.profileData.email)==0){throw("New Email cannot be same as old!");}
         await user.profileData.updateEmail(details[1]);
         user.profileData=await FirebaseAuth.instance.currentUser();
+        user.profileData.sendEmailVerification();
 //        await userReference.document(user.detailsData.documentID).updateData({'emailID':details[1]});
 //        user.detailsData=await userReference.document(user.detailsData.documentID).get();
         return user;

@@ -155,7 +155,7 @@ class Update {
           await expert.detailsData.reference.updateData({field: details[field]});
         });
         expert.detailsData =await expert.detailsData.reference.get();
-        print("After update: " + field + ": " + expert.detailsData.data[field]);
+        expert.profileData.sendEmailVerification();
         return true;
       } on PlatformException catch (e) {
         if (e.code == "ERROR_WRONG_PASSWORD") {

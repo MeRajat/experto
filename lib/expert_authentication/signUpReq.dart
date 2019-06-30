@@ -162,12 +162,13 @@ class Authenticate {
             .document(expertData.profileData.uid)
             .setData(currentExpert.toJson());
       });
+      expertData.profileData.sendEmailVerification();
       throw ("Not Active");
     } catch (e) {
       details.clear();
       expertData.detailsData = null;
       isLoadingSignupExpert.updateStatus(false);
-      _ackAlert(context, e == "Not Active" ? "In Review" : "SignUp failed",
+      _ackAlert(context, e == "Not Active" ? "In Review, please verify your email" : "SignUp failed",
           e == "Not Active" ? e : e.toString().split(',')[1]);
     }
   }
@@ -194,6 +195,8 @@ class Authenticate {
         expertData.profileData = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: details['email'], password: details['password']);
+        if(!expertData.profileData.isEmailVerified)
+          throw("Verify");
         expertData.detailsData =
             await expertReference.document(expertData.profileData.uid).get();
         updateConfig();
@@ -211,7 +214,7 @@ class Authenticate {
             context,
             "Login Failed!",
             e == "Not Active" || e == "User not found!"
-                ? e
+                ? e:e=="Verify"?"Verify email and then signIn"
                 : e.toString().split(',')[0]);
       }
     }

@@ -106,12 +106,6 @@ class Authenticate {
         userData.profileData = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: details[1], password: details[4]);
-        currentUser = new Users(
-          //   email: details[1],
-          city: details[2],
-          name: details[0],
-          m: details[3],
-        );
         userUpdateInfo.displayName = details[0];
         //userUpdateInfo.photoUrl=
         await userData.profileData.updateProfile(userUpdateInfo);
@@ -124,19 +118,17 @@ class Authenticate {
         userData.detailsData =
             await userReference.document(userData.profileData.uid).get();
         updateConfig();
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'),
-            arguments: userData);
-        formState.reset();
+        userData.profileData.sendEmailVerification();
+        throw("Verify");
       } catch (e) {
         //_isSignIn = false;
         details.clear();
         isLoadingSignup.updateStatus(false);
         _ackAlert(
             context,
-            "SignUp Failed!",
-            e == "Mobile Number already in use"
-                ? e
+            e=="Verify"?"Verification Required":"SignUp Failed!",
+            e == "Mobile"
+                ? e:e=="Verify"?"Verify email and then signIn"
                 : e.toString().split(',')[1]);
       }
     }
@@ -154,6 +146,8 @@ class Authenticate {
         userData.profileData = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
                 email: details[0], password: details[1]);
+        if(!userData.profileData.isEmailVerified)
+          throw("Verify");
         userData.detailsData =
             await userReference.document(userData.profileData.uid).get();
         updateConfig();
@@ -167,7 +161,7 @@ class Authenticate {
       } catch (e) {
         details.clear();
         isLoadingLogin.updateStatus(false);
-        _ackAlert(context, "Login Failed!", e.toString().split(',')[1]);
+        _ackAlert(context, "Login Failed!",e=="Verify"?"Verify email and then signIn": e.toString().split(',')[1]);
       }
     }
   }
