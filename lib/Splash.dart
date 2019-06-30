@@ -19,15 +19,20 @@ class Splash extends StatefulWidget {
 class SplashState extends State<Splash> {
   @override
   void initState() {
-    getPermissions();
-    getSkypeAvailability();
-    Future.delayed(Duration(seconds: 1),(){
-      autoLogin();
-    });
     super.initState();
+    startUp();
   }
 
-  void autoLogin() async {
+  Future<void> startUp()async{
+    await Future.wait([
+      getPermissions(),
+      getSkypeAvailability(),
+    ]);
+    await Future.delayed(Duration(seconds: 1));
+    autoLogin();
+  }
+
+  Future<void> autoLogin() async {
     final user.Authenticate authenticateUser = new user.Authenticate();
     final expert.Authenticate authenticateExpert = new expert.Authenticate();
     final pref = await SharedPreferences.getInstance();
@@ -40,17 +45,17 @@ class SplashState extends State<Splash> {
     }
   }
 
-  void getSkypeAvailability() async {
+  Future<void> getSkypeAvailability() async {
     try {
       await AppAvailability.checkAvailability("com.skype.raider");
       if (!(await AppAvailability.isAppEnabled("com.skype.raider")))
-        _showSkypeDialog();
+        await _showSkypeDialog();
     } on PlatformException {
-      _showSkypeDialog();
+      await _showSkypeDialog();
     }
   }
 
-  void _showSkypeDialog() async {
+  Future<void> _showSkypeDialog() async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -98,10 +103,10 @@ class SplashState extends State<Splash> {
     );
   }
 
-  void getPermissions() async {
+  Future<void> getPermissions() async {
     List<PermissionGroup> permission = [
-      PermissionGroup.camera,
-      PermissionGroup.microphone,
+//      PermissionGroup.camera,
+//      PermissionGroup.microphone,
       PermissionGroup.storage
     ];
     Map<PermissionGroup, PermissionStatus> permissions =
