@@ -154,18 +154,19 @@ class Update{
         .child("/Profile Photos/" + user.profileData.uid),storageReference2 = FirebaseStorage.instance
         .ref()
         .child("/Profile Photos/thumbs/" + user.profileData.uid);
-    print(storageReference.getPath().then((x) => print(x)));
-    print(storageReference2.getPath().then((x) => print(x)));
     File file = File(path);
     Im.Image image = Im.decodeImage(file.readAsBytesSync());
-    Im.Image thumbnail = Im.copyResizeCropSquare(image, 600);
-//    var compressedImage = new File('$path/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(thumbnail, quality: 100);
-    task2=storageReference2.putData( Im.encodeJpg(thumbnail,quality: 85));
-    task=storageReference.putFile(file);
+    if(image.height>2800&&image.width>2800)
+      image=Im.copyResizeCropSquare(image, 2800);
+    else if(image.height>2800||image.height>image.width)
+      image=Im.copyResizeCropSquare(image, image.width);
+    else if(image.width>2800||image.width>image.height)
+      image=Im.copyResizeCropSquare(image, image.height);
+    Im.Image thumbnail = Im.copyResize(image, width: 500);
+    task2=storageReference2.putData( Im.encodeJpg(thumbnail,quality: 75));
+    task=storageReference.putData(Im.encodeJpg(image,quality: 95));
     await task.onComplete;
-    print("task");
     await task2.onComplete;
-    print("task2");
     String url = await storageReference.getDownloadURL(),url2=await storageReference2.getDownloadURL();
     userUpdateInfo.photoUrl=url;
     await user.profileData.updateProfile(userUpdateInfo);

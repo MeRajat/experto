@@ -88,6 +88,8 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                   imageUrl: user.profileData.photoUrl,
                   height: 350,
                   width: 350,
+                  fadeInDuration: Duration(milliseconds: 1),
+                  fadeOutDuration: Duration(milliseconds: 1),
                   placeholder: (context, a) => CachedNetworkImage(
                     imageUrl: user.detailsData["profilePicThumb"],
                     height: 350,
