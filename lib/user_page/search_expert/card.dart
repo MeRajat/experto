@@ -8,8 +8,7 @@ import '../expert_detail/expert_detail.dart';
 
 class CustomCard extends StatelessWidget {
   final DocumentSnapshot expert;
-  final Widget profilePic;
-  CustomCard({@required this.expert, this.profilePic});
+  CustomCard({@required this.expert});
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +30,7 @@ class CustomCard extends StatelessWidget {
             children: <Widget>[
               Hero(
                 tag: expert["emailID"],
-                child: (profilePic != null)
-                    ? profilePic
-                    : expert["profilePic"] == null
-                        ? Icon(
+                child:expert["profilePic"] == null ? Icon(
                             Icons.person,
                             size: 70,
                           )

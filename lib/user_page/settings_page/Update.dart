@@ -5,7 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:experto/global_data.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import "package:image_picker/image_picker.dart";
+import 'package:file_picker/file_picker.dart';
+import 'package:image/image.dart' as Im;
 
 class Update{
   CollectionReference userReference;
@@ -84,7 +85,6 @@ class Update{
         return true;
       }
       catch(e){
-        print(e);
         _ackAlert(
             context,
             "Update Failed!",e=="Passwords don't match!"||e=="New Password cannot be same as old!"?e:"Old password is incorrect!");
@@ -111,7 +111,6 @@ class Update{
         return user;
       }
       catch(e){
-        print(e);
         _ackAlert(
             context,
             "Update Failed!",e=="New Email cannot be same as old!"?e:"Old password is incorrect!");
@@ -136,7 +135,6 @@ class Update{
         return true;
       }
       catch(e){
-        print(e);
         _ackAlert(
             context,
             "Delete Failed!","Old password is incorrect!");
@@ -146,22 +144,57 @@ class Update{
     return false;
   }
 
+
   Future<Data> updateProfilePic(Data user) async {
-    StorageUploadTask task;
+    StorageUploadTask task,task2;
     UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
+    String path = await FilePicker.getFilePath(type: FileType.IMAGE);
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
-        .child("/Profile Photos/" + user.profileData.uid);
-    File file = await ImagePicker.pickImage(source: ImageSource.gallery,maxHeight: 1000,maxWidth: 1000);
+        .child("/Profile Photos/" + user.profileData.uid),storageReference2 = FirebaseStorage.instance
+        .ref()
+        .child("/Profile Photos/thumbs/" + user.profileData.uid);
+    print(storageReference.getPath().then((x) => print(x)));
+    print(storageReference2.getPath().then((x) => print(x)));
+    File file = File(path);
+    Im.Image image = Im.decodeImage(file.readAsBytesSync());
+    Im.Image thumbnail = Im.copyResizeCropSquare(image, 600);
+//    var compressedImage = new File('$path/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(thumbnail, quality: 100);
+    task2=storageReference2.putData( Im.encodeJpg(thumbnail,quality: 85));
     task=storageReference.putFile(file);
     await task.onComplete;
-    String url = await storageReference.getDownloadURL();
+    print("task");
+    await task2.onComplete;
+    print("task2");
+    String url = await storageReference.getDownloadURL(),url2=await storageReference2.getDownloadURL();
     userUpdateInfo.photoUrl=url;
     await user.profileData.updateProfile(userUpdateInfo);
     user.profileData=await FirebaseAuth.instance.currentUser();
-    await userReference.document(user.detailsData.documentID).updateData({'profilePic': url});
+    await userReference.document(user.detailsData.documentID).updateData({'profilePic': url,'profilePicThumb': url2});
     user.detailsData = await userReference.document(user.detailsData.documentID).get();
     return user;
   }
 
 }
+
+//  Future<Data> updateProfilePic(Data user) async {
+//    StorageUploadTask task;
+//    UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
+//    StorageReference storageReference = FirebaseStorage.instance
+//        .ref()
+//        .child("/Profile Photos/" + user.profileData.uid),storageReference2 = FirebaseStorage.instance
+//        .ref()
+//        .child("/Profile Photos/thumbs" + user.profileData.uid);
+//    File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+//    task=storageReference.putFile(file);
+//    await task.onComplete;
+//    String url = await storageReference.getDownloadURL();
+//    userUpdateInfo.photoUrl=url;
+//    await user.profileData.updateProfile(userUpdateInfo);
+//    user.profileData=await FirebaseAuth.instance.currentUser();
+//    await userReference.document(user.detailsData.documentID).updateData({'profilePic': url});
+//    user.detailsData = await userReference.document(user.detailsData.documentID).get();
+//    return user;
+//  }
+//
+//}

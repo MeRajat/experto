@@ -4,9 +4,10 @@ import 'package:experto/utils/bloc/is_loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:experto/global_data.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image/image.dart' as Im;
 
 class Update {
   CollectionReference expertReference;
@@ -18,7 +19,7 @@ class Update {
       "Name": "",
       "password": "",
       "emailID": "",
-      "SkypeUser": "",
+      "Skypeexpert": "",
       "City": "",
       "Mobile": '',
       "Description": "",
@@ -58,7 +59,7 @@ class Update {
 
   setCity(String x) => details['City'] = x;
 
-  setSkype(String x) => details['SkypeUser'] = x;
+  setSkype(String x) => details['Skypeexpert'] = x;
 
   getMobile(String x) => details['Mobile'] = x;
 
@@ -183,7 +184,7 @@ class Update {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: expert.profileData.email, password: details['password']);
         await expert.profileData.delete();
-        //await user.profileData.reload();
+        //await expert.profileData.reload();
         await expertReference.document(expert.detailsData.documentID).delete();
         return true;
       } catch (e) {
@@ -200,22 +201,33 @@ class Update {
     return false;
   }
 
+
   Future<Data> updateProfilePic(Data expert) async {
-    StorageUploadTask task;
-    UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
+    StorageUploadTask task,task2;
+    UserUpdateInfo expertUpdateInfo=new UserUpdateInfo();
+    String path = await FilePicker.getFilePath(type: FileType.IMAGE);
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
-        .child("/Expert Profile Photos/" + expert.profileData.uid);
+        .child("/Expert Profile Photos/" + expert.profileData.uid),storageReference2 = FirebaseStorage.instance
+        .ref()
+        .child("/Expert Profile Photos/thumbs/" + expert.profileData.uid);
     print(storageReference.getPath().then((x) => print(x)));
-    File file = await ImagePicker.pickImage(source: ImageSource.gallery,maxWidth: 1000,maxHeight: 1000);
-    task = storageReference.putFile(file);
+    File file = File(path);
+    Im.Image image = Im.decodeImage(file.readAsBytesSync());
+    Im.Image thumbnail = Im.copyResizeCropSquare(image, 600);
+//    var compressedImage = new File('$path/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(thumbnail, quality: 100);
+    task2=storageReference2.putData( Im.encodeJpg(thumbnail,quality: 85));
+    task=storageReference.putFile(file);
     await task.onComplete;
-    String url = await storageReference.getDownloadURL();
-    userUpdateInfo.photoUrl = url;
-    await expert.profileData.updateProfile(userUpdateInfo);
-    await expertReference.document(expert.detailsData.documentID).updateData({'profilePic': url});
+    print("task");
+    await task2.onComplete;
+    print("task2");
+    String url = await storageReference.getDownloadURL(),url2=await storageReference2.getDownloadURL();
+    expertUpdateInfo.photoUrl=url;
+    await expert.profileData.updateProfile(expertUpdateInfo);
+    expert.profileData=await FirebaseAuth.instance.currentUser();
+    await expertReference.document(expert.detailsData.documentID).updateData({'profilePic': url,'profilePicThumb': url2});
     expert.detailsData = await expertReference.document(expert.detailsData.documentID).get();
-    expert.profileData =await FirebaseAuth.instance.currentUser();
     return expert;
   }
 }

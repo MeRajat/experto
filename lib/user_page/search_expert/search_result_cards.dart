@@ -7,8 +7,7 @@ import './card.dart';
 class SearchResults extends StatelessWidget {
   final List results;
   final String headerText;
-  final List<Widget> expertProfilePic;
-  SearchResults(this.results, this.headerText, {this.expertProfilePic});
+  SearchResults(this.results, this.headerText);
 
   @override
   Widget build(BuildContext context) {
@@ -31,21 +30,11 @@ class SearchResults extends StatelessWidget {
                           .copyWith(fontSize: 15),
                     ),
                   ),
-                  (expertProfilePic != null)
-                      ? CustomCard(
-                          expert: results[index],
-                          profilePic: expertProfilePic[index],
-                        )
-                      : CustomCard(expert: results[index]),
+                  CustomCard(expert: results[index]),
                 ],
               );
             } else {
-              return (expertProfilePic != null)
-                  ? CustomCard(
-                      expert: results[index],
-                      profilePic: expertProfilePic[index],
-                    )
-                  : CustomCard(expert: results[index]);
+              return CustomCard(expert: results[index]);
             }
           },
           childCount: results.length,

@@ -18,7 +18,6 @@ class Cards extends StatefulWidget {
 
 class _Cards extends State<Cards> {
   List<DocumentSnapshot> querySetResult = [], tempResult = [];
-  List<Widget> expertProfilePic = [];
   int searchingStatus = 0;
   String searchString;
   bool timedOut = false, resultAvailable = false, loading = false;
@@ -66,7 +65,6 @@ class _Cards extends State<Cards> {
       loading = true;
     });
 
-    expertProfilePic = [];
     expert = Firestore.instance.collection("Experts");
     expertSnapshot = await expert
         .where("Status", isEqualTo: true)
@@ -74,30 +72,6 @@ class _Cards extends State<Cards> {
         .timeout(Duration(seconds: 10), onTimeout: () {
       timedOut = true;
     });
-
-    for (int i = 0; i < expertSnapshot.documents.length; i++) {
-      expertProfilePic.add(
-        (expertSnapshot.documents[i]['profilePic'] == null)
-            ? Icon(
-                Icons.person,
-                size: 70,
-              )
-            : CachedNetworkImage(
-                imageBuilder: (context, imageProvider) => Container(
-                      width: 80.0,
-                      height: 80.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover),
-                      ),
-                    ),
-                imageUrl: expertSnapshot.documents[i]["profilePic"],
-                height: 70,
-                width: 70,
-              ),
-      );
-    }
 
     setState(() {
       loading = false;
@@ -206,7 +180,6 @@ class _Cards extends State<Cards> {
         return SearchResults(
           expertSnapshot.documents,
           allExpertHeaderText,
-          expertProfilePic: expertProfilePic,
         );
       }
 
