@@ -30,30 +30,34 @@ class CustomCard extends StatelessWidget {
             children: <Widget>[
               Hero(
                 tag: expert["emailID"],
-                child:expert["profilePic"] == null ? Icon(
-                            Icons.person,
-                            size: 80,
-                          )
-                        : CachedNetworkImage(
-                            imageBuilder: (context, imageProvider) => Container(
-                                  width: 80.0,
-                                  height: 80.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.grey[400],
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover),
-                                  ),
-                                ),
-                            imageUrl: expert["profilePic"],
-                            height: 80,
-                            width: 80,
-//                            placeholder: (context, a) => Center(
-//                                  widthFactor: 2.1,
-//                                  child: CircularProgressIndicator(),
-//                                ),
-                          ),
+                child: expert["profilePicThumb"] == null
+                    ? Icon(
+                        Icons.person,
+                        size: 80,
+                      )
+                    : CachedNetworkImage(
+                        imageBuilder: (context, imageProvider) => Container(
+                              width: 80.0,
+                              height: 80.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey[400],
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover),
+                              ),
+                            ),
+                        imageUrl: expert["profilePic"],
+                        height: 80,
+                        width: 80,
+                        placeholder: (context, a) => Container(
+                              width: 80.0,
+                              height: 80.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                      ),
               ),
               Container(
                 padding:

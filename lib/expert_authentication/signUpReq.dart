@@ -80,7 +80,7 @@ class Authenticate {
       }
     } catch (e) {
       Navigator.of(context).pop();
-      Navigator.pushNamed(context, '/expert_login');
+      Navigator.pushNamed(context, '/home_page');
       return false;
     }
   }

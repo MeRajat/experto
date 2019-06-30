@@ -4,14 +4,13 @@ import 'package:flutter/cupertino.dart';
 class Theme {
   ThemeData lightTheme() {
     return ThemeData(
-      brightness: Brightness.light,
-      bottomAppBarTheme: BottomAppBarTheme(
-        color: Colors.transparent,
-      ),
+      primaryColor: Color(0xFFF2F4ED),
       canvasColor: Color.fromRGBO(250, 250, 250, 1),
       scaffoldBackgroundColor: Color.fromRGBO(243, 242, 244, 1),
+      bottomAppBarColor: Colors.transparent,
+      errorColor: Colors.red,
+      brightness: Brightness.light,
       fontFamily: 'Ubuntu',
-      primaryColor: Color(0xFFF2F4ED),
       primaryTextTheme: TextTheme(
         title: TextStyle(
           wordSpacing: 1,
@@ -29,7 +28,6 @@ class Theme {
           wordSpacing: 1,
         ),
       ),
-      bottomAppBarColor: Colors.transparent,
       dialogTheme: DialogTheme(
         backgroundColor: Color.fromRGBO(250, 250, 250, 1),
         shape: RoundedRectangleBorder(
@@ -107,8 +105,11 @@ class Theme {
   ThemeData darkTheme() {
     Color textColor = Color.fromRGBO(236, 236, 236, 1);
     return ThemeData(
+      primaryColor: Colors.black,
       brightness: Brightness.dark,
       canvasColor: Color.fromRGBO(50, 50, 50, 1),
+      scaffoldBackgroundColor: Color.fromRGBO(28, 28, 28, 1),
+      errorColor: Colors.red[800],
       dialogTheme: DialogTheme(
         backgroundColor: Color.fromRGBO(45, 45, 45, 1),
         shape: RoundedRectangleBorder(
@@ -139,10 +140,7 @@ class Theme {
           wordSpacing: 1,
         ),
       ),
-      scaffoldBackgroundColor:
-          Color.fromRGBO(28, 28, 28, 1), //Color.fromRGBO(243, 242, 244, 1),
       fontFamily: 'Ubuntu',
-      primaryColor: Colors.black,
       bottomAppBarColor: Color(0xFFfcfffe),
       buttonTheme: ButtonThemeData(
         height: 45,

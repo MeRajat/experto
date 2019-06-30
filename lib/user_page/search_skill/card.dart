@@ -55,11 +55,14 @@ class CustomCard extends StatelessWidget {
                 height: 55,
                 child: CachedNetworkImage(
                   imageUrl: skill["IconURL"],
-                  placeholder: (BuildContext context, string) => Center(
-                    heightFactor: 1.1,
-                    widthFactor: 1.1,
-                    child: CircularProgressIndicator(),
-                  ),
+                  placeholder: (BuildContext context, string) => Container(
+                        width: 65,
+                        height: 65,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey[400],
+                        ),
+                      ),
                   color: (Theme.of(context).brightness == Brightness.dark)
                       ? colorsDarkMode[random.nextInt(colorsDarkMode.length)]
                       : colorsLightMode[random.nextInt(colorsLightMode.length)],
@@ -76,19 +79,19 @@ class CustomCard extends StatelessWidget {
                       child: Text(
                         skill['Name'],
                         style: Theme.of(context).textTheme.title.copyWith(
-                          fontSize: 17,
-                        ),
+                              fontSize: 17,
+                            ),
                       ),
                     ),
                     Text(
                       skill['tagLine'],
                       style: Theme.of(context).primaryTextTheme.body2.copyWith(
-                        fontSize: 12,
-                        color: (Theme.of(context).brightness ==
-                            Brightness.dark)
-                            ? Colors.grey[400]
-                            : Colors.grey[800],
-                      ),
+                            fontSize: 12,
+                            color: (Theme.of(context).brightness ==
+                                    Brightness.dark)
+                                ? Colors.grey[400]
+                                : Colors.grey[800],
+                          ),
                     )
                   ],
                 ),
