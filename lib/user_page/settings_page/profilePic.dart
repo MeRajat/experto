@@ -74,21 +74,30 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                 child: user.profileData.photoUrl== null
                     ? Icon(
                         Icons.person,
-                        size: 110,
+                        size: 350,
                       )
                     : CachedNetworkImage(
-                        imageBuilder: (context, imageProvider) => Container(
-                              width: 350.0,
-                              height: 350.0,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.cover),
-                              ),
-                            ),
-                        imageUrl: user.profileData.photoUrl,
-                        placeholder: (context, a) =>
-                            CircularProgressIndicator(),
-                      ),
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: 350.0,
+                    height: 350.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
+                    ),
+                  ),
+                  imageUrl: user.profileData.photoUrl,
+                  height: 350,
+                  width: 350,
+                  placeholder: (context, a) => CachedNetworkImage(
+                    imageUrl: user.detailsData["profilePicThumb"],
+                    height: 350,
+                    width: 350,
+                    placeholder: (context, a) => Center(
+                      widthFactor: 2.1,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                ),
               ),
       ),
     );

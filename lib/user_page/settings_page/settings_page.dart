@@ -17,7 +17,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
             padding: EdgeInsets.only(left: 10, top: 80),
             child: Hero(
               tag: "profilePic",
-              child: user.detailsData["profilePicThumb"] == null
+              child: user.profileData.photoUrl== null
                   ? Icon(
                       Icons.person,
                       size: 110,
@@ -32,7 +32,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                                   image: imageProvider, fit: BoxFit.cover),
                             ),
                           ),
-                      imageUrl: user.detailsData["profilePicThumb"],
+                      imageUrl: user.profileData.photoUrl,
                       height: 110,
                       width: 110,
                       placeholder: (context, a) => Center(
