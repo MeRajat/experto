@@ -6,9 +6,17 @@ import './category_card.dart';
 
 class SearchResults extends StatelessWidget {
   final List<DocumentSnapshot> results;
+  final List<Map<String, dynamic>> subSkills;
+  final List<Widget> categoryIcon;
   final String headerText;
   final bool status;
-  SearchResults(this.results, this.headerText,this.status);
+  SearchResults(
+    this.results,
+    this.headerText,
+    this.status, {
+    this.subSkills,
+    this.categoryIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +30,7 @@ class SearchResults extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(left: 15,bottom: 10),
+                    padding: EdgeInsets.only(left: 15, bottom: 10),
                     child: Text(
                       headerText,
                       style: Theme.of(context)
@@ -31,11 +39,17 @@ class SearchResults extends StatelessWidget {
                           .copyWith(fontSize: 15),
                     ),
                   ),
-                  status?CustomCard(results[index]):CustomCategoryCard(results[index]),
+                  status
+                      ? CustomCard(results[index])
+                      : CustomCategoryCard(
+                          results[index], categoryIcon[index], subSkills[index]),
                 ],
               );
             } else {
-              return status?CustomCard(results[index]):CustomCategoryCard(results[index]);
+              return status
+                  ? CustomCard(results[index])
+                  : CustomCategoryCard(
+                      results[index], categoryIcon[index], subSkills[index]);
             }
           },
           childCount: results.length,

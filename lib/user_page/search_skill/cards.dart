@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
+import "dart:math";
 
 import './categories_list.dart';
 import "package:experto/utils/bloc/search_bloc.dart";
@@ -11,6 +13,26 @@ import 'package:experto/utils/timed_out.dart';
 import 'package:experto/utils/no_result.dart';
 
 class Cards extends StatefulWidget {
+  final List<Color> colorsDarkMode = [
+    Color.fromRGBO(46, 117, 178, 1),
+    Color.fromRGBO(229, 107, 107, 1),
+    Color.fromRGBO(172, 95, 175, 1),
+    Color.fromRGBO(255, 138, 96, 1),
+    Color.fromRGBO(94, 165, 95, 1),
+    Color.fromRGBO(67, 168, 127, 1)
+  ];
+
+  final List<Color> colorsLightMode = [
+    Colors.red,
+    Colors.purple,
+    Colors.blue,
+    Colors.deepOrangeAccent,
+    Colors.green,
+    Colors.cyan,
+  ];
+
+  final random = new Random();
+
   @override
   _Cards createState() => _Cards();
 }
@@ -19,7 +41,9 @@ class _Cards extends State<Cards> {
   int searchingStatus = 0;
   String searchString = '';
   bool resultAvailable = false, timedOut = false, loading = false;
-  List<DocumentSnapshot> querySetResult = [], tempResult = [], topSkills = [];
+  List<DocumentSnapshot> querySetResult = [], tempResult = [], categories = [];
+  List<Map<String, dynamic>> subSkills = [];
+  List<Widget> categoryIcons = [];
   QuerySnapshot searchSnapshot, categorySnapshot;
   DocumentReference skillReference;
 
@@ -32,18 +56,46 @@ class _Cards extends State<Cards> {
 
   @override
   void initState() {
-    getTopSkills();
+    getCategories();
     listenReload();
     getSearchingStatus();
     getSearch();
     super.initState();
   }
 
-  void getTopSkills() async {
+  Future<void> getSubSkills(DocumentSnapshot category) async {
+    List<DocumentSnapshot> skillList = [];
+    List<Widget> skillIconList = [];
+
+    await Firestore.instance
+        .collection("Skills")
+        .where("Category", arrayContains: category.reference)
+        .getDocuments()
+        .then((QuerySnapshot skills) {
+      for (int i = 0; i < skills.documents.length; i++) {
+        skillList.add(skills.documents[i]);
+        skillIconList.add(
+          CachedNetworkImage(
+            imageUrl: skills.documents[i]["IconURL"],
+            color: (Theme.of(context).brightness == Brightness.dark)
+                ? widget.colorsDarkMode[
+                    widget.random.nextInt(widget.colorsDarkMode.length)]
+                : widget.colorsLightMode[
+                    widget.random.nextInt(widget.colorsLightMode.length)],
+          ),
+        );
+      }
+    });
+
+    subSkills.add({'skills': skillList, "icons": skillIconList});
+  }
+
+  void getCategories() async {
     setState(() {
       loading = true;
     });
 
+    categoryIcons = [];
     categorySnapshot = await Firestore.instance
         .collection('Categories')
         .getDocuments()
@@ -53,15 +105,25 @@ class _Cards extends State<Cards> {
       });
     }).then((snapshot) async {
       for (int i = 0; i < snapshot.documents.length; i++) {
-        skillReference = snapshot.documents[i].data['Skill'];
-        topSkills.add(snapshot.documents[i]);
+        categories.add(snapshot.documents[i]);
+        categoryIcons.add(
+          CachedNetworkImage(
+            imageUrl: snapshot.documents[i]["IconURL"],
+            color: (Theme.of(context).brightness == Brightness.dark)
+                ? widget.colorsDarkMode[
+                    widget.random.nextInt(widget.colorsDarkMode.length)]
+                : widget.colorsLightMode[
+                    widget.random.nextInt(widget.colorsLightMode.length)],
+          ),
+        );
+        await getSubSkills(snapshot.documents[i]);
       }
+
       setState(() {
         loading = false;
       });
     });
   }
-  
 
   void listenReload() async {
     userSearchSkill.getStatus.listen((value) {
@@ -75,9 +137,9 @@ class _Cards extends State<Cards> {
     setState(() {
       timedOut = false;
       searchingStatus = 0;
-      topSkills = [];
+      categories = [];
       searchSnapshot = null;
-      getTopSkills();
+      getCategories();
     });
   }
 
@@ -123,7 +185,9 @@ class _Cards extends State<Cards> {
 
   void getTempSet(String searchQuery) async {
     querySetResult.forEach((snapshot) {
-      if (snapshot.data['Name'].toLowerCase().contains(searchQuery.toLowerCase())) {
+      if (snapshot.data['Name']
+          .toLowerCase()
+          .contains(searchQuery.toLowerCase())) {
         tempResult.add(snapshot);
       }
     });
@@ -153,8 +217,8 @@ class _Cards extends State<Cards> {
     searchBloc.value.listen((searchQuery) {
       searchingStatus = 1;
       timedOut = false;
-        searchString = searchQuery;
-        search(searchQuery);
+      searchString = searchQuery;
+      search(searchQuery);
     });
   }
 
@@ -180,11 +244,17 @@ class _Cards extends State<Cards> {
       }
 
       if (searchingStatus == 0) {
-        return SearchResults(topSkills, recommendationHeaderText,false);
+        return SearchResults(
+          categories,
+          recommendationHeaderText,
+          false,
+          subSkills: subSkills,
+          categoryIcon: categoryIcons,
+        );
       }
 
       if (searchingStatus == 1 && resultAvailable) {
-        return SearchResults(tempResult, searchHeaderText,true);
+        return SearchResults(tempResult, searchHeaderText, true);
       }
 
       if (searchingStatus == 1 && !resultAvailable) {

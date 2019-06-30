@@ -9,6 +9,7 @@ import "package:experto/utils/bloc/reload.dart";
 import "package:experto/utils/bloc/is_searching.dart";
 import 'package:experto/utils/no_result.dart';
 import 'package:experto/utils/timed_out.dart';
+import "package:cached_network_image/cached_network_image.dart";
 
 class Cards extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class Cards extends StatefulWidget {
 
 class _Cards extends State<Cards> {
   List<DocumentSnapshot> querySetResult = [], tempResult = [];
+  List<Widget> expertProfilePic = [];
   int searchingStatus = 0;
   String searchString;
   bool timedOut = false, resultAvailable = false, loading = false;
@@ -63,6 +65,8 @@ class _Cards extends State<Cards> {
     setState(() {
       loading = true;
     });
+
+    expertProfilePic = [];
     expert = Firestore.instance.collection("Experts");
     expertSnapshot = await expert
         .where("Status", isEqualTo: true)
@@ -70,6 +74,31 @@ class _Cards extends State<Cards> {
         .timeout(Duration(seconds: 10), onTimeout: () {
       timedOut = true;
     });
+
+    for (int i = 0; i < expertSnapshot.documents.length; i++) {
+      expertProfilePic.add(
+        (expertSnapshot.documents[i]['profilePic'] == null)
+            ? Icon(
+                Icons.person,
+                size: 70,
+              )
+            : CachedNetworkImage(
+                imageBuilder: (context, imageProvider) => Container(
+                      width: 80.0,
+                      height: 80.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover),
+                      ),
+                    ),
+                imageUrl: expertSnapshot.documents[i]["profilePic"],
+                height: 70,
+                width: 70,
+              ),
+      );
+    }
+
     setState(() {
       loading = false;
     });
@@ -90,7 +119,7 @@ class _Cards extends State<Cards> {
   void getQuerySet(String searchQuery) async {
     QuerySnapshot searchSnapshot = await expert
         .where("Index", isEqualTo: searchQuery.toUpperCase())
-        .where("Status",isEqualTo: true)
+        .where("Status", isEqualTo: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {});
 
@@ -174,7 +203,11 @@ class _Cards extends State<Cards> {
       }
 
       if (searchingStatus == 0) {
-        return SearchResults(expertSnapshot.documents, allExpertHeaderText);
+        return SearchResults(
+          expertSnapshot.documents,
+          allExpertHeaderText,
+          expertProfilePic: expertProfilePic,
+        );
       }
 
       if (searchingStatus == 1 && resultAvailable) {
