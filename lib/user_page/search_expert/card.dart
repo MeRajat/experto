@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:experto/utils/placeholder.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,13 +51,9 @@ class CustomCard extends StatelessWidget {
                         height: 80,
                         width: 80,
                         placeholder: (context, a) => Container(
-                              width: 80.0,
-                              height: 80.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey[400],
-                              ),
-                            ),
+                            width: 80.0,
+                            height: 80.0,
+                            child: CustomPlaceholder()),
                       ),
               ),
               Container(

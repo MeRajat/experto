@@ -1,5 +1,6 @@
 import 'package:experto/global_data.dart';
 import 'package:experto/user_page/settings_page/profilePic.dart';
+import 'package:experto/utils/placeholder.dart';
 import "package:flutter/material.dart";
 import 'package:cached_network_image/cached_network_image.dart';
 import "package:experto/utils/global_app_bar.dart";
@@ -17,7 +18,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(left: 10, top: 80),
             child: FlatButton(
-              onPressed:(){
+              onPressed: () {
                 Navigator.of(context, rootNavigator: false).push(
                   MaterialPageRoute(
                     builder: (context) {
@@ -49,9 +50,10 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                         imageUrl: user.detailsData["profilePicThumb"],
                         height: 110,
                         width: 110,
-                        placeholder: (context, a) => Center(
-                              widthFactor: 2.1,
-                              child: CircularProgressIndicator(),
+                        placeholder: (context, a) => Container(
+                              height: 80,
+                              width: 80,
+                              child: CustomPlaceholder(),
                             ),
                       ),
               ),
