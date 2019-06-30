@@ -107,9 +107,15 @@ class Authenticate {
             .createUserWithEmailAndPassword(
                 email: details[1], password: details[4]);
         userUpdateInfo.displayName = details[0];
+        currentUser = new Users(
+          //   email: details[1],
+          city: details[2],
+          name: details[0],
+          m: details[3],
+        );
         //userUpdateInfo.photoUrl=
         await userData.profileData.updateProfile(userUpdateInfo);
-        Firestore.instance.runTransaction((Transaction t) async {
+        await Firestore.instance.runTransaction((Transaction t) async {
           await userReference
               .document(userData.profileData.uid)
               .setData(currentUser.toJson());
@@ -118,7 +124,8 @@ class Authenticate {
         userData.detailsData =
             await userReference.document(userData.profileData.uid).get();
         updateConfig();
-        userData.profileData.sendEmailVerification();
+        await userData.profileData.sendEmailVerification();
+        await FirebaseAuth.instance.signOut();
         throw("Verify");
       } catch (e) {
         //_isSignIn = false;
@@ -148,7 +155,8 @@ class Authenticate {
                 email: details[0], password: details[1]);
         if(!userData.profileData.isEmailVerified)
         {
-          userData.profileData.sendEmailVerification();
+          await userData.profileData.sendEmailVerification();
+          await FirebaseAuth.instance.signOut();
           throw("Verify");
         }
         userData.detailsData =

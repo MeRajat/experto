@@ -107,6 +107,7 @@ class Update{
         await user.profileData.updateEmail(details[1]);
         user.profileData=await FirebaseAuth.instance.currentUser();
         user.profileData.sendEmailVerification();
+
 //        await userReference.document(user.detailsData.documentID).updateData({'emailID':details[1]});
 //        user.detailsData=await userReference.document(user.detailsData.documentID).get();
         return user;
@@ -178,24 +179,3 @@ class Update{
 
 }
 
-//  Future<Data> updateProfilePic(Data user) async {
-//    StorageUploadTask task;
-//    UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
-//    StorageReference storageReference = FirebaseStorage.instance
-//        .ref()
-//        .child("/Profile Photos/" + user.profileData.uid),storageReference2 = FirebaseStorage.instance
-//        .ref()
-//        .child("/Profile Photos/thumbs" + user.profileData.uid);
-//    File file = await ImagePicker.pickImage(source: ImageSource.gallery);
-//    task=storageReference.putFile(file);
-//    await task.onComplete;
-//    String url = await storageReference.getDownloadURL();
-//    userUpdateInfo.photoUrl=url;
-//    await user.profileData.updateProfile(userUpdateInfo);
-//    user.profileData=await FirebaseAuth.instance.currentUser();
-//    await userReference.document(user.detailsData.documentID).updateData({'profilePic': url});
-//    user.detailsData = await userReference.document(user.detailsData.documentID).get();
-//    return user;
-//  }
-//
-//}

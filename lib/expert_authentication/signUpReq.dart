@@ -157,12 +157,13 @@ class Authenticate {
       );
       userUpdateInfo.displayName = details['name'];
       await expertData.profileData.updateProfile(userUpdateInfo);
-      Firestore.instance.runTransaction((Transaction t) async {
+      await Firestore.instance.runTransaction((Transaction t) async {
         await expertReference
             .document(expertData.profileData.uid)
             .setData(currentExpert.toJson());
       });
-      expertData.profileData.sendEmailVerification();
+      await expertData.profileData.sendEmailVerification();
+      await FirebaseAuth.instance.signOut();
       throw ("Not Active");
     } catch (e) {
       details.clear();
@@ -197,7 +198,8 @@ class Authenticate {
                 email: details['email'], password: details['password']);
         if(!expertData.profileData.isEmailVerified)
         {
-          expertData.profileData.sendEmailVerification();
+          await expertData.profileData.sendEmailVerification();
+          await FirebaseAuth.instance.signOut();
           throw("Verify");
         }
         expertData.detailsData =
