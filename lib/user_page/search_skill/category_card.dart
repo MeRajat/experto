@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,7 @@ class CustomCategoryCard extends StatefulWidget {
 
 class _CustomCardState extends State<CustomCategoryCard> {
   List<DocumentSnapshot> skillsSnapshot;
+  double placeholderOpcaity = 0;
   final List<Color> colorsDarkMode = [
     Color.fromRGBO(46, 117, 178, 1),
     Color.fromRGBO(229, 107, 107, 1),
@@ -88,15 +90,25 @@ class _CustomCardState extends State<CustomCategoryCard> {
                       height: 42,
                       child: CachedNetworkImage(
                         imageUrl: skill["IconURL"],
-                        placeholder: (BuildContext context, string) =>
-                            Container(
-                              height: 55,
-                              width: 55,
+                        fadeOutDuration: Duration.zero,
+                        placeholder: ((BuildContext context, string) {
+                          Timer(Duration(seconds: 1), () {
+                            setState(() {
+                              placeholderOpcaity = 1;
+                            });
+                          });
+                          return AnimatedOpacity(
+                            duration: Duration.zero,
+                            opacity: placeholderOpcaity,
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey[400],
-                              ),
+                                  color: Colors.grey[400],
+                                  shape: BoxShape.circle),
                             ),
+                          );
+                        }),
                         color: (Theme.of(context).brightness == Brightness.dark)
                             ? colorsDarkMode[
                                 random.nextInt(colorsDarkMode.length)]
@@ -162,14 +174,26 @@ class _CustomCardState extends State<CustomCategoryCard> {
           height: 55,
           child: CachedNetworkImage(
             imageUrl: widget.category["IconURL"],
-            placeholder: (BuildContext context, string) => Container(
-                  height: 65,
-                  width: 65,
+            fadeOutDuration: Duration.zero,
+            placeholder: ((BuildContext context, string) {
+              Timer(Duration(seconds: 1), () {
+                setState(() {
+                  placeholderOpcaity = 1;
+                });
+              });
+              return AnimatedOpacity(
+                duration: Duration.zero,
+                opacity: placeholderOpcaity,
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
                     color: Colors.grey[400],
+                    shape: BoxShape.circle,
                   ),
                 ),
+              );
+            }),
             color: (Theme.of(context).brightness == Brightness.dark)
                 ? colorsDarkMode[random.nextInt(colorsDarkMode.length)]
                 : colorsLightMode[random.nextInt(colorsLightMode.length)],

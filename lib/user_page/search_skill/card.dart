@@ -55,13 +55,12 @@ class CustomCard extends StatelessWidget {
                 height: 55,
                 child: CachedNetworkImage(
                   imageUrl: skill["IconURL"],
+                  fadeOutDuration: Duration.zero,
                   placeholder: (BuildContext context, string) => Container(
-                        width: 65,
-                        height: 65,
+                        width: double.infinity,
+                        height: double.infinity,
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey[400],
-                        ),
+                            color: Colors.grey[400], shape: BoxShape.circle),
                       ),
                   color: (Theme.of(context).brightness == Brightness.dark)
                       ? colorsDarkMode[random.nextInt(colorsDarkMode.length)]
