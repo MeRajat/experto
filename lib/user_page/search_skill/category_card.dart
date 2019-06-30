@@ -92,6 +92,7 @@ class _CustomCardState extends State<CustomCategoryCard> {
                         imageUrl: skill["IconURL"],
                         fadeOutDuration: Duration.zero,
                         placeholder: ((BuildContext context, string) {
+                          placeholderOpcaity = 0;
                           Timer(Duration(seconds: 1), () {
                             setState(() {
                               placeholderOpcaity = 1;
@@ -176,6 +177,7 @@ class _CustomCardState extends State<CustomCategoryCard> {
             imageUrl: widget.category["IconURL"],
             fadeOutDuration: Duration.zero,
             placeholder: ((BuildContext context, string) {
+              placeholderOpcaity = 0;
               Timer(Duration(seconds: 1), () {
                 setState(() {
                   placeholderOpcaity = 1;
