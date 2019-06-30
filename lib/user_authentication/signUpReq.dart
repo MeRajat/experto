@@ -147,7 +147,10 @@ class Authenticate {
             .signInWithEmailAndPassword(
                 email: details[0], password: details[1]);
         if(!userData.profileData.isEmailVerified)
+        {
+          userData.profileData.sendEmailVerification();
           throw("Verify");
+        }
         userData.detailsData =
             await userReference.document(userData.profileData.uid).get();
         updateConfig();

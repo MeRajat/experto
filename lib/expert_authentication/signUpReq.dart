@@ -196,7 +196,10 @@ class Authenticate {
             .signInWithEmailAndPassword(
                 email: details['email'], password: details['password']);
         if(!expertData.profileData.isEmailVerified)
+        {
+          expertData.profileData.sendEmailVerification();
           throw("Verify");
+        }
         expertData.detailsData =
             await expertReference.document(expertData.profileData.uid).get();
         updateConfig();
