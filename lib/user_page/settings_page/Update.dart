@@ -144,7 +144,6 @@ class Update{
     return false;
   }
 
-
   Future<Data> updateProfilePic(Data user) async {
     StorageUploadTask task,task2;
     UserUpdateInfo userUpdateInfo=new UserUpdateInfo();
@@ -155,7 +154,7 @@ class Update{
         .ref()
         .child("/Profile Photos/thumbs/" + user.profileData.uid);
     File file = File(path);
-    Im.Image image = Im.decodeImage(file.readAsBytesSync());
+    Im.Image image=Im.decodeImage(file.readAsBytesSync());
     if(image.height>2800&&image.width>2800)
       image=Im.copyResizeCropSquare(image, 2800);
     else if(image.height>2800||image.height>image.width)

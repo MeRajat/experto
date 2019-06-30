@@ -1,3 +1,4 @@
+import 'package:experto/expert_page/settings_page/profilePic.dart';
 import 'package:experto/global_data.dart';
 import "package:flutter/material.dart";
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,9 +16,23 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(left: 10, top: 80),
-            child: Hero(
+            child:
+            FlatButton(
+              onPressed:(){
+                Navigator.of(context, rootNavigator: false).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ProfilePicUpdate();
+                    },
+                  ),
+                );
+              },
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              padding: EdgeInsets.all(0.0),
+            child:Hero(
               tag: "profilePic",
-              child: expert.profileData.photoUrl == null
+              child: expert.detailsData["profilePicThumb"] == null
                   ? Icon(
                       Icons.person,
                       size: 110,
@@ -32,7 +47,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                                   image: imageProvider, fit: BoxFit.cover),
                             ),
                           ),
-                      imageUrl: expert.profileData.photoUrl,
+                      imageUrl: expert.detailsData["profilePicThumb"],
                       height: 110,
                       width: 110,
                       placeholder: (context, a) => Center(
@@ -40,7 +55,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                             child: CircularProgressIndicator(),
                           ),
                     ),
-            ),
+            ),),
           ),
           Padding(
             padding: EdgeInsets.only(left: 10, top: 80),
