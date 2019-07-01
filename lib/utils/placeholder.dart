@@ -29,7 +29,9 @@ class _CustomPlaceholderState extends State<CustomPlaceholder>
   @override
   Widget build(BuildContext context) {
     Timer(Duration(seconds: 1), () {
-      animationController.forward();
+      try {
+        animationController.forward();
+      } catch (e) {}
     });
     return FadeTransition(
       opacity: animation,

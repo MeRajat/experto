@@ -28,6 +28,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   }
 
   Future<void> updateData() async {
+    Data newExpert;
     setState(() {
       uploading = true;
       showAuthSnackBar(
@@ -36,8 +37,16 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    expert = await update.updateProfilePic(expert);
-    syncDocument.updateStatus(expert);
+    newExpert = await update.updateProfilePic(expert);
+    if(newExpert == null){
+      setState(() {
+        uploading = false;
+        Scaffold.of(context).removeCurrentSnackBar();
+      });
+      return expert;
+    }
+    expert = newExpert;
+    syncDocument.updateStatus(newExpert);
     setState(() {
       uploading = false;
       showAuthSnackBar(
@@ -74,6 +83,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                     ? Icon(
                         Icons.person,
                         size: 110,
+                        color:Colors.white,
                       )
                     : CachedNetworkImage(
                         imageBuilder: (context, imageProvider) => Container(

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:experto/utils/authentication_page_utils.dart';
 import 'package:experto/utils/bloc/is_loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -86,19 +87,23 @@ class Update {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: expert.profileData.email, password: details['password']);
         await expert.profileData.updatePassword(newPass);
-        expert.profileData=await FirebaseAuth.instance.currentUser();
+        expert.profileData = await FirebaseAuth.instance.currentUser();
         return true;
       } catch (e) {
-        print(e);
-        _ackAlert(
-            context,
-            "SignUp Failed!",
-            e == "Passwords don't match!" ||
-                    e == "New Password cannot be same as old!"
-                ? e
-                : "Old password is incorrect!");
+        showAuthSnackBar(
+          context: context,
+          title: e == "Passwords don't match!" ||
+                  e == "New Password cannot be same as old!"
+              ? e
+              : "Old password is incorrect!",
+          leading:
+              Icon(Icons.error, color: Theme.of(context).errorColor, size: 23),
+          persistant: false,
+        );
         return false;
       }
+    } else {
+      Scaffold.of(context).removeCurrentSnackBar();
     }
     return false;
   }
@@ -118,20 +123,26 @@ class Update {
           throw ("New Email cannot be same as old!");
         }
         await expert.profileData.updateEmail(details['emailID']);
-        expert.profileData=await FirebaseAuth.instance.currentUser();
-        await expert.detailsData.reference.updateData({'emailID': details['emailID']});
-        expert.detailsData =await expert.detailsData.reference.get();
+        expert.profileData = await FirebaseAuth.instance.currentUser();
+        await expert.detailsData.reference
+            .updateData({'emailID': details['emailID']});
+        expert.detailsData = await expert.detailsData.reference.get();
+        expert.profileData.sendEmailVerification();
         return expert;
       } catch (e) {
-        print(e);
-        _ackAlert(
-            context,
-            "SignUp Failed!",
-            e == "New Email cannot be same as old!"
-                ? e
-                : "Old password is incorrect!");
+        showAuthSnackBar(
+          context: context,
+          title: e == "New Email cannot be same as old!"
+              ? e
+              : "Old password is incorrect!",
+          leading:
+              Icon(Icons.error, color: Theme.of(context).errorColor, size: 23),
+          persistant: false,
+        );
         return null;
       }
+    } else {
+      Scaffold.of(context).removeCurrentSnackBar();
     }
     return null;
   }
@@ -147,27 +158,42 @@ class Update {
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: expert.profileData.email, password: details['password']);
-        print("Before update: " + field + ": " + expert.detailsData.data[field]);
+        print(
+            "Before update: " + field + ": " + expert.detailsData.data[field]);
         if (details[field].compareTo(expert.detailsData.data[field]) == 0) {
           throw ("New " + field + "cannot be same as old!");
         }
         Firestore.instance.runTransaction((Transaction t) async {
-          await expert.detailsData.reference.updateData({field: details[field]});
+          await expert.detailsData.reference
+              .updateData({field: details[field]});
         });
-        expert.detailsData =await expert.detailsData.reference.get();
-        expert.profileData.sendEmailVerification();
+        expert.detailsData = await expert.detailsData.reference.get();
         return true;
       } on PlatformException catch (e) {
         if (e.code == "ERROR_WRONG_PASSWORD") {
-          _ackAlert(context, "Update Failed", "Incorrect Password entered");
+          showAuthSnackBar(
+            context: context,
+            title: "Incorrect passowrd entered",
+            leading: Icon(Icons.error,
+                color: Theme.of(context).errorColor, size: 23),
+            persistant: false,
+          );
           return false;
         }
         throw e;
       } catch (e) {
         print(e);
-        _ackAlert(context, "Update Failed!", e);
+        showAuthSnackBar(
+          context: context,
+          title: e,
+          leading:
+              Icon(Icons.error, color: Theme.of(context).errorColor, size: 23),
+          persistant: false,
+        );
         return false;
       }
+    }else{
+      Scaffold.of(context).removeCurrentSnackBar();
     }
     return false;
   }
@@ -188,49 +214,61 @@ class Update {
         await expertReference.document(expert.detailsData.documentID).delete();
         return true;
       } catch (e) {
-        print(e);
-        _ackAlert(
-            context,
-            "SignUp Failed!",
-            e == "New Email cannot be same as old!"
-                ? e
-                : "Old password is incorrect!");
+        showAuthSnackBar(
+          context: context,
+          title: e == "New Email cannot be same as old!"
+              ? e
+              : "Old password is incorrect!",
+          leading:
+              Icon(Icons.error, color: Theme.of(context).errorColor, size: 23),
+          persistant: false,
+        );
         return false;
       }
+    }else{
+      Scaffold.of(context).removeCurrentSnackBar();
     }
     return false;
   }
 
-
   Future<Data> updateProfilePic(Data expert) async {
-    StorageUploadTask task,task2;
-    UserUpdateInfo expertUpdateInfo=new UserUpdateInfo();
-    String path = await FilePicker.getFilePath(type: FileType.IMAGE);
-    StorageReference storageReference = FirebaseStorage.instance
-        .ref()
-        .child("/Expert Profile Photos/" + expert.profileData.uid),storageReference2 = FirebaseStorage.instance
-        .ref()
-        .child("/Expert Profile Photos/thumbs/" + expert.profileData.uid);
-    print(storageReference.getPath().then((x) => print(x)));
-    File file = File(path);
-    Im.Image image = Im.decodeImage(file.readAsBytesSync());
-    if(image.height>2800&&image.width>2800)
-      image=Im.copyResizeCropSquare(image, 2800);
-    else if(image.height>2800||image.height>image.width)
-      image=Im.copyResizeCropSquare(image, image.width);
-    else if(image.width>2800||image.width>image.height)
-      image=Im.copyResizeCropSquare(image, image.height);
-    Im.Image thumbnail = Im.copyResize(image, width: 500);
-    task2=storageReference2.putData( Im.encodeJpg(thumbnail,quality: 75));
-    task=storageReference.putData(Im.encodeJpg(image,quality: 95));
-    await task.onComplete;
-    await task2.onComplete;
-    String url = await storageReference.getDownloadURL(),url2=await storageReference2.getDownloadURL();
-    expertUpdateInfo.photoUrl=url;
-    await expert.profileData.updateProfile(expertUpdateInfo);
-    expert.profileData=await FirebaseAuth.instance.currentUser();
-    await expertReference.document(expert.detailsData.documentID).updateData({'profilePic': url,'profilePicThumb': url2});
-    expert.detailsData = await expertReference.document(expert.detailsData.documentID).get();
-    return expert;
+    try {
+      StorageUploadTask task, task2;
+      UserUpdateInfo expertUpdateInfo = new UserUpdateInfo();
+      String path = await FilePicker.getFilePath(type: FileType.IMAGE);
+      StorageReference storageReference = FirebaseStorage.instance
+              .ref()
+              .child("/Expert Profile Photos/" + expert.profileData.uid),
+          storageReference2 = FirebaseStorage.instance
+              .ref()
+              .child("/Expert Profile Photos/thumbs/" + expert.profileData.uid);
+      print(storageReference.getPath().then((x) => print(x)));
+      File file = File(path);
+      Im.Image image = Im.decodeImage(file.readAsBytesSync());
+      if (image.height > 2800 && image.width > 2800)
+        image = Im.copyResizeCropSquare(image, 2800);
+      else if (image.height > 2800 || image.height > image.width)
+        image = Im.copyResizeCropSquare(image, image.width);
+      else if (image.width > 2800 || image.width > image.height)
+        image = Im.copyResizeCropSquare(image, image.height);
+      Im.Image thumbnail = Im.copyResize(image, width: 500);
+      task2 = storageReference2.putData(Im.encodeJpg(thumbnail, quality: 75));
+      task = storageReference.putData(Im.encodeJpg(image, quality: 95));
+      await task.onComplete;
+      await task2.onComplete;
+      String url = await storageReference.getDownloadURL(),
+          url2 = await storageReference2.getDownloadURL();
+      expertUpdateInfo.photoUrl = url;
+      await expert.profileData.updateProfile(expertUpdateInfo);
+      expert.profileData = await FirebaseAuth.instance.currentUser();
+      await expertReference
+          .document(expert.detailsData.documentID)
+          .updateData({'profilePic': url, 'profilePicThumb': url2});
+      expert.detailsData =
+          await expertReference.document(expert.detailsData.documentID).get();
+      return expert;
+    } catch (e) {
+      return null;
+    }
   }
 }

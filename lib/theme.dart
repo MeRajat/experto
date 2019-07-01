@@ -9,6 +9,7 @@ class Theme {
       scaffoldBackgroundColor: Color.fromRGBO(243, 242, 244, 1),
       bottomAppBarColor: Colors.transparent,
       errorColor: Colors.red,
+      buttonColor: Colors.blue,
       brightness: Brightness.light,
       fontFamily: 'Ubuntu',
       primaryTextTheme: TextTheme(
@@ -109,7 +110,9 @@ class Theme {
       brightness: Brightness.dark,
       canvasColor: Color.fromRGBO(50, 50, 50, 1),
       scaffoldBackgroundColor: Color.fromRGBO(28, 28, 28, 1),
+      buttonColor: Colors.blue[800],
       errorColor: Colors.red[800],
+      bottomAppBarColor: Color(0xFFfcfffe),
       dialogTheme: DialogTheme(
         backgroundColor: Color.fromRGBO(45, 45, 45, 1),
         shape: RoundedRectangleBorder(
@@ -141,7 +144,6 @@ class Theme {
         ),
       ),
       fontFamily: 'Ubuntu',
-      bottomAppBarColor: Color(0xFFfcfffe),
       buttonTheme: ButtonThemeData(
         height: 45,
         disabledColor: Color.fromRGBO(28, 28, 28, 1),

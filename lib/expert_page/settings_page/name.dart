@@ -24,6 +24,7 @@ class _EmailState extends State<Email> {
   }
 
   Future<void> updateData() async {
+    Data newExpert;
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -31,18 +32,20 @@ class _EmailState extends State<Email> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    expert = await update.updateEmail(expert, key, context);
-    if (expert != null) sync.syncDocument.updateStatus(expert);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: expert != null ? 'Updated' : "Error",
-        leading: Icon(expert != null ? Icons.done : Icons.error,
-            color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if (expert != null) Navigator.of(context).pop();
+    newExpert = await update.updateEmail(expert, key, context);
+    if (expert != null) {
+      expert = newExpert;
+      sync.syncDocument.updateStatus(newExpert);
+      setState(() {
+        showAuthSnackBar(
+          context: context,
+          title: 'Updated',
+          leading: Icon(Icons.done, color: Colors.green, size: 23),
+          persistant: false,
+        );
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -98,9 +101,9 @@ class _EmailState extends State<Email> {
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
+                  // color: Theme.of(context).brightness == Brightness.dark
+                  //     ? Colors.blue[800]
+                  //     : Colors.blue,
                   child: Text("Submit"),
                 ),
               )
@@ -137,16 +140,17 @@ class _PasswordState extends State<Password> {
     });
     bool stat = await update.updatePassword(expert, key, context);
     sync.syncDocument.updateStatus(expert);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: stat ? 'Updated' : "Error",
-        leading: Icon(stat ? Icons.done : Icons.error,
-            color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if (stat) Navigator.of(context).pop();
+    if (stat) {
+      setState(() {
+        showAuthSnackBar(
+          context: context,
+          title: 'Updated',
+          leading: Icon(Icons.done, color: Colors.green, size: 23),
+          persistant: false,
+        );
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -208,9 +212,9 @@ class _PasswordState extends State<Password> {
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
+                  // color: Theme.of(context).brightness == Brightness.dark
+                  //     ? Colors.blue[800]
+                  //     : Colors.blue,
                   child: Text("Submit"),
                 ),
               )
@@ -247,16 +251,17 @@ class _SkypeState extends State<Skype> {
     });
     bool stat = await update.updateField(expert, "SkypeUser", key, context);
     sync.syncDocument.updateStatus(expert);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: stat ? 'Updated' : "Error",
-        leading: Icon(stat ? Icons.done : Icons.error,
-            color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if (stat) Navigator.of(context).pop();
+    if (stat) {
+      setState(() {
+        showAuthSnackBar(
+          context: context,
+          title: 'Updated',
+          leading: Icon(Icons.done, color: Colors.green, size: 23),
+          persistant: false,
+        );
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -303,12 +308,13 @@ class _SkypeState extends State<Skype> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(top:10,left: 20, right: 20, bottom: 40),
+                padding:
+                    EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
+                  // color: Theme.of(context).brightness == Brightness.dark
+                  //     ? Colors.blue[800]
+                  //     : Colors.blue,
                   child: Text("Submit"),
                 ),
               )
@@ -345,16 +351,17 @@ class _CityState extends State<City> {
     });
     bool stat = await update.updateField(expert, "City", key, context);
     sync.syncDocument.updateStatus(expert);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: stat ? 'Updated' : "Error",
-        leading: Icon(stat ? Icons.done : Icons.error,
-            color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if (stat) Navigator.of(context).pop();
+    if (stat) {
+      setState(() {
+        showAuthSnackBar(
+          context: context,
+          title: 'Updated',
+          leading: Icon(Icons.done, color: Colors.green, size: 23),
+          persistant: false,
+        );
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -379,7 +386,7 @@ class _CityState extends State<City> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                            (value) {
+                        (value) {
                           update.setPass(value);
                         },
                         isPassword: true,
@@ -390,7 +397,7 @@ class _CityState extends State<City> {
                     Padding(
                       child: InputField(
                         "Enter new City",
-                            (value) {
+                        (value) {
                           update.setCity(value);
                         },
                       ),
@@ -401,12 +408,13 @@ class _CityState extends State<City> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(top:10,left: 20, right: 20, bottom: 40),
+                padding:
+                    EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
+                  // color: Theme.of(context).brightness == Brightness.dark
+                  //     ? Colors.blue[800]
+                  //     : Colors.blue,
                   child: Text("Submit"),
                 ),
               )
@@ -443,16 +451,17 @@ class _DescriptionState extends State<Description> {
     });
     bool stat = await update.updateField(expert, "Description", key, context);
     sync.syncDocument.updateStatus(expert);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: stat ? 'Updated' : "Error",
-        leading: Icon(stat ? Icons.done : Icons.error,
-            color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if (stat) Navigator.of(context).pop();
+    if (stat) {
+      setState(() {
+        showAuthSnackBar(
+          context: context,
+          title: 'Updated',
+          leading: Icon(Icons.done, color: Colors.green, size: 23),
+          persistant: false,
+        );
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -469,7 +478,9 @@ class _DescriptionState extends State<Description> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(child: AppbarContainer("Description"), tag: "settingDescription"),
+              Hero(
+                  child: AppbarContainer("Description"),
+                  tag: "settingDescription"),
               Form(
                 key: key,
                 child: Column(
@@ -477,7 +488,7 @@ class _DescriptionState extends State<Description> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                            (value) {
+                        (value) {
                           update.setPass(value);
                         },
                         isPassword: true,
@@ -505,12 +516,13 @@ class _DescriptionState extends State<Description> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(top:10,left: 20, right: 20, bottom: 40),
+                padding:
+                    EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
+                  // color: Theme.of(context).brightness == Brightness.dark
+                  //     ? Colors.blue[800]
+                  //     : Colors.blue,
                   child: Text("Submit"),
                 ),
               )
@@ -545,18 +557,20 @@ class _WorkExperienceState extends State<WorkExperience> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool stat = await update.updateField(expert, "Work Experience", key, context);
+    bool stat =
+        await update.updateField(expert, "Work Experience", key, context);
     sync.syncDocument.updateStatus(expert);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: stat ? 'Updated' : "Error",
-        leading: Icon(stat ? Icons.done : Icons.error,
-            color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if (stat) Navigator.of(context).pop();
+    if (stat) {
+      setState(() {
+        showAuthSnackBar(
+          context: context,
+          title: 'Updated',
+          leading: Icon(Icons.done, color: Colors.green, size: 23),
+          persistant: false,
+        );
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -573,7 +587,9 @@ class _WorkExperienceState extends State<WorkExperience> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(child: AppbarContainer("Work Experience"), tag: "settingWorkExperience"),
+              Hero(
+                  child: AppbarContainer("Work Experience"),
+                  tag: "settingWorkExperience"),
               Form(
                 key: key,
                 child: Column(
@@ -581,7 +597,7 @@ class _WorkExperienceState extends State<WorkExperience> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                            (value) {
+                        (value) {
                           update.setPass(value);
                         },
                         isPassword: true,
@@ -598,7 +614,7 @@ class _WorkExperienceState extends State<WorkExperience> {
                       ),*/
                       child: InputField(
                         "Enter Work Experience",
-                            (value) {
+                        (value) {
                           update.setWorkExperience(value);
                         },
                         inputType: TextInputType.multiline,
@@ -615,12 +631,13 @@ class _WorkExperienceState extends State<WorkExperience> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(top:10,left: 20, right: 20, bottom: 40),
+                padding:
+                    EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
+                  // color: Theme.of(context).brightness == Brightness.dark
+                  //     ? Colors.blue[800]
+                  //     : Colors.blue,
                   child: Text("Submit"),
                 ),
               )
@@ -656,16 +673,17 @@ class _DeleteAccountState extends State<DeleteAccount> {
       );
     });
     bool status = await update.deleteAccount(expert, key, context);
-    setState(() {
+    if (status) {
+      setState(() {
       showAuthSnackBar(
-        context: context,
-        title: status ? 'Updated' : "Error",
-        leading: Icon(status ? Icons.done : Icons.error,
-            color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if (status) Navigator.of(context).pop();
+          context: context,
+          title: 'Updated',
+          leading: Icon(Icons.done, color: Colors.green, size: 23),
+          persistant: false,
+        );
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -723,9 +741,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.red[800]
-                      : Colors.red,
+                  color: Theme.of(context).errorColor,
                   child: Text("Delete Account"),
                 ),
               )

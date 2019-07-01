@@ -153,12 +153,16 @@ void showAuthSnackBar(
               leading,
               Padding(
                 padding: EdgeInsets.only(left: 20),
-                child: Text(
-                  title,
-                  style: Theme.of(context)
-                      .primaryTextTheme
-                      .body2
-                      .copyWith(color: Colors.white, fontSize: 15),
+                child:  Container(
+                  width:MediaQuery.of(context).size.width-130,
+                  child: Text(
+                    title,
+                    softWrap: true,
+                    style: Theme.of(context)
+                        .primaryTextTheme
+                        .body2
+                        .copyWith(color: Colors.white, fontSize: 15),
+                  ),
                 ),
               ),
             ],

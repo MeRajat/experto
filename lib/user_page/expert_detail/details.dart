@@ -63,14 +63,12 @@ class _DetailState extends State<Detail> {
         delegate: SliverChildListDelegate([
           Card(
             color: (checkingAvail == true)
-                ? Colors.blue
+                ? Theme.of(context).buttonColor
                 : (available == true)
                     ? Theme.of(context).brightness == Brightness.dark
                         ? Colors.green[800]
                         : Colors.green
-                    : Theme.of(context).brightness == Brightness.dark
-                        ? Colors.red[800]
-                        : Colors.red,
+                    : Theme.of(context).errorColor,
             child: Padding(
               padding:
                   EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),

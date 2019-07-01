@@ -169,6 +169,7 @@ class Authenticate {
       details.clear();
       expertData.detailsData = null;
       isLoadingSignupExpert.updateStatus(false);
+      
       _ackAlert(context, e == "Not Active" ? "In Review, please verify your email" : "SignUp failed",
           e == "Not Active" ? e : e.toString().split(',')[1]);
     }

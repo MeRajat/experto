@@ -6,7 +6,7 @@ import 'Update.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart';
 import 'package:experto/global_data.dart';
 
-final Update update=new Update();
+final Update update = new Update();
 
 class Name extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _NameState extends State<Name> {
     super.didChangeDependencies();
   }
 
-  Future<void > updateData()async{
+  Future<void> updateData() async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -31,7 +31,7 @@ class _NameState extends State<Name> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    user= await update.updateName(context,user,key);
+    user = await update.updateName(context, user, key);
     syncDocument.updateStatus(user);
     setState(() {
       showAuthSnackBar(
@@ -42,7 +42,6 @@ class _NameState extends State<Name> {
       );
     });
     Navigator.of(context).pop();
-
   }
 
   @override
@@ -59,16 +58,15 @@ class _NameState extends State<Name> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(
-                child:AppbarContainer("Name"),
-                tag:"settingName"
-              ),
+              Hero(child: AppbarContainer("Name"), tag: "settingName"),
               Form(
                 key: key,
                 child: Padding(
                   child: InputField(
                     "Enter new name",
-                    (value) {update.getName(value);},
+                    (value) {
+                      update.getName(value);
+                    },
                   ),
                   padding: EdgeInsets.only(
                     left: 20,
@@ -81,11 +79,17 @@ class _NameState extends State<Name> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: () {updateData();},
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
-                  child: Text("Submit",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.white)),
+                  onPressed: () {
+                    updateData();
+                  },
+                  // color: Theme.of(context).brightness == Brightness.dark
+                  //     ? Colors.blue[800]
+                  //     : Colors.blue,
+                  child: Text("Submit",
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .body2
+                          .copyWith(color: Colors.white)),
                 ),
               )
             ],
@@ -111,7 +115,8 @@ class _EmailState extends State<Email> {
     super.didChangeDependencies();
   }
 
-  Future<void > updateData()async{
+  Future<void> updateData() async {
+    Data newUser;
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -119,19 +124,24 @@ class _EmailState extends State<Email> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    user=await update.updateEmail(user,key,context);
-    if(user!=null)
-    syncDocument.updateStatus(user);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: user!=null?'Updated':"Error",
-        leading: Icon(user!=null?Icons.done:Icons.error, color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if(user!=null)
+    newUser = await update.updateEmail(user, key, context);
+    if (newUser != null) {
+      user = newUser;
+      syncDocument.updateStatus(newUser);
+      setState(() {
+        showAuthSnackBar(
+          context: context,
+          title: 'Updated',
+          leading: Icon(
+            Icons.done,
+            color: Colors.green,
+            size: 23,
+          ),
+          persistant: false,
+        );
+      });
       Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -148,10 +158,7 @@ class _EmailState extends State<Email> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(
-                child:AppbarContainer("Email"),
-                tag:"settingEmail"
-              ),
+              Hero(child: AppbarContainer("Email"), tag: "settingEmail"),
               Form(
                 key: key,
                 child: Column(
@@ -159,7 +166,9 @@ class _EmailState extends State<Email> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                        (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -171,7 +180,9 @@ class _EmailState extends State<Email> {
                     Padding(
                       child: InputField(
                         "Enter new email",
-                        (value) {update.getEmail(value);},
+                        (value) {
+                          update.getEmail(value);
+                        },
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -186,10 +197,14 @@ class _EmailState extends State<Email> {
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: updateData,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
-                  child: Text("Submit",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.white)),
+                  // color: Theme.of(context).brightness == Brightness.dark
+                  //     ? Colors.blue[800]
+                  //     : Colors.blue,
+                  child: Text("Submit",
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .body2
+                          .copyWith(color: Colors.white)),
                 ),
               )
             ],
@@ -215,7 +230,7 @@ class _PassowrdState extends State<Passowrd> {
     super.didChangeDependencies();
   }
 
-  Future<void > updateData()async{
+  Future<void> updateData() async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -223,18 +238,23 @@ class _PassowrdState extends State<Passowrd> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool stat=await update.updatePassword(user,key,context);
+    bool stat = await update.updatePassword(user, key, context);
     syncDocument.updateStatus(user);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: stat?'Updated':"Error",
-        leading: Icon(stat?Icons.done:Icons.error, color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if(stat)
-    Navigator.of(context).pop();
+    if (stat == true) {
+      setState(() {
+        showAuthSnackBar(
+          context: context,
+          title: 'Updated',
+          leading: Icon(
+            Icons.done,
+            color: Colors.green,
+            size: 23,
+          ),
+          persistant: false,
+        );
+      });
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -251,10 +271,7 @@ class _PassowrdState extends State<Passowrd> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(
-                child:AppbarContainer("Password"),
-                tag:"settingPassword"
-              ),
+              Hero(child: AppbarContainer("Password"), tag: "settingPassword"),
               Form(
                 key: key,
                 child: Column(
@@ -262,7 +279,9 @@ class _PassowrdState extends State<Passowrd> {
                     Padding(
                       child: InputField(
                         "Enter previouw password",
-                        (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -271,7 +290,9 @@ class _PassowrdState extends State<Passowrd> {
                     Padding(
                       child: InputField(
                         "Enter new passowrd",
-                        (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -280,7 +301,9 @@ class _PassowrdState extends State<Passowrd> {
                     Padding(
                       child: InputField(
                         "Confirm passowrd",
-                        (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -296,7 +319,11 @@ class _PassowrdState extends State<Passowrd> {
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue[800]
                       : Colors.blue,
-                  child: Text("Submit",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.white)),
+                  child: Text("Submit",
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .body2
+                          .copyWith(color: Colors.white)),
                 ),
               )
             ],
@@ -322,7 +349,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
     super.didChangeDependencies();
   }
 
-  Future<void > updateData()async{
+  Future<void> updateData() async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -330,17 +357,22 @@ class _DeleteAccountState extends State<DeleteAccount> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    bool status=await update.deleteAccount(user,key,context);
-    setState(() {
-      showAuthSnackBar(
-        context: context,
-        title: status?'Updated':"Error",
-        leading: Icon(status?Icons.done:Icons.error, color: Colors.green, size: 23),
-        persistant: false,
-      );
-    });
-    if(status)
+    bool status = await update.deleteAccount(user, key, context);
+    if (status) {
+      setState(() {
+        showAuthSnackBar(
+          context: context,
+          title: 'Done',
+          leading: Icon(
+            Icons.done,
+            color: Colors.green,
+            size: 23,
+          ),
+          persistant: false,
+        );
+      });
       Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -358,9 +390,8 @@ class _DeleteAccountState extends State<DeleteAccount> {
           return ListView(
             children: <Widget>[
               Hero(
-                child:AppbarContainer("Delete Account"),
-                tag:"settingDelete Account"
-              ),
+                  child: AppbarContainer("Delete Account"),
+                  tag: "settingDelete Account"),
               Form(
                 key: key,
                 child: Column(
@@ -368,7 +399,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
                     Padding(
                       child: InputField(
                         "Enter password for confirmation",
-                        (value) {update.getPass(value);},
+                        (value) {
+                          update.getPass(value);
+                        },
                         isPassword: true,
                       ),
                       padding: EdgeInsets.only(
@@ -380,7 +413,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
                     Padding(
                       child: InputField(
                         "Enter email for confirmation",
-                        (value) {update.getEmail(value);},
+                        (value) {
+                          update.getEmail(value);
+                        },
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -398,7 +433,11 @@ class _DeleteAccountState extends State<DeleteAccount> {
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.red[800]
                       : Colors.red,
-                  child: Text("Delete Account",style:Theme.of(context).primaryTextTheme.body2.copyWith(color:Colors.white)),
+                  child: Text("Delete Account",
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .body2
+                          .copyWith(color: Colors.white)),
                 ),
               )
             ],

@@ -28,7 +28,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
   }
 
   Future<void> updateData() async {
-    
+    Data newUser;
     setState(() {
       uploading = true;
       showAuthSnackBar(
@@ -37,8 +37,16 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
-    user = await update.updateProfilePic(user);
-    sync.syncDocument.updateStatus(user);
+    newUser = await update.updateProfilePic(user);
+    if (newUser == null) {
+      setState(() {
+        uploading = false;
+        Scaffold.of(context).removeCurrentSnackBar();
+      });
+      return;
+    }
+    user = newUser;
+    sync.syncDocument.updateStatus(newUser);
     setState(() {
       uploading = false;
       showAuthSnackBar(
@@ -71,35 +79,36 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
             ? CircularProgressIndicator()
             : Hero(
                 tag: "profilePic",
-                child: user.profileData.photoUrl== null
+                child: user.profileData.photoUrl == null
                     ? Icon(
                         Icons.person,
-                        size: 350,
+                        size: 110,
+                        color:Colors.white,
                       )
                     : CachedNetworkImage(
-                  imageBuilder: (context, imageProvider) => Container(
-                    width: 350.0,
-                    height: 350.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover),
-                    ),
-                  ),
-                  imageUrl: user.profileData.photoUrl,
-                  height: 350,
-                  width: 350,
-                  fadeInDuration: Duration(milliseconds: 1),
-                  fadeOutDuration: Duration(milliseconds: 1),
-                  placeholder: (context, a) => CachedNetworkImage(
-                    imageUrl: user.detailsData["profilePicThumb"],
-                    height: 350,
-                    width: 350,
-                    placeholder: (context, a) => Center(
-                      widthFactor: 2.1,
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ),
+                        imageBuilder: (context, imageProvider) => Container(
+                              width: 350.0,
+                              height: 350.0,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover),
+                              ),
+                            ),
+                        imageUrl: user.profileData.photoUrl,
+                        height: 350,
+                        width: 350,
+                        fadeInDuration: Duration(milliseconds: 1),
+                        fadeOutDuration: Duration(milliseconds: 1),
+                        placeholder: (context, a) => CachedNetworkImage(
+                              imageUrl: user.detailsData["profilePicThumb"],
+                              height: 350,
+                              width: 350,
+                              placeholder: (context, a) => Center(
+                                    widthFactor: 2.1,
+                                    child: CircularProgressIndicator(),
+                                  ),
+                            ),
+                      ),
               ),
       ),
     );
