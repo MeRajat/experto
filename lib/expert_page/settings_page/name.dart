@@ -23,7 +23,7 @@ class _EmailState extends State<Email> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     Data newExpert;
     setState(() {
       showAuthSnackBar(
@@ -33,7 +33,7 @@ class _EmailState extends State<Email> {
       );
     });
     newExpert = await update.updateEmail(expert, key, context);
-    if (expert != null) {
+    if (newExpert != null) {
       expert = newExpert;
       sync.syncDocument.updateStatus(newExpert);
       setState(() {
@@ -101,13 +101,16 @@ class _EmailState extends State<Email> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
-              )
+              ),
+              Padding(padding: EdgeInsets.all(60)),
             ],
           );
         },
@@ -131,7 +134,7 @@ class _PasswordState extends State<Password> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -212,13 +215,18 @@ class _PasswordState extends State<Password> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.all(60),
+              ),
             ],
           );
         },
@@ -242,7 +250,7 @@ class _SkypeState extends State<Skype> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -312,12 +320,17 @@ class _SkypeState extends State<Skype> {
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(60),
               )
             ],
           );
@@ -342,7 +355,7 @@ class _CityState extends State<City> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -412,12 +425,17 @@ class _CityState extends State<City> {
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(60),
               )
             ],
           );
@@ -442,7 +460,7 @@ class _DescriptionState extends State<Description> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -520,13 +538,18 @@ class _DescriptionState extends State<Description> {
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.all(60),
+              ),
             ],
           );
         },
@@ -550,7 +573,7 @@ class _WorkExperienceState extends State<WorkExperience> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -635,13 +658,18 @@ class _WorkExperienceState extends State<WorkExperience> {
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.all(60),
+              ),
             ],
           );
         },
@@ -665,7 +693,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -676,7 +704,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
     bool status = await update.deleteAccount(expert, key, context);
     if (status) {
       setState(() {
-      showAuthSnackBar(
+        showAuthSnackBar(
           context: context,
           title: 'Updated',
           leading: Icon(Icons.done, color: Colors.green, size: 23),
@@ -741,11 +769,16 @@ class _DeleteAccountState extends State<DeleteAccount> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   color: Theme.of(context).errorColor,
                   child: Text("Delete Account"),
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.all(60),
+              ),
             ],
           );
         },

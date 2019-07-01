@@ -23,7 +23,7 @@ class _NameState extends State<Name> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -80,7 +80,7 @@ class _NameState extends State<Name> {
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
                   onPressed: () {
-                    updateData();
+                    updateData(context);
                   },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
@@ -91,6 +91,9 @@ class _NameState extends State<Name> {
                           .body2
                           .copyWith(color: Colors.white)),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(60),
               )
             ],
           );
@@ -115,7 +118,7 @@ class _EmailState extends State<Email> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     Data newUser;
     setState(() {
       showAuthSnackBar(
@@ -196,7 +199,9 @@ class _EmailState extends State<Email> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
@@ -206,7 +211,8 @@ class _EmailState extends State<Email> {
                           .body2
                           .copyWith(color: Colors.white)),
                 ),
-              )
+              ),
+              Padding(padding: EdgeInsets.all(60))
             ],
           );
         },
@@ -230,7 +236,7 @@ class _PassowrdState extends State<Passowrd> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -315,7 +321,9 @@ class _PassowrdState extends State<Passowrd> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.blue[800]
                       : Colors.blue,
@@ -325,7 +333,8 @@ class _PassowrdState extends State<Passowrd> {
                           .body2
                           .copyWith(color: Colors.white)),
                 ),
-              )
+              ),
+              Padding(padding: EdgeInsets.all(60)),
             ],
           );
         },
@@ -349,7 +358,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -429,7 +438,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.red[800]
                       : Colors.red,
@@ -439,6 +450,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
                           .body2
                           .copyWith(color: Colors.white)),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(60),
               )
             ],
           );
