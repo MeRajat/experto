@@ -1,11 +1,9 @@
 import 'package:experto/user_page/settings_page/profilePic.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
-import "package:firebase_auth/firebase_auth.dart";
 
-import 'package:experto/home_page/home_page.dart';
 import 'package:experto/user_page/settings_page/name.dart';
 import "package:flutter/material.dart";
-import "package:shared_preferences/shared_preferences.dart";
+
 
 class SettingsTiles extends StatelessWidget {
   final List<List> tiles = [
@@ -17,31 +15,7 @@ class SettingsTiles extends StatelessWidget {
     [Icons.exit_to_app, "Logout",null],
   ];
 
-  void logOut(BuildContext context) async {
-
-      showAuthSnackBar(
-        context: context,
-        title: "Logging Out...",
-        leading: CircularProgressIndicator(),
-      );
-    
-    final pref = await SharedPreferences.getInstance();
-    await pref.setString("account_type", null);
-
-    await Future.delayed(Duration(seconds: 2));
-    try {
-      await FirebaseAuth.instance.signOut();
-      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (buildContext) => HomePage()),
-          ModalRoute.withName(':'));
-    } catch (e) {
-      showAuthSnackBar(
-        context: context,
-        title: "Error...",
-        leading: Icon(Icons.error, size: 23, color: Colors.green),
-      );
-    }
-  }
+  
 
   void navigateToSetting(BuildContext context, Widget page) {
     Navigator.of(context, rootNavigator: false).push(

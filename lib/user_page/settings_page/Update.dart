@@ -125,7 +125,6 @@ class Update {
         await user.profileData.updateEmail(details[1]);
         user.profileData = await FirebaseAuth.instance.currentUser();
         user.profileData.sendEmailVerification();
-
 //        await userReference.document(user.detailsData.documentID).updateData({'emailID':details[1]});
 //        user.detailsData=await userReference.document(user.detailsData.documentID).get();
         return user;
@@ -133,9 +132,7 @@ class Update {
         details.clear();
         showAuthSnackBar(
           context: context,
-          title: (e == "New Email cannot be same as old!")
-              ? e
-              : "Old password is incorrect!",
+          title: e.toString().split(",")[1],
           leading: Icon(
             Icons.error,
             color: Theme.of(context).errorColor,

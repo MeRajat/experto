@@ -140,7 +140,7 @@ class _EmailState extends State<Email> {
           persistant: false,
         );
       });
-      Navigator.of(context).pop();
+      await logOut(context);
     }
   }
 

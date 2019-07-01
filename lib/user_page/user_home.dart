@@ -12,6 +12,7 @@ import 'package:experto/global_data.dart';
 
 class HomePage extends StatefulWidget {
   final Data user;
+  
   HomePage(this.user);
   @override
   _HomePage createState() => _HomePage();
@@ -25,15 +26,17 @@ class _HomePage extends State<HomePage> {
     SettingsPage(),
   ];
 
+  int currentIndex = 0;
+
   final List<GlobalKey<NavigatorState>> keys = [
-    GlobalKey(debugLabel: 'user home page'),
-    GlobalKey(debugLabel: 'user skill page'),
-    GlobalKey(debugLabel: 'user expert page'),
-    GlobalKey(debugLabel: 'user settings page')
+    GlobalKey(),
+    GlobalKey(),
+    GlobalKey(),
+    GlobalKey()
   ];
 
-  Future<bool> overrideBack(index) {
-    NavigatorState navigator = keys[index].currentState;
+  Future<bool> overrideBack() {
+    NavigatorState navigator = keys[currentIndex].currentState;
     bool canPop = navigator.canPop();
     if (canPop) {
       navigator.pop();
@@ -49,10 +52,13 @@ class _HomePage extends State<HomePage> {
         body: CupertinoTabScaffold(
           tabBar: CupertinoTabBar(
             items: navigationBarItems(),
+            onTap: (int tapped){
+              currentIndex = tapped;
+            }
           ),
           tabBuilder: (BuildContext context, int index) {
             return WillPopScope(
-              onWillPop: () => overrideBack(index),
+              onWillPop: () => overrideBack(),
               child: CupertinoTabView(
                 navigatorKey: keys[index],
                 builder: (context) {

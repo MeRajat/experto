@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
+import "package:shared_preferences/shared_preferences.dart";
+import "package:firebase_auth/firebase_auth.dart";
+import "package:experto/home_page/home_page.dart";
 
 class InputField extends StatelessWidget {
   final String hintText, initailValue;
@@ -140,39 +143,41 @@ void showAuthSnackBar(
     @required String title,
     @required leading,
     bool persistant: true}) {
-  Scaffold.of(context).removeCurrentSnackBar();
-  Scaffold.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.black87,
-      content: Align(
-        alignment: Alignment.centerLeft,
-        heightFactor: 1,
-        child: Padding(
-          child: Row(
-            children: <Widget>[
-              leading,
-              Padding(
-                padding: EdgeInsets.only(left: 20),
-                child:  Container(
-                  width:MediaQuery.of(context).size.width-130,
-                  child: Text(
-                    title,
-                    softWrap: true,
-                    style: Theme.of(context)
-                        .primaryTextTheme
-                        .body2
-                        .copyWith(color: Colors.white, fontSize: 15),
+  try {
+    Scaffold.of(context).removeCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.black87,
+        content: Align(
+          alignment: Alignment.centerLeft,
+          heightFactor: 1,
+          child: Padding(
+            child: Row(
+              children: <Widget>[
+                leading,
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 130,
+                    child: Text(
+                      title,
+                      softWrap: true,
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .body2
+                          .copyWith(color: Colors.white, fontSize: 15),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            padding: EdgeInsets.all(5),
           ),
-          padding: EdgeInsets.all(5),
         ),
+        duration: (persistant) ? Duration(hours: 1) : Duration(seconds: 3),
       ),
-      duration: (persistant) ? Duration(hours: 1) : Duration(seconds: 3),
-    ),
-  );
+    );
+  } catch (e) {}
 }
 
 class SignupTimeSelector extends StatelessWidget {
@@ -258,6 +263,31 @@ class SignupSkillSelector extends StatelessWidget {
             style:
                 Theme.of(context).primaryTextTheme.body2.copyWith(color: color))
       ],
+    );
+  }
+}
+
+Future<void> logOut(BuildContext context) async {
+  showAuthSnackBar(
+    context: context,
+    title: "Logging Out...",
+    leading: CircularProgressIndicator(),
+  );
+
+  final pref = await SharedPreferences.getInstance();
+  await pref.setString("account_type", null);
+
+  await Future.delayed(Duration(seconds: 2));
+  try {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (buildContext) => HomePage()),
+        ModalRoute.withName(':'));
+  } catch (e) {
+    showAuthSnackBar(
+      context: context,
+      title: "Error...",
+      leading: Icon(Icons.error, size: 23, color: Colors.green),
     );
   }
 }
