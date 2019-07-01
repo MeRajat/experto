@@ -15,7 +15,7 @@ class _CustomPlaceholderState extends State<CustomPlaceholder>
   @override
   void initState() {
     animationController =
-        AnimationController(vsync: this, duration: Duration.zero);
+        AnimationController(vsync: this, duration: Duration(milliseconds: 600));
     super.initState();
     animation = Tween(begin: 0.0, end: 1.0).animate(animationController);
   }

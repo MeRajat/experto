@@ -6,6 +6,7 @@ import 'package:experto/utils/bloc/syncDocuments.dart';
 
 import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
 import 'package:experto/utils/contact_expert.dart' as contactExpert;
+import 'package:experto/utils/placeholder.dart';
 
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
@@ -64,10 +65,12 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                       imageUrl: expert["profilePicThumb"],
                       height: 110,
                       width: 110,
-//                      placeholder: (context, a) => Center(
-//                            widthFactor: 2.1,
-//                            child: CircularProgressIndicator(),
-//                          ),
+                      placeholder: (context, a) => Container(
+                            margin: EdgeInsets.only(left: 10, right: 5),
+                            width: 90,
+                            height: 90,
+                            child: CustomPlaceholder(),
+                          ),
                     ),
             ),
           ),
