@@ -9,11 +9,12 @@ class InputField extends StatelessWidget {
   final TextInputType inputType;
   final bool isPassword;
   final void Function(String) fn;
+  final VoidCallback func;
   final int minLines, maxLines, maxLength;
   final TextInputAction inputAction;
 
   InputField(this.hintText, this.fn,
-      {this.inputType: TextInputType.text,
+      {this.inputType: TextInputType.text,this.func,
       this.isPassword: false,
       this.minLines: 1,
       this.maxLines: 2,
@@ -44,6 +45,10 @@ class InputField extends StatelessWidget {
             onSaved: (input) => fn(input),
             textInputAction: inputAction,
             keyboardType: inputType,
+            onEditingComplete: (){
+              if(inputAction==TextInputAction.done)
+                func();
+            },
             minLines: minLines,
             maxLines: maxLines,
             maxLength: (maxLength == 0) ? null : maxLength,

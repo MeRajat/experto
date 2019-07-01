@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import "package:experto/utils/bloc/is_loading.dart";
 import 'package:experto/global_data.dart';
 import "package:shared_preferences/shared_preferences.dart";
+import 'package:cloud_functions/cloud_functions.dart';
 
 class Authenticate {
   CollectionReference userReference;
@@ -49,6 +50,8 @@ class Authenticate {
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
             arguments: userData);
+        HttpsCallable callable= CloudFunctions.instance.getHttpsCallable(functionName: "helloWorld");
+        callable.call();
 
         return true;
       }
@@ -162,6 +165,8 @@ class Authenticate {
         userData.detailsData =
             await userReference.document(userData.profileData.uid).get();
         updateConfig();
+        HttpsCallable callable= CloudFunctions.instance.getHttpsCallable(functionName: "helloWorld");
+        callable.call();
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/user_home',

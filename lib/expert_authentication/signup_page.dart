@@ -121,6 +121,7 @@ class _CustomFormField extends State<CustomFormField> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -187,13 +188,13 @@ class _CustomFormField extends State<CustomFormField> {
                   child: Column(
                     children: <Widget>[
                       InputField("Name", authenticate.getName),
-                      InputField("Email", authenticate.getEmail),
+                      InputField("Email", authenticate.getEmail,inputType: TextInputType.emailAddress,),
                       InputField("Skype username", authenticate.getSkype),
                       InputField("City", authenticate.getCity),
                       InputField("Mobile", authenticate.getMobile,
-                          inputType: TextInputType.number),
+                          inputType: TextInputType.phone),
                       InputField("Password", authenticate.getPass,
-                          isPassword: true),
+                          isPassword: true,),
                     ],
                   ),
                 ),

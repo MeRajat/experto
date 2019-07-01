@@ -86,13 +86,13 @@ class _CustomFormField extends State<CustomFormField> {
                   title: Text("Enter Information"),
                   content: Column(
                     children: <Widget>[
-                      InputField("Name", authenticate.getName),
-                      InputField("Email", authenticate.getEmail),
+                      InputField("Name", authenticate.getName,),
+                      InputField("Email", authenticate.getEmail,inputType: TextInputType.emailAddress),
                       InputField("City", authenticate.getCity),
                       InputField("Mobile", authenticate.getMobile,
-                          inputType: TextInputType.number),
+                          inputType: TextInputType.phone),
                       InputField("Password", authenticate.getPass,
-                          isPassword: true),
+                          isPassword: true,inputAction: TextInputAction.done,func: startAuthentication,),
                     ],
                   ),
                 ),

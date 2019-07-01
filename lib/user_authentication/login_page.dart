@@ -95,9 +95,9 @@ class _CustomForm extends State<CustomForm> {
                   title: Text("Enter Credentials"),
                   content: Column(
                     children: <Widget>[
-                      InputField("Enter Your Email", authenticate.getName),
+                      InputField("Enter Your Email", authenticate.getName,inputType: TextInputType.emailAddress,inputAction: TextInputAction.next,),
                       InputField("Enter Your Password", authenticate.getPass,
-                          isPassword: true),
+                          isPassword: true,inputAction: TextInputAction.done,func: startAuthentication,),
                       SignupPageRedirect(
                         text: "Don't have an account?",
                         redirectLink: "SignUp",
