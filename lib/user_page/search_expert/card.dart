@@ -47,7 +47,7 @@ class CustomCard extends StatelessWidget {
                                     image: imageProvider, fit: BoxFit.cover),
                               ),
                             ),
-                        imageUrl: expert["profilePic"],
+                        imageUrl: expert["profilePicThumb"],
                         height: 80,
                         width: 80,
                         placeholder: (context, a) => Container(
