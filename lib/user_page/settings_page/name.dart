@@ -1,3 +1,4 @@
+import 'package:experto/home_page/home_page.dart';
 import 'package:experto/utils/authentication_page_utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
@@ -353,7 +354,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
     setState(() {
       showAuthSnackBar(
         context: context,
-        title: "Updating...",
+        title: "Deleted...",
         leading: Icon(Icons.file_upload, size: 23, color: Colors.green),
       );
     });
@@ -372,6 +373,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
         );
       });
       Navigator.of(context).pop();
+      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (buildContext) => HomePage()),
+          ModalRoute.withName(':'));
     }
   }
 

@@ -115,15 +115,18 @@ class Authenticate {
           city: details[2],
           name: details[0],
           m: details[3],
+          docID: userData.profileData.uid,
         );
-        //userUpdateInfo.photoUrl=
         await userData.profileData.updateProfile(userUpdateInfo);
-        await Firestore.instance.runTransaction((Transaction t) async {
-          await userReference
-              .document(userData.profileData.uid)
-              .setData(currentUser.toJson());
-        });
+//        await Firestore.instance.runTransaction((Transaction t) async {
+//          await userReference
+//              .document(userData.profileData.uid)
+//              .setData(currentUser.toJson());
+//        });
         userData.profileData = await FirebaseAuth.instance.currentUser();
+        HttpsCallable callable= CloudFunctions.instance.getHttpsCallable(functionName: "addUserData");
+        var ans =await callable.call(currentUser.toJson());
+        print(ans.data.toString());
         userData.detailsData =
             await userReference.document(userData.profileData.uid).get();
         updateConfig();
@@ -165,8 +168,6 @@ class Authenticate {
         userData.detailsData =
             await userReference.document(userData.profileData.uid).get();
         updateConfig();
-        HttpsCallable callable= CloudFunctions.instance.getHttpsCallable(functionName: "helloWorld");
-        callable.call();
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/user_home',

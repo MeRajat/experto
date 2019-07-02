@@ -13,7 +13,7 @@ class TrueInheritedWidget extends InheritedWidget {
 }
 
 class Users {
-  final String name, city, m;
+  final String name, city, m,docID;
   int mobile;
 
   Users({
@@ -21,6 +21,7 @@ class Users {
 //    @required this.email,
     @required this.city,
     @required this.m,
+    this.docID,
     this.mobile = 0,
   }) {
     mobile = int.parse(m);
@@ -31,6 +32,7 @@ class Users {
        // 'emailID': email,
         'City': city,
         'Mobile': mobile,
+    'docID':docID,
       };
 }
 

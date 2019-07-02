@@ -162,7 +162,7 @@ class Update {
             email: user.profileData.email, password: details[0]);
         await user.profileData.delete();
         //user.profileData=await FirebaseAuth.instance.currentUser();
-        await userReference.document(user.detailsData.documentID).delete();
+        //await userReference.document(user.detailsData.documentID).delete();
         return true;
       } catch (e) {
         showAuthSnackBar(
