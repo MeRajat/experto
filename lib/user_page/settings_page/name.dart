@@ -41,6 +41,7 @@ class _NameState extends State<Name> {
         persistant: false,
       );
     });
+    await Future.delayed(Duration(milliseconds: 800));
     Navigator.of(context).pop();
   }
 
@@ -58,7 +59,7 @@ class _NameState extends State<Name> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(child: AppbarContainer("Name"), tag: "settingName"),
+              AppbarContainer("Name"),
               Form(
                 key: key,
                 child: Padding(
@@ -93,7 +94,7 @@ class _NameState extends State<Name> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(60),
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
               )
             ],
           );
@@ -111,6 +112,7 @@ class Email extends StatefulWidget {
 class _EmailState extends State<Email> {
   Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
 
   @override
   void didChangeDependencies() {
@@ -143,6 +145,7 @@ class _EmailState extends State<Email> {
           persistant: false,
         );
       });
+      await Future.delayed(Duration(milliseconds: 700));
       await logOut(context);
     }
   }
@@ -161,7 +164,7 @@ class _EmailState extends State<Email> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(child: AppbarContainer("Email"), tag: "settingEmail"),
+              AppbarContainer("Email"),
               Form(
                 key: key,
                 child: Column(
@@ -173,6 +176,8 @@ class _EmailState extends State<Email> {
                           update.getPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -186,6 +191,7 @@ class _EmailState extends State<Email> {
                         (value) {
                           update.getEmail(value);
                         },
+                        focusNode: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -212,7 +218,7 @@ class _EmailState extends State<Email> {
                           .copyWith(color: Colors.white)),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(60))
+              Padding(padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3)),
             ],
           );
         },
@@ -229,6 +235,7 @@ class Passowrd extends StatefulWidget {
 class _PassowrdState extends State<Passowrd> {
   Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  List<FocusNode> focusNode = List.generate(3, (_) => FocusNode());
 
   @override
   void didChangeDependencies() {
@@ -259,6 +266,7 @@ class _PassowrdState extends State<Passowrd> {
           persistant: false,
         );
       });
+      await Future.delayed(Duration(milliseconds: 800));
       Navigator.of(context).pop();
     }
   }
@@ -277,18 +285,20 @@ class _PassowrdState extends State<Passowrd> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(child: AppbarContainer("Password"), tag: "settingPassword"),
+              AppbarContainer("Password"),
               Form(
                 key: key,
                 child: Column(
                   children: <Widget>[
                     Padding(
                       child: InputField(
-                        "Enter previouw password",
+                        "Enter previous password",
                         (value) {
                           update.getPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 30, bottom: 5),
@@ -300,6 +310,8 @@ class _PassowrdState extends State<Passowrd> {
                           update.getPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[1],
+                        nextTextField: focusNode[2],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 5),
@@ -311,6 +323,7 @@ class _PassowrdState extends State<Passowrd> {
                           update.getPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[2],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 20),
@@ -334,7 +347,7 @@ class _PassowrdState extends State<Passowrd> {
                           .copyWith(color: Colors.white)),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(60)),
+              Padding(padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3)),
             ],
           );
         },
@@ -351,6 +364,7 @@ class DeleteAccount extends StatefulWidget {
 class _DeleteAccountState extends State<DeleteAccount> {
   Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
 
   @override
   void didChangeDependencies() {
@@ -380,6 +394,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
           persistant: false,
         );
       });
+      await Future.delayed(Duration(milliseconds: 800));
       Navigator.of(context).pop();
     }
   }
@@ -398,9 +413,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(
-                  child: AppbarContainer("Delete Account"),
-                  tag: "settingDelete Account"),
+              AppbarContainer("Delete Account"),
               Form(
                 key: key,
                 child: Column(
@@ -412,6 +425,8 @@ class _DeleteAccountState extends State<DeleteAccount> {
                           update.getPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -425,6 +440,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                         (value) {
                           update.getEmail(value);
                         },
+                        focusNode: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -452,7 +468,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(60),
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
               )
             ],
           );
@@ -469,14 +485,17 @@ class AppbarContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      height: 180,
-      width: MediaQuery.of(context).size.width,
-      color: Theme.of(context).appBarTheme.color,
-      child: Align(
-        alignment: Alignment.bottomLeft,
-        child: Text(title, style: Theme.of(context).textTheme.title),
+    return Hero(
+      tag: "setting" + title,
+      child: Container(
+        padding: EdgeInsets.all(20),
+        height: 180,
+        width: MediaQuery.of(context).size.width,
+        color: Theme.of(context).appBarTheme.color,
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          child: Text(title, style: Theme.of(context).textTheme.title),
+        ),
       ),
     );
   }

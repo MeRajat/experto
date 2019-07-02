@@ -35,6 +35,7 @@ class _CustomForm extends State<CustomForm> {
   final GlobalKey<FormState> _formKeyExpert = GlobalKey<FormState>();
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
+  final List<FocusNode> focusNode = [FocusNode(), FocusNode()];
 
   @override
   void initState() {
@@ -90,15 +91,24 @@ class _CustomForm extends State<CustomForm> {
               currentStep: 0,
               onStepTapped: (int tapped) {},
               onStepContinue: (loading == true) ? null : startAuthentication,
-              onStepCancel: (loading == true) ? null : () {Navigator.of(context).pop();},
+              onStepCancel: (loading == true)
+                  ? null
+                  : () {
+                      Navigator.of(context).pop();
+                    },
               steps: [
                 Step(
                   title: Text("Enter Credentials"),
                   content: Column(
                     children: <Widget>[
-                      InputField("Enter Your Username", authenticate.getEmail),
+                      InputField(
+                        "Enter Your Username",
+                        authenticate.getEmail,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
+                      ),
                       InputField("Enter Your Password", authenticate.getPass,
-                          isPassword: true),
+                          isPassword: true, focusNode: focusNode[1]),
                       SignupPageRedirect(
                         text: "Don't have an account?",
                         redirectLink: "SignUp",

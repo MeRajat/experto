@@ -37,6 +37,8 @@ class _CustomFormField extends State<CustomFormField> {
   ];
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
+  List<FocusNode> focusNode =
+      List.generate(6, (_) => FocusNode(), growable: false);
 
   Map<String, DateTime> avail;
   int step = 0;
@@ -172,9 +174,9 @@ class _CustomFormField extends State<CustomFormField> {
                 ? null
                 : () {
                     if (step > 0) {
-                        setState(() {
-                          step -= 1;
-                        });
+                      setState(() {
+                        step -= 1;
+                      });
                     } else {
                       Navigator.of(context).pop();
                     }
@@ -186,14 +188,43 @@ class _CustomFormField extends State<CustomFormField> {
                   key: formKeyExpert[0],
                   child: Column(
                     children: <Widget>[
-                      InputField("Name", authenticate.getName),
-                      InputField("Email", authenticate.getEmail),
-                      InputField("Skype username", authenticate.getSkype),
-                      InputField("City", authenticate.getCity),
-                      InputField("Mobile", authenticate.getMobile,
-                          inputType: TextInputType.number),
-                      InputField("Password", authenticate.getPass,
-                          isPassword: true),
+                      InputField(
+                        "Name",
+                        authenticate.getName,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
+                      ),
+                      InputField(
+                        "Email",
+                        authenticate.getEmail,
+                        focusNode: focusNode[1],
+                        nextTextField: focusNode[2],
+                      ),
+                      InputField(
+                        "Skype username",
+                        authenticate.getSkype,
+                        focusNode: focusNode[2],
+                        nextTextField: focusNode[3],
+                      ),
+                      InputField(
+                        "City",
+                        authenticate.getCity,
+                        focusNode: focusNode[3],
+                        nextTextField: focusNode[4],
+                      ),
+                      InputField(
+                        "Mobile",
+                        authenticate.getMobile,
+                        inputType: TextInputType.number,
+                        focusNode: focusNode[4],
+                        nextTextField: focusNode[5],
+                      ),
+                      InputField(
+                        "Password",
+                        authenticate.getPass,
+                        isPassword: true,
+                        focusNode: focusNode[5],
+                      )
                     ],
                   ),
                 ),

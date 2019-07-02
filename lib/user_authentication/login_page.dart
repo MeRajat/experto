@@ -34,6 +34,7 @@ class _CustomForm extends State<CustomForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
+  final List<FocusNode> focusNode = [FocusNode(), FocusNode()];
 
   @override
   void initState() {
@@ -95,9 +96,18 @@ class _CustomForm extends State<CustomForm> {
                   title: Text("Enter Credentials"),
                   content: Column(
                     children: <Widget>[
-                      InputField("Enter Your Email", authenticate.getName),
-                      InputField("Enter Your Password", authenticate.getPass,
-                          isPassword: true),
+                      InputField(
+                        "Enter Your Email",
+                        authenticate.getName,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
+                      ),
+                      InputField(
+                        "Enter Your Password",
+                        authenticate.getPass,
+                        isPassword: true,
+                        focusNode: focusNode[1],
+                      ),
                       SignupPageRedirect(
                         text: "Don't have an account?",
                         redirectLink: "SignUp",

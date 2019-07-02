@@ -58,7 +58,7 @@ Future<bool> checkAvail(DocumentSnapshot expert) async {
           avail = true;
           return;
         } else if (now.hour == start.hour || now.hour == end.hour) {
-          if (now.minute >= start.minute && now.minute <= start.minute) {
+          if (now.minute >= start.minute && now.minute <= end.minute) {
             avail = true;
             return;
           }

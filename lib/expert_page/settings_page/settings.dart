@@ -17,7 +17,7 @@ class SettingsTiles extends StatelessWidget {
     [Icons.location_city, "City", City()],
     [Icons.work, "Work Experience", WorkExperience()],
     [Icons.video_call, "Skype Username", Skype()],
-    [Icons.av_timer, "Availabality", Availablity()],
+    [Icons.av_timer, "Availability", Availablity()],
     [Icons.category,"Skills",Skills()],
     [Icons.delete_forever, "Delete Account", DeleteAccount()],
     [Icons.exit_to_app, "Logout", null],

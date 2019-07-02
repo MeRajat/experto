@@ -28,7 +28,7 @@ class _CustomPlaceholderState extends State<CustomPlaceholder>
 
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 1), () {
+    Timer(Duration(milliseconds: 500), () {
       try {
         animationController.forward();
       } catch (e) {}
