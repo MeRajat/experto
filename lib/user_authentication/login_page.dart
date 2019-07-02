@@ -34,6 +34,7 @@ class _CustomForm extends State<CustomForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
+  final List<FocusNode> focusNode = [FocusNode(), FocusNode()];
 
   @override
   void initState() {
@@ -95,9 +96,20 @@ class _CustomForm extends State<CustomForm> {
                   title: Text("Enter Credentials"),
                   content: Column(
                     children: <Widget>[
-                      InputField("Enter Your Email", authenticate.getName,inputType: TextInputType.emailAddress,inputAction: TextInputAction.next,),
-                      InputField("Enter Your Password", authenticate.getPass,
-                          isPassword: true,inputAction: TextInputAction.done,func: startAuthentication,),
+                      InputField(
+                        "Enter Your Email",
+                        authenticate.getName,
+                        focusNode: focusNode[0],
+                        inputType: TextInputType.emailAddress,
+                        nextTextField: focusNode[1],
+                      ),
+                      InputField(
+                        "Enter Your Password",
+                        authenticate.getPass,
+                        isPassword: true,
+                        focusNode: focusNode[1],
+                        inputAction: TextInputAction.done,func: startAuthentication,
+                      ),
                       SignupPageRedirect(
                         text: "Don't have an account?",
                         redirectLink: "SignUp",
@@ -118,39 +130,39 @@ class _CustomForm extends State<CustomForm> {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   checkLoadingStatus();
-  //   return SliverToBoxAdapter(
-  //     child: Padding(
-  //       padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
-  //       child: Form(
-  //         key: _formKey,
-  //         child: Column(
-  //           children: <Widget>[
-  //             InputField("Email", authenticate.getName),
-  //             InputField("Password", authenticate.getPass,
-  //                 isPassword: true),
-  //             Hero(
-  //               tag:"userbuttonhero",
-  //               child: Padding(
-  //                 padding: EdgeInsets.only(top: 20),
-  //                 child: SizedBox(
-  //                   width: double.infinity,
-  //                   child: RaisedButton(
-  //                     onPressed: (loading)?null:startAuthentication,
-  //                     elevation: 3,
-  //                     highlightElevation: 4,
-  //                     color: Color.fromRGBO(84, 229, 121, 1),
-  //                     child: authenticate.signInButton("Sign In"),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+// @override
+// Widget build(BuildContext context) {
+//   checkLoadingStatus();
+//   return SliverToBoxAdapter(
+//     child: Padding(
+//       padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
+//       child: Form(
+//         key: _formKey,
+//         child: Column(
+//           children: <Widget>[
+//             InputField("Email", authenticate.getName),
+//             InputField("Password", authenticate.getPass,
+//                 isPassword: true),
+//             Hero(
+//               tag:"userbuttonhero",
+//               child: Padding(
+//                 padding: EdgeInsets.only(top: 20),
+//                 child: SizedBox(
+//                   width: double.infinity,
+//                   child: RaisedButton(
+//                     onPressed: (loading)?null:startAuthentication,
+//                     elevation: 3,
+//                     highlightElevation: 4,
+//                     color: Color.fromRGBO(84, 229, 121, 1),
+//                     child: authenticate.signInButton("Sign In"),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     ),
+//   );
+// }
 }

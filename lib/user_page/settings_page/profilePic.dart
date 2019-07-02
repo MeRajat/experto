@@ -65,11 +65,12 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
       appBar: AppBar(
         actions: <Widget>[
           FlatButton(
-              onPressed: updateData,
-              child: Icon(
-                Icons.edit,
-                color: Colors.white,
-              ))
+            onPressed: updateData,
+            child: Icon(
+              Icons.edit,
+              color: Colors.white,
+            ),
+          )
         ],
         backgroundColor: Colors.black,
         iconTheme: IconThemeData(color: Colors.white),
@@ -83,7 +84,7 @@ class _ProfilePicUpdateState extends State<ProfilePicUpdate> {
                     ? Icon(
                         Icons.person,
                         size: 110,
-                        color:Colors.white,
+                        color: Colors.white,
                       )
                     : CachedNetworkImage(
                         imageBuilder: (context, imageProvider) => Container(

@@ -12,15 +12,22 @@ class InputField extends StatelessWidget {
   final VoidCallback func;
   final int minLines, maxLines, maxLength;
   final TextInputAction inputAction;
+  final FocusNode nextTextField, focusNode;
 
-  InputField(this.hintText, this.fn,
-      {this.inputType: TextInputType.text,this.func,
-      this.isPassword: false,
-      this.minLines: 1,
-      this.maxLines: 2,
-      this.inputAction: TextInputAction.next,
-      this.maxLength: 0,
-      this.initailValue: ''});
+  InputField(
+      this.hintText,
+      this.fn, {
+        this.inputType: TextInputType.text,
+        this.func,
+        this.isPassword: false,
+        this.minLines: 1,
+        this.maxLines: 2,
+        this.inputAction: TextInputAction.next,
+        this.maxLength: 0,
+        this.initailValue: '',
+        this.focusNode,
+        this.nextTextField,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +40,7 @@ class InputField extends StatelessWidget {
           padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
           child: TextFormField(
             obscureText: isPassword,
+            focusNode: focusNode,
             initialValue: initailValue,
             validator: (value) {
               if (value.isEmpty) {
@@ -44,6 +52,11 @@ class InputField extends StatelessWidget {
             },
             onSaved: (input) => fn(input),
             textInputAction: inputAction,
+            onFieldSubmitted: (nextTextField == null)
+                ? null
+                : (_) {
+              FocusScope.of(context).requestFocus(nextTextField);
+            },
             keyboardType: inputType,
             onEditingComplete: (){
               if(inputAction==TextInputAction.done)
@@ -78,11 +91,8 @@ class CustomFlatButton extends StatelessWidget {
   final onPressedFunction;
   final Color color;
 
-  CustomFlatButton({
-    @required this.text,
-    @required this.onPressedFunction,
-    this.color: Colors.white,
-  });
+  CustomFlatButton(
+      {@required this.text, @required this.onPressedFunction, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -90,10 +100,10 @@ class CustomFlatButton extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-            color: (color == Colors.white)
+            color: (color == null)
                 ? Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black
+                ? Colors.white
+                : Colors.black
                 : color),
       ),
       onPressed: onPressedFunction,
@@ -145,9 +155,9 @@ class SignupPageRedirect extends StatelessWidget {
 
 void showAuthSnackBar(
     {@required BuildContext context,
-    @required String title,
-    @required leading,
-    bool persistant: true}) {
+      @required String title,
+      @required leading,
+      bool persistant: true}) {
   try {
     Scaffold.of(context).removeCurrentSnackBar();
     Scaffold.of(context).showSnackBar(
@@ -266,7 +276,7 @@ class SignupSkillSelector extends StatelessWidget {
                 ? (correspondingSkill == 'skill1') ? "Required" : "Optional"
                 : skillsSelected[correspondingSkill]['name']),
             style:
-                Theme.of(context).primaryTextTheme.body2.copyWith(color: color))
+            Theme.of(context).primaryTextTheme.body2.copyWith(color: color))
       ],
     );
   }

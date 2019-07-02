@@ -9,6 +9,7 @@ import "package:experto/utils/authentication_page_utils.dart";
 import "package:experto/utils/bloc/syncDocuments.dart";
 import 'package:experto/global_data.dart';
 import "package:experto/utils/bloc/syncDocuments.dart" as sync;
+import './name.dart';
 
 class Skills extends StatefulWidget {
   @override
@@ -97,27 +98,19 @@ class _SkillsState extends State<Skills> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          "Settings",
+          style: Theme.of(context).textTheme.title,
+        ),
+      ),
       body: Builder(
         builder: (context) {
           return ListView(
-            physics: BouncingScrollPhysics(),
+            //physics: BouncingScrollPhysics(),
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(20),
-                height: 180,
-                width: MediaQuery.of(context).size.width,
-                color: Theme.of(context).appBarTheme.color,
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    "Skills",
-                    style: Theme.of(context)
-                        .textTheme
-                        .title
-                        .copyWith(fontSize: 30),
-                  ),
-                ),
-              ),
+              AppbarContainer("Skills"),
               Theme(
                 data: Theme.of(context).copyWith(
                   primaryColor: Colors.blue,
@@ -141,6 +134,8 @@ class _SkillsState extends State<Skills> {
                         leading:
                             Icon(Icons.done, size: 25, color: Colors.green),
                       );
+                      await Future.delayed(Duration(milliseconds: 800));
+                      Navigator.of(context).pop();
                       List<DocumentReference> skillSelectedReference = [];
                       skillsSelected.forEach((key, value) {
                         if (value['reference'] != null) {
@@ -202,6 +197,7 @@ class _SkillsState extends State<Skills> {
                   ],
                 ),
               ),
+              Padding(padding: EdgeInsets.all(60)),
             ],
           );
         },
@@ -289,28 +285,20 @@ class _AvailablityState extends State<Availablity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          "Settings",
+          style: Theme.of(context).textTheme.title,
+        ),
+      ),
       body: Builder(
         builder: (context) {
           return ListView(
-            physics:
-                BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            // physics:
+            //     BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(20),
-                height: 180,
-                width: MediaQuery.of(context).size.width,
-                color: Theme.of(context).appBarTheme.color,
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    "Availablity",
-                    style: Theme.of(context)
-                        .textTheme
-                        .title
-                        .copyWith(fontSize: 30),
-                  ),
-                ),
-              ),
+              AppbarContainer("Availability"),
               Padding(
                 padding: EdgeInsets.only(left: 10, top: 40),
                 child: ListTile(
@@ -413,6 +401,9 @@ class _AvailablityState extends State<Availablity> {
                                     leading: Icon(Icons.done,
                                         color: Colors.green, size: 25),
                                     persistant: false);
+                                Future.delayed(Duration(milliseconds: 800), () {
+                                  Navigator.of(context).pop();
+                                });
                               }
                             },
                             builder: (state) {

@@ -16,14 +16,14 @@ class Email extends StatefulWidget {
 class _EmailState extends State<Email> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
-
+  List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
   @override
   void didChangeDependencies() {
     expert = DocumentSync.of(context).account;
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     Data newExpert;
     setState(() {
       showAuthSnackBar(
@@ -33,18 +33,18 @@ class _EmailState extends State<Email> {
       );
     });
     newExpert = await update.updateEmail(expert, key, context);
-    if (expert != null) {
+    if (newExpert != null) {
       expert = newExpert;
       sync.syncDocument.updateStatus(newExpert);
       setState(() {
         showAuthSnackBar(
           context: context,
-          title: 'Updated',
+          title: 'Updated, Starting Logout...',
           leading: Icon(Icons.done, color: Colors.green, size: 23),
           persistant: false,
         );
       });
-      //Navigator.of(context).pop();
+      await Future.delayed(Duration(milliseconds: 800));
       logOut(context);
     }
   }
@@ -63,7 +63,7 @@ class _EmailState extends State<Email> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(child: AppbarContainer("Email"), tag: "settingEmail"),
+              AppbarContainer("Email"),
               Form(
                 key: key,
                 child: Column(
@@ -75,6 +75,8 @@ class _EmailState extends State<Email> {
                           update.setPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -88,6 +90,7 @@ class _EmailState extends State<Email> {
                         (value) {
                           update.setEmail(value);
                         },
+                        focusNode: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -101,13 +104,16 @@ class _EmailState extends State<Email> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
-              )
+              ),
+              Padding(padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3)),
             ],
           );
         },
@@ -124,6 +130,7 @@ class Password extends StatefulWidget {
 class _PasswordState extends State<Password> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  List<FocusNode> focusNode = List.generate(3, (_) => FocusNode());
 
   @override
   void didChangeDependencies() {
@@ -131,7 +138,7 @@ class _PasswordState extends State<Password> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -150,6 +157,7 @@ class _PasswordState extends State<Password> {
           persistant: false,
         );
       });
+      await Future.delayed(Duration(milliseconds: 800));
       Navigator.of(context).pop();
     }
   }
@@ -168,7 +176,7 @@ class _PasswordState extends State<Password> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(child: AppbarContainer("Password"), tag: "settingPassword"),
+              AppbarContainer("Password"),
               Form(
                 key: key,
                 child: Column(
@@ -180,6 +188,8 @@ class _PasswordState extends State<Password> {
                           update.setPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 30, bottom: 5),
@@ -191,6 +201,8 @@ class _PasswordState extends State<Password> {
                           update.setNewPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[1],
+                        nextTextField: focusNode[2],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 5),
@@ -202,6 +214,7 @@ class _PasswordState extends State<Password> {
                           update.setRetypedPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[2],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 20),
@@ -212,13 +225,18 @@ class _PasswordState extends State<Password> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+              ),
             ],
           );
         },
@@ -235,6 +253,7 @@ class Skype extends StatefulWidget {
 class _SkypeState extends State<Skype> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
 
   @override
   void didChangeDependencies() {
@@ -242,7 +261,7 @@ class _SkypeState extends State<Skype> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -261,6 +280,7 @@ class _SkypeState extends State<Skype> {
           persistant: false,
         );
       });
+      await Future.delayed(Duration(milliseconds: 800));
       Navigator.of(context).pop();
     }
   }
@@ -279,7 +299,7 @@ class _SkypeState extends State<Skype> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(child: AppbarContainer("Skype"), tag: "settingSkype"),
+              AppbarContainer("Skype"),
               Form(
                 key: key,
                 child: Column(
@@ -291,6 +311,8 @@ class _SkypeState extends State<Skype> {
                           update.setPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 30, bottom: 5),
@@ -301,6 +323,7 @@ class _SkypeState extends State<Skype> {
                         (value) {
                           update.setSkype(value);
                         },
+                        focusNode: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 5),
@@ -312,12 +335,17 @@ class _SkypeState extends State<Skype> {
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
               )
             ],
           );
@@ -335,6 +363,7 @@ class City extends StatefulWidget {
 class _CityState extends State<City> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
 
   @override
   void didChangeDependencies() {
@@ -342,7 +371,7 @@ class _CityState extends State<City> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -361,6 +390,7 @@ class _CityState extends State<City> {
           persistant: false,
         );
       });
+      await Future.delayed(Duration(milliseconds: 800));
       Navigator.of(context).pop();
     }
   }
@@ -379,7 +409,7 @@ class _CityState extends State<City> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(child: AppbarContainer("City"), tag: "settingCity"),
+              AppbarContainer("City"),
               Form(
                 key: key,
                 child: Column(
@@ -391,6 +421,8 @@ class _CityState extends State<City> {
                           update.setPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 30, bottom: 5),
@@ -401,6 +433,7 @@ class _CityState extends State<City> {
                         (value) {
                           update.setCity(value);
                         },
+                        focusNode: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 5),
@@ -412,12 +445,17 @@ class _CityState extends State<City> {
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
               )
             ],
           );
@@ -435,6 +473,7 @@ class Description extends StatefulWidget {
 class _DescriptionState extends State<Description> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
 
   @override
   void didChangeDependencies() {
@@ -442,7 +481,7 @@ class _DescriptionState extends State<Description> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -461,6 +500,7 @@ class _DescriptionState extends State<Description> {
           persistant: false,
         );
       });
+      await Future.delayed(Duration(milliseconds: 800));
       Navigator.of(context).pop();
     }
   }
@@ -479,9 +519,7 @@ class _DescriptionState extends State<Description> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(
-                  child: AppbarContainer("Description"),
-                  tag: "settingDescription"),
+              AppbarContainer("Description"),
               Form(
                 key: key,
                 child: Column(
@@ -493,6 +531,8 @@ class _DescriptionState extends State<Description> {
                           update.setPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 30, bottom: 5),
@@ -509,6 +549,7 @@ class _DescriptionState extends State<Description> {
                         maxLength: 150,
                         initailValue: expert.detailsData["Description"],
                         inputAction: TextInputAction.newline,
+                        focusNode: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 5),
@@ -520,13 +561,18 @@ class _DescriptionState extends State<Description> {
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+              ),
             ],
           );
         },
@@ -543,6 +589,7 @@ class WorkExperience extends StatefulWidget {
 class _WorkExperienceState extends State<WorkExperience> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
 
   @override
   void didChangeDependencies() {
@@ -550,7 +597,7 @@ class _WorkExperienceState extends State<WorkExperience> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -570,6 +617,7 @@ class _WorkExperienceState extends State<WorkExperience> {
           persistant: false,
         );
       });
+      await Future.delayed(Duration(milliseconds: 800));
       Navigator.of(context).pop();
     }
   }
@@ -588,9 +636,7 @@ class _WorkExperienceState extends State<WorkExperience> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(
-                  child: AppbarContainer("Work Experience"),
-                  tag: "settingWorkExperience"),
+              AppbarContainer("Work Experience"),
               Form(
                 key: key,
                 child: Column(
@@ -602,6 +648,8 @@ class _WorkExperienceState extends State<WorkExperience> {
                           update.setPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 30, bottom: 5),
@@ -624,6 +672,7 @@ class _WorkExperienceState extends State<WorkExperience> {
                         maxLength: 250,
                         initailValue: expert.detailsData['Work Experience'],
                         inputAction: TextInputAction.newline,
+                        focusNode: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 5),
@@ -635,13 +684,18 @@ class _WorkExperienceState extends State<WorkExperience> {
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   // color: Theme.of(context).brightness == Brightness.dark
                   //     ? Colors.blue[800]
                   //     : Colors.blue,
                   child: Text("Submit"),
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+              ),
             ],
           );
         },
@@ -658,6 +712,7 @@ class DeleteAccount extends StatefulWidget {
 class _DeleteAccountState extends State<DeleteAccount> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
 
   @override
   void didChangeDependencies() {
@@ -665,7 +720,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
     super.didChangeDependencies();
   }
 
-  Future<void> updateData() async {
+  Future<void> updateData(context) async {
     setState(() {
       showAuthSnackBar(
         context: context,
@@ -676,13 +731,14 @@ class _DeleteAccountState extends State<DeleteAccount> {
     bool status = await update.deleteAccount(expert, key, context);
     if (status) {
       setState(() {
-      showAuthSnackBar(
+        showAuthSnackBar(
           context: context,
           title: 'Updated',
           leading: Icon(Icons.done, color: Colors.green, size: 23),
           persistant: false,
         );
       });
+      await Future.delayed(Duration(milliseconds: 800));
       Navigator.of(context).pop();
     }
   }
@@ -701,9 +757,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
         builder: (context) {
           return ListView(
             children: <Widget>[
-              Hero(
-                  child: AppbarContainer("Delete Account"),
-                  tag: "settingDelete Account"),
+              AppbarContainer("Delete Account"),
               Form(
                 key: key,
                 child: Column(
@@ -715,6 +769,8 @@ class _DeleteAccountState extends State<DeleteAccount> {
                           update.setPass(value);
                         },
                         isPassword: true,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -728,6 +784,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                         (value) {
                           update.setEmail(value);
                         },
+                        focusNode: focusNode[1],
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -741,11 +798,16 @@ class _DeleteAccountState extends State<DeleteAccount> {
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
                 child: RaisedButton(
-                  onPressed: updateData,
+                  onPressed: () {
+                    updateData(context);
+                  },
                   color: Theme.of(context).errorColor,
                   child: Text("Delete Account"),
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+              ),
             ],
           );
         },
@@ -761,15 +823,17 @@ class AppbarContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      height: 180,
-      width: MediaQuery.of(context).size.width,
-      color: Theme.of(context).appBarTheme.color,
-      child: Align(
-        alignment: Alignment.bottomLeft,
-        child: Text(title, style: Theme.of(context).textTheme.title),
-      ),
-    );
+    return Hero(
+        tag: "setting" + title,
+        child: Container(
+          padding: EdgeInsets.all(20),
+          height: 180,
+          width: MediaQuery.of(context).size.width,
+          color: Theme.of(context).appBarTheme.color,
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(title, style: Theme.of(context).textTheme.title),
+          ),
+        ));
   }
 }

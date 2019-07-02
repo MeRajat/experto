@@ -37,6 +37,8 @@ class _CustomFormField extends State<CustomFormField> {
   ];
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
+  List<FocusNode> focusNode =
+  List.generate(6, (_) => FocusNode(), growable: false);
 
   Map<String, DateTime> avail;
   int step = 0;
@@ -111,7 +113,7 @@ class _CustomFormField extends State<CustomFormField> {
               setState(() {
                 skillsSelected[selected]['name'] = skills.skillName[item];
                 skillsSelected[selected]['reference'] =
-                    skills.skillReference[item];
+                skills.skillReference[item];
               });
             },
             itemExtent: 30,
@@ -150,36 +152,36 @@ class _CustomFormField extends State<CustomFormField> {
             onStepContinue: (loading == true)
                 ? null
                 : () {
-                    if (step < formKeyExpert.length - 1) {
-                      if (validateFormStep(formKeyExpert[step])) {
-                        setState(() {
-                          step += 1;
-                        });
-                      }
-                    } else {
-                      if (skillsSelected['skill1']['name'] == '') {
-                        showAuthSnackBar(
-                          context: context,
-                          title: "Skill 1 is required",
-                          leading:
-                              Icon(Icons.error, size: 25, color: Colors.red),
-                        );
-                      } else {
-                        startAuthentication();
-                      }
-                    }
-                  },
+              if (step < formKeyExpert.length - 1) {
+                if (validateFormStep(formKeyExpert[step])) {
+                  setState(() {
+                    step += 1;
+                  });
+                }
+              } else {
+                if (skillsSelected['skill1']['name'] == '') {
+                  showAuthSnackBar(
+                    context: context,
+                    title: "Skill 1 is required",
+                    leading:
+                    Icon(Icons.error, size: 25, color: Colors.red),
+                  );
+                } else {
+                  startAuthentication();
+                }
+              }
+            },
             onStepCancel: (loading == true)
                 ? null
                 : () {
-                    if (step > 0) {
-                        setState(() {
-                          step -= 1;
-                        });
-                    } else {
-                      Navigator.of(context).pop();
-                    }
-                  },
+              if (step > 0) {
+                setState(() {
+                  step -= 1;
+                });
+              } else {
+                Navigator.of(context).pop();
+              }
+            },
             steps: [
               Step(
                 title: Text("Basic Information"),
@@ -187,14 +189,44 @@ class _CustomFormField extends State<CustomFormField> {
                   key: formKeyExpert[0],
                   child: Column(
                     children: <Widget>[
-                      InputField("Name", authenticate.getName),
-                      InputField("Email", authenticate.getEmail,inputType: TextInputType.emailAddress,),
-                      InputField("Skype username", authenticate.getSkype),
-                      InputField("City", authenticate.getCity),
-                      InputField("Mobile", authenticate.getMobile,
-                          inputType: TextInputType.phone),
-                      InputField("Password", authenticate.getPass,
-                          isPassword: true,),
+                      InputField(
+                        "Name",
+                        authenticate.getName,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
+                      ),
+                      InputField(
+                        "Email",
+                        authenticate.getEmail,
+                        focusNode: focusNode[1],
+                        nextTextField: focusNode[2],
+                        inputType: TextInputType.emailAddress,
+                      ),
+                      InputField(
+                        "Skype username",
+                        authenticate.getSkype,
+                        focusNode: focusNode[2],
+                        nextTextField: focusNode[3],
+                      ),
+                      InputField(
+                        "City",
+                        authenticate.getCity,
+                        focusNode: focusNode[3],
+                        nextTextField: focusNode[4],
+                      ),
+                      InputField(
+                        "Mobile",
+                        authenticate.getMobile,
+                        inputType: TextInputType.phone,
+                        focusNode: focusNode[4],
+                        nextTextField: focusNode[5],
+                      ),
+                      InputField(
+                        "Password",
+                        authenticate.getPass,
+                        isPassword: true,
+                        focusNode: focusNode[5],
+                      )
                     ],
                   ),
                 ),

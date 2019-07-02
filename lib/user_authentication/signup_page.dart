@@ -29,6 +29,7 @@ class _CustomFormField extends State<CustomFormField> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
+  final List<FocusNode> focusNode = List.generate(5, (_)=>FocusNode(),growable: false);
 
   @override
   void dispose() {
@@ -86,13 +87,31 @@ class _CustomFormField extends State<CustomFormField> {
                   title: Text("Enter Information"),
                   content: Column(
                     children: <Widget>[
-                      InputField("Name", authenticate.getName,),
-                      InputField("Email", authenticate.getEmail,inputType: TextInputType.emailAddress),
-                      InputField("City", authenticate.getCity),
+                      InputField(
+                        "Name",
+                        authenticate.getName,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
+                        inputType: TextInputType.emailAddress,
+                      ),
+                      InputField(
+                        "Email",
+                        authenticate.getEmail,
+                        focusNode: focusNode[1],
+                        nextTextField: focusNode[2],
+                      ),
+                      InputField(
+                        "City",
+                        authenticate.getCity,
+                        focusNode: focusNode[2],
+                        nextTextField: focusNode[3],
+                      ),
                       InputField("Mobile", authenticate.getMobile,
+                          focusNode: focusNode[3],
+                          nextTextField: focusNode[4],
                           inputType: TextInputType.phone),
                       InputField("Password", authenticate.getPass,
-                          isPassword: true,inputAction: TextInputAction.done,func: startAuthentication,),
+                        focusNode: focusNode[4], isPassword: true,inputAction: TextInputAction.done,func: startAuthentication,),
                     ],
                   ),
                 ),
