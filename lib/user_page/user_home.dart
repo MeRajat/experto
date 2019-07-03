@@ -8,17 +8,24 @@ import "./settings_page/settings_page.dart";
 import "./navigation_bar_items.dart";
 import 'package:experto/global_data.dart';
 
-
-
 class HomePage extends StatefulWidget {
   final Data user;
-  
+
   HomePage(this.user);
   @override
   _HomePage createState() => _HomePage();
 }
 
 class _HomePage extends State<HomePage> {
+  int currentIndex = 0;
+
+  final List<NavigatorObserver> observers = [
+    NavigatorObserver(),
+    NavigatorObserver(),
+    NavigatorObserver(),
+    NavigatorObserver(),
+  ];
+
   final List<Widget> pages = [
     UserHome(),
     SearchSkill(),
@@ -26,20 +33,10 @@ class _HomePage extends State<HomePage> {
     SettingsPage(),
   ];
 
-  int currentIndex = 0;
-
-  final List<GlobalKey<NavigatorState>> keys = [
-    GlobalKey(),
-    GlobalKey(),
-    GlobalKey(),
-    GlobalKey()
-  ];
-
   Future<bool> overrideBack() {
-    NavigatorState navigator = keys[currentIndex].currentState;
-    bool canPop = navigator.canPop();
+    bool canPop = observers[currentIndex].navigator.canPop();
     if (canPop) {
-      navigator.pop();
+      observers[currentIndex].navigator.pop();
     }
     return Future.value(!canPop);
   }
@@ -49,24 +46,40 @@ class _HomePage extends State<HomePage> {
     return DocumentSync(
       widget.user,
       Scaffold(
-        body: CupertinoTabScaffold(
-          tabBar: CupertinoTabBar(
+        bottomNavigationBar: Theme(
+          data: Theme.of(context)
+              .copyWith(canvasColor: Theme.of(context).appBarTheme.color),
+          child: BottomNavigationBar(
             items: navigationBarItems(),
-            onTap: (int tapped){
-              currentIndex = tapped;
-            }
+            currentIndex: currentIndex,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey[400],
+            selectedFontSize: 11,
+            unselectedFontSize: 11,
+            onTap: (int tapped) {
+              setState(() {
+                currentIndex = tapped;
+              });
+            },
           ),
-          tabBuilder: (BuildContext context, int index) {
-            return WillPopScope(
-              onWillPop: () => overrideBack(),
-              child: CupertinoTabView(
-                navigatorKey: keys[index],
-                builder: (context) {
-                  return pages[index];
-                },
-              ),
-            );
-          },
+        ),
+        body: WillPopScope(
+          onWillPop: overrideBack,
+          child: IndexedStack(
+            index: currentIndex,
+            children: List<Widget>.generate(
+              pages.length,
+              (int index) => Navigator(
+                    observers: [observers[index]],
+                    onGenerateRoute: (RouteSettings settings) {
+                      return MaterialPageRoute(
+                        builder: (BuildContext context) => pages[index],
+                        settings: settings,
+                      );
+                    },
+                  ),
+            ),
+          ),
         ),
       ),
     );

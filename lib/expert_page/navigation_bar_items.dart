@@ -5,14 +5,14 @@ List<BottomNavigationBarItem> navigationBarItems() {
   return <BottomNavigationBarItem>[
     BottomNavigationBarItem(
       icon: Icon(
-        CupertinoIcons.home,
+        Icons.home,
         size: 25,
       ),
       title: Text('Home'),
     ),
     BottomNavigationBarItem(
       icon: Icon(
-        CupertinoIcons.settings,
+        Icons.settings,
         size: 25,
       ),
       title: Text("Settings"),

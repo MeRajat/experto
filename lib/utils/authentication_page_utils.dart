@@ -40,28 +40,16 @@ class InputField extends StatelessWidget {
             obscureText: isPassword,
             focusNode: focusNode,
             initialValue: initailValue,
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'please enter this field';
-              }
-              if (maxLength != 0 && value.length > maxLength) {
-                return 'max length exceeded';
-              }
-            },
-            onSaved: (input) => fn(input),
             textInputAction: inputAction,
-            onFieldSubmitted: (nextTextField == null)
-                ? null
-                : (_) {
-                    FocusScope.of(context).requestFocus(nextTextField);
-                  },
             keyboardType: inputType,
             minLines: minLines,
             maxLines: maxLines,
             maxLength: (maxLength == 0) ? null : maxLength,
+            onSaved: (input) => fn(input),
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(0),
               filled: true,
+              //fillColor: Theme.of(context).inputDecorationTheme.fillColor,
               hintText: hintText,
               hintStyle: TextStyle(
                 fontSize: 13,
@@ -73,6 +61,19 @@ class InputField extends StatelessWidget {
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'please enter this field';
+              }
+              if (maxLength != 0 && value.length > maxLength) {
+                return 'max length exceeded';
+              }
+            },
+            onFieldSubmitted: (nextTextField == null)
+                ? null
+                : (_) {
+                    FocusScope.of(context).requestFocus(nextTextField);
+                  },
           ),
         ),
       ),

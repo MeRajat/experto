@@ -16,7 +16,7 @@ void showBottomSheet(
           Padding(
             child: icon,
             padding: EdgeInsets.only(
-              top: 30,
+              top: 20,
               bottom: 20,
             ),
           ),
@@ -43,7 +43,7 @@ void showBottomSheet(
               top: 10,
               left: 15,
               right: 15,
-              bottom: 70,
+              bottom: 30,
             ),
             child: RaisedButton(
               color: (Theme.of(context).brightness == Brightness.dark)

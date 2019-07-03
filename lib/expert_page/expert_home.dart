@@ -14,23 +14,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+  int currentIndex = 0;
+
+  final List<NavigatorObserver> observers = [
+    NavigatorObserver(),
+    NavigatorObserver(),
+  ];
   final List<Widget> pages = [
     ExpertHome(),
     SettingsPage(),
   ];
 
-  int currentIndex = 0;
-
-  final List<GlobalKey<NavigatorState>> keys = [
-    GlobalKey(debugLabel: 'expert home page'),
-    GlobalKey(debugLabel: 'expert settings page'),
-  ];
-
   Future<bool> overrideBack() {
-    NavigatorState navigator = keys[currentIndex].currentState;
-    bool canPop = navigator.canPop();
+    bool canPop = observers[currentIndex].navigator.canPop();
     if (canPop) {
-      navigator.pop();
+      observers[currentIndex].navigator.pop();
     }
     return Future.value(!canPop);
   }
@@ -40,23 +38,40 @@ class _HomePage extends State<HomePage> {
     return DocumentSync(
       widget.expert,
       Scaffold(
-        body: CupertinoTabScaffold(
-          tabBar: CupertinoTabBar(
-              items: navigationBarItems(),
-              onTap: (int tapped) {
+        bottomNavigationBar: Theme(
+          data: Theme.of(context)
+              .copyWith(canvasColor: Theme.of(context).appBarTheme.color),
+          child: BottomNavigationBar(
+            items: navigationBarItems(),
+            currentIndex: currentIndex,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey[400],
+            selectedFontSize: 11,
+            unselectedFontSize: 11,
+            onTap: (int tapped) {
+              setState(() {
                 currentIndex = tapped;
-              }),
-          tabBuilder: (BuildContext context, int index) {
-            return WillPopScope(
-              onWillPop: () => overrideBack(),
-              child: CupertinoTabView(
-                navigatorKey: keys[index],
-                builder: (context) {
-                  return pages[index];
-                },
-              ),
-            );
-          },
+              });
+            },
+          ),
+        ),
+        body: WillPopScope(
+          onWillPop: overrideBack,
+          child: IndexedStack(
+            index: currentIndex,
+            children: List<Widget>.generate(
+              pages.length,
+              (int index) => Navigator(
+                    observers: [observers[index]],
+                    onGenerateRoute: (RouteSettings settings) {
+                      return MaterialPageRoute(
+                        builder: (BuildContext context) => pages[index],
+                        settings: settings,
+                      );
+                    },
+                  ),
+            ),
+          ),
         ),
       ),
     );
