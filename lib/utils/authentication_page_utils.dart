@@ -9,6 +9,7 @@ class InputField extends StatelessWidget {
   final TextInputType inputType;
   final bool isPassword;
   final void Function(String) fn;
+  final VoidCallback func;
   final int minLines, maxLines, maxLength;
   final TextInputAction inputAction;
   final FocusNode nextTextField, focusNode;
@@ -25,6 +26,7 @@ class InputField extends StatelessWidget {
     this.initailValue: '',
     this.focusNode,
     this.nextTextField,
+    this.func,
   });
 
   @override
@@ -68,6 +70,9 @@ class InputField extends StatelessWidget {
               if (maxLength != 0 && value.length > maxLength) {
                 return 'max length exceeded';
               }
+            },
+            onEditingComplete: () {
+              if (inputAction == TextInputAction.done) func();
             },
             onFieldSubmitted: (nextTextField == null)
                 ? null
