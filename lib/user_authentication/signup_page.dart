@@ -29,7 +29,8 @@ class _CustomFormField extends State<CustomFormField> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
-  final List<FocusNode> focusNode = List.generate(5, (_)=>FocusNode(),growable: false);
+  final List<FocusNode> focusNode =
+      List.generate(5, (_) => FocusNode(), growable: false);
 
   @override
   void dispose() {
@@ -110,8 +111,14 @@ class _CustomFormField extends State<CustomFormField> {
                           focusNode: focusNode[3],
                           nextTextField: focusNode[4],
                           inputType: TextInputType.phone),
-                      InputField("Password", authenticate.getPass,
-                        focusNode: focusNode[4], isPassword: true,inputAction: TextInputAction.done,func: startAuthentication,),
+                      InputField(
+                        "Password",
+                        authenticate.getPass,
+                        focusNode: focusNode[4],
+                        isPassword: true,
+                        inputAction: TextInputAction.done,
+                        func: startAuthentication,
+                      ),
                     ],
                   ),
                 ),

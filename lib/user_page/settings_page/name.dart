@@ -16,6 +16,7 @@ class Name extends StatefulWidget {
 class _NameState extends State<Name> {
   Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -25,6 +26,7 @@ class _NameState extends State<Name> {
 
   Future<void> updateData(context) async {
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -34,6 +36,7 @@ class _NameState extends State<Name> {
     user = await update.updateName(context, user, key);
     syncDocument.updateStatus(user);
     setState(() {
+      updating = false;
       showAuthSnackBar(
         context: context,
         title: 'Uploaded',
@@ -68,6 +71,10 @@ class _NameState extends State<Name> {
                     (value) {
                       update.getName(value);
                     },
+                    inputAction: TextInputAction.done,
+                        func: () {
+                          updateData(context);
+                        },
                   ),
                   padding: EdgeInsets.only(
                     left: 20,
@@ -79,22 +86,26 @@ class _NameState extends State<Name> {
               ),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  // color: Theme.of(context).brightness == Brightness.dark
-                  //     ? Colors.blue[800]
-                  //     : Colors.blue,
-                  child: Text("Submit",
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .body2
-                          .copyWith(color: Colors.white)),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue))
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        // color: Theme.of(context).brightness == Brightness.dark
+                        //     ? Colors.blue[800]
+                        //     : Colors.blue,
+                        child: Text("Submit",
+                            style: Theme.of(context)
+                                .primaryTextTheme
+                                .body2
+                                .copyWith(color: Colors.white)),
+                      ),
               ),
               Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.height * .1),
               )
             ],
           );
@@ -113,6 +124,7 @@ class _EmailState extends State<Email> {
   Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -123,6 +135,7 @@ class _EmailState extends State<Email> {
   Future<void> updateData(context) async {
     Data newUser;
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -130,6 +143,9 @@ class _EmailState extends State<Email> {
       );
     });
     newUser = await update.updateEmail(user, key, context);
+    setState(() {
+      updating = false;
+    });
     if (newUser != null) {
       user = newUser;
       syncDocument.updateStatus(newUser);
@@ -192,6 +208,10 @@ class _EmailState extends State<Email> {
                           update.getEmail(value);
                         },
                         focusNode: focusNode[1],
+                        inputAction: TextInputAction.done,
+                        func: () {
+                          updateData(context);
+                        },
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -204,21 +224,26 @@ class _EmailState extends State<Email> {
               ),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  // color: Theme.of(context).brightness == Brightness.dark
-                  //     ? Colors.blue[800]
-                  //     : Colors.blue,
-                  child: Text("Submit",
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .body2
-                          .copyWith(color: Colors.white)),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue))
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        // color: Theme.of(context).brightness == Brightness.dark
+                        //     ? Colors.blue[800]
+                        //     : Colors.blue,
+                        child: Text("Submit",
+                            style: Theme.of(context)
+                                .primaryTextTheme
+                                .body2
+                                .copyWith(color: Colors.white)),
+                      ),
               ),
-              Padding(padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3)),
+              Padding(
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.height * .1)),
             ],
           );
         },
@@ -236,6 +261,7 @@ class _PassowrdState extends State<Passowrd> {
   Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(3, (_) => FocusNode());
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -245,6 +271,7 @@ class _PassowrdState extends State<Passowrd> {
 
   Future<void> updateData(context) async {
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -253,6 +280,9 @@ class _PassowrdState extends State<Passowrd> {
     });
     bool stat = await update.updatePassword(user, key, context);
     syncDocument.updateStatus(user);
+    setState(() {
+      updating = false;
+    });
     if (stat == true) {
       setState(() {
         showAuthSnackBar(
@@ -324,6 +354,10 @@ class _PassowrdState extends State<Passowrd> {
                         },
                         isPassword: true,
                         focusNode: focusNode[2],
+                        inputAction: TextInputAction.done,
+                        func: () {
+                          updateData(context);
+                        },
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 20),
@@ -333,21 +367,26 @@ class _PassowrdState extends State<Passowrd> {
               ),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.blue[800]
-                      : Colors.blue,
-                  child: Text("Submit",
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .body2
-                          .copyWith(color: Colors.white)),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue))
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.blue[800]
+                            : Colors.blue,
+                        child: Text("Submit",
+                            style: Theme.of(context)
+                                .primaryTextTheme
+                                .body2
+                                .copyWith(color: Colors.white)),
+                      ),
               ),
-              Padding(padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3)),
+              Padding(
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.height * .1)),
             ],
           );
         },
@@ -365,6 +404,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
   Data user;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -374,6 +414,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
 
   Future<void> updateData(context) async {
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -381,6 +422,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
       );
     });
     bool status = await update.deleteAccount(user, key, context);
+    setState(() {
+      updating = false;
+    });
     if (status) {
       setState(() {
         showAuthSnackBar(
@@ -441,6 +485,10 @@ class _DeleteAccountState extends State<DeleteAccount> {
                           update.getEmail(value);
                         },
                         focusNode: focusNode[1],
+                        inputAction: TextInputAction.done,
+                        func: () {
+                          updateData(context);
+                        },
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -453,22 +501,28 @@ class _DeleteAccountState extends State<DeleteAccount> {
               ),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.red[800]
-                      : Colors.red,
-                  child: Text("Delete Account",
-                      style: Theme.of(context)
-                          .primaryTextTheme
-                          .body2
-                          .copyWith(color: Colors.white)),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).errorColor),
+                      )
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.red[800]
+                            : Colors.red,
+                        child: Text("Delete Account",
+                            style: Theme.of(context)
+                                .primaryTextTheme
+                                .body2
+                                .copyWith(color: Colors.white)),
+                      ),
               ),
               Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.height * .1),
               )
             ],
           );

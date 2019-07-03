@@ -107,8 +107,14 @@ class _CustomForm extends State<CustomForm> {
                         focusNode: focusNode[0],
                         nextTextField: focusNode[1],
                       ),
-                      InputField("Enter Your Password", authenticate.getPass,
-                          isPassword: true, focusNode: focusNode[1],inputAction: TextInputAction.done,func: startAuthentication,),
+                      InputField(
+                        "Enter Your Password",
+                        authenticate.getPass,
+                        isPassword: true,
+                        focusNode: focusNode[1],
+                        inputAction: TextInputAction.done,
+                        func: startAuthentication,
+                      ),
                       SignupPageRedirect(
                         text: "Don't have an account?",
                         redirectLink: "SignUp",

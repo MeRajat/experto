@@ -17,6 +17,7 @@ class _EmailState extends State<Email> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
+  bool updating = false;
   @override
   void didChangeDependencies() {
     expert = DocumentSync.of(context).account;
@@ -26,6 +27,7 @@ class _EmailState extends State<Email> {
   Future<void> updateData(context) async {
     Data newExpert;
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -33,6 +35,9 @@ class _EmailState extends State<Email> {
       );
     });
     newExpert = await update.updateEmail(expert, key, context);
+    setState(() {
+      updating = false;
+    });
     if (newExpert != null) {
       expert = newExpert;
       sync.syncDocument.updateStatus(newExpert);
@@ -91,6 +96,10 @@ class _EmailState extends State<Email> {
                           update.setEmail(value);
                         },
                         focusNode: focusNode[1],
+                        inputAction: TextInputAction.done,
+                        func: () {
+                          updateData(context);
+                        },
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -103,17 +112,29 @@ class _EmailState extends State<Email> {
               ),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  // color: Theme.of(context).brightness == Brightness.dark
-                  //     ? Colors.blue[800]
-                  //     : Colors.blue,
-                  child: Text("Submit"),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                      )
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        // color: Theme.of(context).brightness == Brightness.dark
+                        //     ? Colors.blue[800]
+                        //     : Colors.blue,
+                        child: Text(
+                          "Submit",
+                          style:
+                              Theme.of(context).primaryTextTheme.body2.copyWith(
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
               ),
-              Padding(padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3)),
+              Padding(
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.height * .1)),
             ],
           );
         },
@@ -131,6 +152,7 @@ class _PasswordState extends State<Password> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(3, (_) => FocusNode());
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -140,6 +162,7 @@ class _PasswordState extends State<Password> {
 
   Future<void> updateData(context) async {
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -147,6 +170,9 @@ class _PasswordState extends State<Password> {
       );
     });
     bool stat = await update.updatePassword(expert, key, context);
+    setState(() {
+      updating = false;
+    });
     sync.syncDocument.updateStatus(expert);
     if (stat) {
       setState(() {
@@ -215,6 +241,10 @@ class _PasswordState extends State<Password> {
                         },
                         isPassword: true,
                         focusNode: focusNode[2],
+                        inputAction: TextInputAction.done,
+                        func: () {
+                          updateData(context);
+                        },
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 20),
@@ -224,18 +254,29 @@ class _PasswordState extends State<Password> {
               ),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  // color: Theme.of(context).brightness == Brightness.dark
-                  //     ? Colors.blue[800]
-                  //     : Colors.blue,
-                  child: Text("Submit"),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                      )
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        // color: Theme.of(context).brightness == Brightness.dark
+                        //     ? Colors.blue[800]
+                        //     : Colors.blue,
+                        child: Text(
+                          "Submit",
+                          style:
+                              Theme.of(context).primaryTextTheme.body2.copyWith(
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
               ),
               Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.height * .1),
               ),
             ],
           );
@@ -254,6 +295,7 @@ class _SkypeState extends State<Skype> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -263,6 +305,7 @@ class _SkypeState extends State<Skype> {
 
   Future<void> updateData(context) async {
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -270,6 +313,9 @@ class _SkypeState extends State<Skype> {
       );
     });
     bool stat = await update.updateField(expert, "SkypeUser", key, context);
+    setState(() {
+      updating = false;
+    });
     sync.syncDocument.updateStatus(expert);
     if (stat) {
       setState(() {
@@ -324,6 +370,10 @@ class _SkypeState extends State<Skype> {
                           update.setSkype(value);
                         },
                         focusNode: focusNode[1],
+                        inputAction: TextInputAction.done,
+                        func: () {
+                          updateData(context);
+                        },
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 5),
@@ -334,18 +384,29 @@ class _SkypeState extends State<Skype> {
               Container(
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  // color: Theme.of(context).brightness == Brightness.dark
-                  //     ? Colors.blue[800]
-                  //     : Colors.blue,
-                  child: Text("Submit"),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                      )
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        // color: Theme.of(context).brightness == Brightness.dark
+                        //     ? Colors.blue[800]
+                        //     : Colors.blue,
+                        child: Text(
+                          "Submit",
+                          style:
+                              Theme.of(context).primaryTextTheme.body2.copyWith(
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
               ),
               Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.height * .1),
               )
             ],
           );
@@ -364,6 +425,7 @@ class _CityState extends State<City> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -373,6 +435,7 @@ class _CityState extends State<City> {
 
   Future<void> updateData(context) async {
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -380,6 +443,9 @@ class _CityState extends State<City> {
       );
     });
     bool stat = await update.updateField(expert, "City", key, context);
+    setState(() {
+      updating = false;
+    });
     sync.syncDocument.updateStatus(expert);
     if (stat) {
       setState(() {
@@ -434,6 +500,10 @@ class _CityState extends State<City> {
                           update.setCity(value);
                         },
                         focusNode: focusNode[1],
+                        inputAction: TextInputAction.done,
+                        func: () {
+                          updateData(context);
+                        },
                       ),
                       padding: EdgeInsets.only(
                           left: 20, right: 20, top: 0, bottom: 5),
@@ -444,18 +514,29 @@ class _CityState extends State<City> {
               Container(
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  // color: Theme.of(context).brightness == Brightness.dark
-                  //     ? Colors.blue[800]
-                  //     : Colors.blue,
-                  child: Text("Submit"),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                      )
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        // color: Theme.of(context).brightness == Brightness.dark
+                        //     ? Colors.blue[800]
+                        //     : Colors.blue,
+                        child: Text(
+                          "Submit",
+                          style:
+                              Theme.of(context).primaryTextTheme.body2.copyWith(
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
               ),
               Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.height * .1),
               )
             ],
           );
@@ -474,6 +555,7 @@ class _DescriptionState extends State<Description> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -483,6 +565,7 @@ class _DescriptionState extends State<Description> {
 
   Future<void> updateData(context) async {
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -490,6 +573,9 @@ class _DescriptionState extends State<Description> {
       );
     });
     bool stat = await update.updateField(expert, "Description", key, context);
+    setState(() {
+      updating = false;
+    });
     sync.syncDocument.updateStatus(expert);
     if (stat) {
       setState(() {
@@ -560,18 +646,29 @@ class _DescriptionState extends State<Description> {
               Container(
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  // color: Theme.of(context).brightness == Brightness.dark
-                  //     ? Colors.blue[800]
-                  //     : Colors.blue,
-                  child: Text("Submit"),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                      )
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        // color: Theme.of(context).brightness == Brightness.dark
+                        //     ? Colors.blue[800]
+                        //     : Colors.blue,
+                        child: Text(
+                          "Submit",
+                          style:
+                              Theme.of(context).primaryTextTheme.body2.copyWith(
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
               ),
               Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.height * .1),
               ),
             ],
           );
@@ -590,6 +687,7 @@ class _WorkExperienceState extends State<WorkExperience> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -599,6 +697,7 @@ class _WorkExperienceState extends State<WorkExperience> {
 
   Future<void> updateData(context) async {
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -608,6 +707,9 @@ class _WorkExperienceState extends State<WorkExperience> {
     bool stat =
         await update.updateField(expert, "Work Experience", key, context);
     sync.syncDocument.updateStatus(expert);
+    setState(() {
+      updating = false;
+    });
     if (stat) {
       setState(() {
         showAuthSnackBar(
@@ -683,18 +785,29 @@ class _WorkExperienceState extends State<WorkExperience> {
               Container(
                 padding:
                     EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  // color: Theme.of(context).brightness == Brightness.dark
-                  //     ? Colors.blue[800]
-                  //     : Colors.blue,
-                  child: Text("Submit"),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                      )
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        // color: Theme.of(context).brightness == Brightness.dark
+                        //     ? Colors.blue[800]
+                        //     : Colors.blue,
+                        child: Text(
+                          "Submit",
+                          style:
+                              Theme.of(context).primaryTextTheme.body2.copyWith(
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
               ),
               Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.height * .1),
               ),
             ],
           );
@@ -713,6 +826,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
   Data expert;
   GlobalKey<FormState> key = GlobalKey<FormState>();
   List<FocusNode> focusNode = List.generate(2, (_) => FocusNode());
+  bool updating = false;
 
   @override
   void didChangeDependencies() {
@@ -722,6 +836,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
 
   Future<void> updateData(context) async {
     setState(() {
+      updating = true;
       showAuthSnackBar(
         context: context,
         title: "Updating...",
@@ -729,6 +844,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
       );
     });
     bool status = await update.deleteAccount(expert, key, context);
+    setState(() {
+      updating = false;
+    });
     if (status) {
       setState(() {
         showAuthSnackBar(
@@ -785,6 +903,10 @@ class _DeleteAccountState extends State<DeleteAccount> {
                           update.setEmail(value);
                         },
                         focusNode: focusNode[1],
+                        inputAction: TextInputAction.done,
+                        func: () {
+                          updateData(context);
+                        },
                       ),
                       padding: EdgeInsets.only(
                         left: 20,
@@ -797,16 +919,29 @@ class _DeleteAccountState extends State<DeleteAccount> {
               ),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    updateData(context);
-                  },
-                  color: Theme.of(context).errorColor,
-                  child: Text("Delete Account"),
-                ),
+                child: (updating)
+                    ? LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).errorColor,
+                        ),
+                      )
+                    : RaisedButton(
+                        onPressed: () {
+                          updateData(context);
+                        },
+                        color: Theme.of(context).errorColor,
+                        child: Text(
+                          "Delete Account",
+                          style:
+                              Theme.of(context).primaryTextTheme.body2.copyWith(
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
               ),
               Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.height*.3),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.height * .1),
               ),
             ],
           );
@@ -824,16 +959,20 @@ class AppbarContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Hero(
-        tag: "setting" + title,
-        child: Container(
-          padding: EdgeInsets.all(20),
-          height: 180,
-          width: MediaQuery.of(context).size.width,
-          color: Theme.of(context).appBarTheme.color,
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Text(title, style: Theme.of(context).textTheme.title),
+      tag: "setting" + title,
+      child: Container(
+        padding: EdgeInsets.all(20),
+        height: 180,
+        width: MediaQuery.of(context).size.width,
+        color: Theme.of(context).appBarTheme.color,
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.title,
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
