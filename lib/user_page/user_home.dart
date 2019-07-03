@@ -19,12 +19,9 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   int currentIndex = 0;
 
-  final List<NavigatorObserver> observers = [
-    NavigatorObserver(),
-    NavigatorObserver(),
-    NavigatorObserver(),
-    NavigatorObserver(),
-  ];
+  final List<NavigatorObserver> observers = List.generate(4,(_)=>NavigatorObserver());
+
+  final List<HeroController> heroControllers = List.generate(4,(_)=>HeroController());
 
   final List<Widget> pages = [
     UserHome(),
@@ -70,7 +67,7 @@ class _HomePage extends State<HomePage> {
             children: List<Widget>.generate(
               pages.length,
               (int index) => Navigator(
-                    observers: [observers[index]],
+                    observers: [observers[index],heroControllers[index]],
                     onGenerateRoute: (RouteSettings settings) {
                       return MaterialPageRoute(
                         builder: (BuildContext context) => pages[index],
