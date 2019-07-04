@@ -114,6 +114,7 @@ class _CustomFormField extends State<CustomFormField> {
                       InputField(
                         "Password",
                         authenticate.getPass,
+                        isSignUp: true,
                         isPassword: true,
                         focusNode: focusNode[4],
                         nextTextField: focusNode[5],
@@ -123,6 +124,7 @@ class _CustomFormField extends State<CustomFormField> {
                         authenticate.getPass,
                         focusNode: focusNode[5],
                         isPassword: true,
+                        isSignUp: true,
                         inputAction: TextInputAction.done,
                         func: startAuthentication,
                       ),

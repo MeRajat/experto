@@ -439,7 +439,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
         );
       });
       await Future.delayed(Duration(milliseconds: 800));
-      Navigator.of(context).pop();
+      logOut(context);
     }
   }
 
