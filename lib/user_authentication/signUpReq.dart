@@ -41,7 +41,7 @@ class Authenticate {
     try {
       if (userData.profileData == null) {
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, '/user_login');
+        Navigator.pushNamed(context, '/home_page');
         return false;
       } else {
         userData.detailsData =

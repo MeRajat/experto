@@ -38,7 +38,7 @@ class _CustomFormField extends State<CustomFormField> {
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
   List<FocusNode> focusNode =
-  List.generate(6, (_) => FocusNode(), growable: false);
+  List.generate(7, (_) => FocusNode(), growable: false);
 
   Map<String, DateTime> avail;
   int step = 0;
@@ -226,6 +226,14 @@ class _CustomFormField extends State<CustomFormField> {
                         authenticate.getPass,
                         isPassword: true,
                         focusNode: focusNode[5],
+                        nextTextField: focusNode[6],
+                      ),
+                      InputField(
+                        "Re-enter Password",
+                        authenticate.getPass,
+                        isPassword: true,
+                        focusNode: focusNode[6],
+
                       )
                     ],
                   ),

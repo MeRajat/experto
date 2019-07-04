@@ -67,7 +67,7 @@ class Authenticate {
     try {
       if (expertData.profileData == null) {
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, '/expert_login');
+        Navigator.pushNamed(context, '/home_page');
         return false;
       } else {
         expertData.detailsData =

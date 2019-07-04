@@ -13,6 +13,7 @@ class InputField extends StatelessWidget {
   final int minLines, maxLines, maxLength;
   final TextInputAction inputAction;
   final FocusNode nextTextField, focusNode;
+  static String password;
 
   InputField(
     this.hintText,
@@ -70,6 +71,10 @@ class InputField extends StatelessWidget {
               if (maxLength != 0 && value.length > maxLength) {
                 return 'max length exceeded';
               }
+              if(isPassword&&hintText=="Password")
+                password=value;
+              else if(isPassword&&value!=password)
+                return 'Passwords don\'t match';
             },
             onEditingComplete: () {
               if (inputAction == TextInputAction.done) func();
