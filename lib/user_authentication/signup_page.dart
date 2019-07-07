@@ -93,13 +93,13 @@ class _CustomFormField extends State<CustomFormField> {
                         authenticate.getName,
                         focusNode: focusNode[0],
                         nextTextField: focusNode[1],
-                        inputType: TextInputType.emailAddress,
                       ),
                       InputField(
                         "Email",
                         authenticate.getEmail,
                         focusNode: focusNode[1],
                         nextTextField: focusNode[2],
+                        inputType: TextInputType.emailAddress,
                       ),
                       InputField(
                         "City",

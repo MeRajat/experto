@@ -117,6 +117,7 @@ class Authenticate {
           name: details[0],
           m: details[3],
         );
+
         //userUpdateInfo.photoUrl=
         await userData.profileData.updateProfile(userUpdateInfo);
         await Firestore.instance.runTransaction((Transaction t) async {
@@ -138,7 +139,7 @@ class Authenticate {
         _ackAlert(
             context,
             e=="Verify"?"Verification Required":"SignUp Failed!",
-            e == "Mobile"
+            e.contains("Mobile")
                 ? e:e=="Verify"?"Verify email and then signIn"
                 : e.toString().split(',')[1],signup: true);
       }
