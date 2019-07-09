@@ -9,7 +9,7 @@ import "package:experto/utils/bloc/reload.dart";
 import "package:experto/utils/bloc/is_searching.dart";
 import 'package:experto/utils/no_result.dart';
 import 'package:experto/utils/timed_out.dart';
-import "package:cached_network_image/cached_network_image.dart";
+//import "package:cached_network_image/cached_network_image.dart";
 
 class Cards extends StatefulWidget {
   @override
@@ -18,9 +18,12 @@ class Cards extends StatefulWidget {
 
 class _Cards extends State<Cards> {
   List<DocumentSnapshot> querySetResult = [], tempResult = [];
-  int searchingStatus = 0;
   String searchString;
-  bool timedOut = false, resultAvailable = false, loading = false;
+  bool timedOut = false,
+      resultAvailable = false,
+      loading = false,
+      searchingStatus = false,
+      isInitialSearch = true;
   CollectionReference expert;
   QuerySnapshot expertSnapshot, searchSnapshot;
 
@@ -42,7 +45,7 @@ class _Cards extends State<Cards> {
   void reload() {
     setState(() {
       timedOut = false;
-      searchingStatus = 0;
+      searchingStatus = false;
       expert = null;
       expertSnapshot = null;
       searchSnapshot = null;
@@ -82,10 +85,11 @@ class _Cards extends State<Cards> {
     isSearchingExpert.getStatus.listen((result) {
       setState(() {
         timedOut = false;
-        if (result == 0) {
-          searchString = '';
-        }
         searchingStatus = result;
+        if (result == false) {
+          searchString = '';
+          isInitialSearch = true;
+        }
       });
     });
   }
@@ -106,6 +110,7 @@ class _Cards extends State<Cards> {
 
     setState(() {
       loading = false;
+      isInitialSearch = false;
     });
   }
 
@@ -129,9 +134,9 @@ class _Cards extends State<Cards> {
     });
     searchSnapshot = null;
     tempResult = [];
-    if (querySetResult.length == 0 || searchQuery.length == 1) {
+    if (isInitialSearch) {
       querySetResult = [];
-      getQuerySet(searchQuery);
+      getQuerySet(searchQuery[0]);
     } else {
       getTempSet(searchQuery);
     }
@@ -139,7 +144,7 @@ class _Cards extends State<Cards> {
 
   void retrySearch() async {
     timedOut = false;
-    if (searchingStatus == 0) {
+    if (searchingStatus == false) {
       reload();
     } else {
       search(searchString);
@@ -148,7 +153,7 @@ class _Cards extends State<Cards> {
 
   void getSearch() async {
     expertSearchBloc.value.listen((searchQuery) {
-      searchingStatus = 1;
+      searchingStatus = true;
       timedOut = false;
       searchString = searchQuery;
       search(searchQuery);
@@ -176,18 +181,18 @@ class _Cards extends State<Cards> {
         );
       }
 
-      if (searchingStatus == 0) {
+      if (searchingStatus == false) {
         return SearchResults(
           expertSnapshot.documents,
           allExpertHeaderText,
         );
       }
 
-      if (searchingStatus == 1 && resultAvailable) {
+      if (searchingStatus == true && resultAvailable) {
         return SearchResults(tempResult, searchHeaderText);
       }
 
-      if (searchingStatus == 1 && !resultAvailable) {
+      if (searchingStatus == true && !resultAvailable) {
         return SliverToBoxAdapter(child: NoResultCard());
       } else
         return Container();

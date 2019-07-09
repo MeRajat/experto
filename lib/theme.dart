@@ -12,6 +12,7 @@ class Theme {
       buttonColor: Colors.blue,
       brightness: Brightness.light,
       fontFamily: 'Ubuntu',
+      accentColor: Colors.blue,
       primaryTextTheme: TextTheme(
         title: TextStyle(
           wordSpacing: 1,
