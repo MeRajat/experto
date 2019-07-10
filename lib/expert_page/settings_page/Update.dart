@@ -211,7 +211,7 @@ class Update {
             email: expert.profileData.email, password: details['password']);
         await expert.profileData.delete();
         //await expert.profileData.reload();
-        await expertReference.document(expert.detailsData.documentID).delete();
+//        await expertReference.document(expert.detailsData.documentID).delete();
         return true;
       } catch (e) {
         showAuthSnackBar(
