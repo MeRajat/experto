@@ -148,36 +148,41 @@ class _ContactExpert extends State<ContactExpert> {
   }
 
   Future<void> updateInteraction() async {
-    int id;
-    bool interactionAlreadyAvailable = false;
-    QuerySnapshot tempsnap;
-    try {
-      tempsnap = await interaction
-          .where("user", isEqualTo: user.detailsData.documentID)
-          .getDocuments();
-      tempsnap.documents.forEach((document) {
-        if (document["expert"] == expert.documentID) {
-          interactionAlreadyAvailable = true;
-        }
-      });
-      if (!interactionAlreadyAvailable) {
-        tempsnap = null;
-      }
-    } catch (e) {
-      tempsnap = null;
-    }
+//    int id;
+//    bool interactionAlreadyAvailable = false;
+//    QuerySnapshot tempsnap;
+//    try {
+//      tempsnap = await interaction
+//          .where("user", isEqualTo: user.detailsData.documentID)
+//          .getDocuments();
+//      tempsnap.documents.forEach((document) {
+//        if (document["expert"] == expert.documentID) {
+//          interactionAlreadyAvailable = true;
+//        }
+//      });
+//      if (!interactionAlreadyAvailable) {
+//        tempsnap = null;
+//      }
+//    } catch (e) {
+//      tempsnap = null;
+//    }
+//
+//
+//    if (tempsnap != null) {
+//      await tempsnap.documents[0].reference.updateData({
+//        "interactionTime": FieldValue.arrayUnion([DateTime.now()])
+//      });
+//    } else {
+//      await interaction.add({
+//        'expert': expert.documentID,
+//        'user': user.detailsData.documentID,
+//      });
+//    }
 
-
-    if (tempsnap != null) {
-      await tempsnap.documents[0].reference.updateData({
-        "interactionTime": FieldValue.arrayUnion([DateTime.now()])
-      });
-    } else {
-      await interaction.add({
-        'expert': expert.documentID,
-        'user': user.detailsData.documentID,
-      });
-    }
+    await interaction.add({
+      'expert': expert.documentID,
+      'user': user.detailsData.documentID,
+    });
     Data newUser = Data();
     newUser.profileData = user.profileData;
     newUser.detailsData = await user.detailsData.reference.get();

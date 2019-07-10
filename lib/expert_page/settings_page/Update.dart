@@ -210,15 +210,13 @@ class Update {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: expert.profileData.email, password: details['password']);
         await expert.profileData.delete();
-        //await expert.profileData.reload();
-//        await expertReference.document(expert.detailsData.documentID).delete();
         return true;
       } catch (e) {
         showAuthSnackBar(
           context: context,
           title: e == "New Email cannot be same as old!"
               ? e
-              : "Old password is incorrect!",
+              : "Password is incorrect!",
           leading:
               Icon(Icons.error, color: Theme.of(context).errorColor, size: 23),
           persistant: false,
