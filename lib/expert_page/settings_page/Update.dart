@@ -210,15 +210,13 @@ class Update {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: expert.profileData.email, password: details['password']);
         await expert.profileData.delete();
-        //await expert.profileData.reload();
-        await expertReference.document(expert.detailsData.documentID).delete();
         return true;
       } catch (e) {
         showAuthSnackBar(
           context: context,
           title: e == "New Email cannot be same as old!"
               ? e
-              : "Old password is incorrect!",
+              : "Password is incorrect!",
           leading:
               Icon(Icons.error, color: Theme.of(context).errorColor, size: 23),
           persistant: false,
@@ -235,7 +233,9 @@ class Update {
     try {
       StorageUploadTask task, task2;
       UserUpdateInfo expertUpdateInfo = new UserUpdateInfo();
-      String path = await FilePicker.getFilePath(type: FileType.IMAGE);
+      File file = await FilePicker.getFile(type: FileType.IMAGE);
+      if(file==null)
+        throw("Cancelled");
       StorageReference storageReference = FirebaseStorage.instance
               .ref()
               .child("/Expert Profile Photos/" + expert.profileData.uid),
@@ -243,7 +243,6 @@ class Update {
               .ref()
               .child("/Expert Profile Photos/thumbs/" + expert.profileData.uid);
       print(storageReference.getPath().then((x) => print(x)));
-      File file = File(path);
       Im.Image image = Im.decodeImage(file.readAsBytesSync());
       if (image.height > 2800 && image.width > 2800)
         image = Im.copyResizeCropSquare(image, 2800);

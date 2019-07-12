@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:rxdart/subjects.dart';
+
 class IsSearching{
-  final StreamController<int> status = StreamController<int>.broadcast();
+  final BehaviorSubject<bool> status = BehaviorSubject<bool>.seeded(false);
 
   Stream get getStatus => status.stream;
 
-  void updateStatus(int newStatus){
+  void updateStatus(bool newStatus){
     status.sink.add(newStatus);
   }
 

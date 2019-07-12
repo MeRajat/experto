@@ -47,31 +47,31 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
               padding: EdgeInsets.only(left: 10, top: 80),
               child: (expert["profilePicThumb"] == null)
                   ? Icon(
-                      Icons.person,
-                      size: 110,
-                    )
+                Icons.person,
+                size: 110,
+              )
                   : CachedNetworkImage(
-                      imageBuilder: (context, imageProvider) => Container(
-                            margin: EdgeInsets.only(left: 10, right: 5),
-                            width: 90.0,
-                            height: 90.0,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey[400],
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover),
-                            ),
-                          ),
-                      imageUrl: expert["profilePicThumb"],
-                      height: 110,
-                      width: 110,
-                      placeholder: (context, a) => Container(
-                            margin: EdgeInsets.only(left: 10, right: 5),
-                            width: 90,
-                            height: 90,
-                            child: CustomPlaceholder(),
-                          ),
-                    ),
+                imageBuilder: (context, imageProvider) => Container(
+                  margin: EdgeInsets.only(left: 10, right: 5),
+                  width: 90.0,
+                  height: 90.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[400],
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                imageUrl: expert["profilePicThumb"],
+                height: 110,
+                width: 110,
+                placeholder: (context, a) => Container(
+                  margin: EdgeInsets.only(left: 10, right: 5),
+                  width: 90,
+                  height: 90,
+                  child: CustomPlaceholder(),
+                ),
+              ),
             ),
           ),
           Padding(
@@ -86,10 +86,10 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     expert["Name"],
                     style: Theme.of(context).textTheme.title.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          letterSpacing: -.5,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      letterSpacing: -.5,
+                    ),
                   ),
                 ),
                 Container(
@@ -97,9 +97,9 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     expert["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 12,
-                        ),
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
                 Padding(
@@ -148,52 +148,45 @@ class _ContactExpert extends State<ContactExpert> {
   }
 
   Future<void> updateInteraction() async {
-    int id;
-    bool interactionAlreadyAvailable = false;
-    QuerySnapshot tempsnap;
-    try {
-      tempsnap = await interaction
-          .where("user", isEqualTo: user.detailsData.documentID)
-          .getDocuments();
-      tempsnap.documents.forEach((document) {
-        if (document["expert"] == expert.documentID) {
-          interactionAlreadyAvailable = true;
-        }
-      });
-      if (!interactionAlreadyAvailable) {
-        tempsnap = null;
-      }
-    } catch (e) {
-      tempsnap = null;
-    }
+//    int id;
+//    bool interactionAlreadyAvailable = false;
+//    QuerySnapshot tempsnap;
+//    try {
+//      tempsnap = await interaction
+//          .where("user", isEqualTo: user.detailsData.documentID)
+//          .getDocuments();
+//      tempsnap.documents.forEach((document) {
+//        if (document["expert"] == expert.documentID) {
+//          interactionAlreadyAvailable = true;
+//        }
+//      });
+//      if (!interactionAlreadyAvailable) {
+//        tempsnap = null;
+//      }
+//    } catch (e) {
+//      tempsnap = null;
+//    }
+//
+//
+//    if (tempsnap != null) {
+//      await tempsnap.documents[0].reference.updateData({
+//        "interactionTime": FieldValue.arrayUnion([DateTime.now()])
+//      });
+//    } else {
+//      await interaction.add({
+//        'expert': expert.documentID,
+//        'user': user.detailsData.documentID,
+//      });
+//    }
 
-    await Firestore.instance.runTransaction((Transaction t) async {
-      await interaction.getDocuments().then((QuerySnapshot snapshot) {
-        id = snapshot.documents.length;
-      });
-      if (tempsnap != null) {
-        await tempsnap.documents[0].reference.updateData({
-          "interactionTime": FieldValue.arrayUnion([DateTime.now()])
-        });
-      } else {
-        await user.detailsData.reference.updateData({
-          "interactionID": FieldValue.arrayUnion([id])
-        });
-        await expert.reference.updateData({
-          "interactionID": FieldValue.arrayUnion([id])
-        });
-        await interaction.add({
-          'expert': expert.documentID,
-          'user': user.detailsData.documentID,
-          'id': id,
-          'interactionTime': FieldValue.arrayUnion([DateTime.now()])
-        });
-      }
-      Data newUser = Data();
-      newUser.profileData = user.profileData;
-      newUser.detailsData = await user.detailsData.reference.get();
-      syncDocument.updateStatus(newUser);
+    await interaction.add({
+      'expert': expert.documentID,
+      'user': user.detailsData.documentID,
     });
+    Data newUser = Data();
+    newUser.profileData = user.profileData;
+    newUser.detailsData = await user.detailsData.reference.get();
+    syncDocument.updateStatus(newUser);
     userSearchExpert.updateStatus(true);
   }
 
@@ -238,7 +231,8 @@ class _ContactExpert extends State<ContactExpert> {
               context: context,
               skypeUsername: expert['SkypeUser'],
               serviceType: serviceType,
-              afterLaunchFunc: () {});
+              afterLaunchFunc: () {},
+          );
         },
       );
     } else if (!expertAvailable) {
@@ -273,7 +267,7 @@ class _ContactExpert extends State<ContactExpert> {
               onTap: () {
                 contactOnTap(
                     secondaryText:
-                        "Are you sure you want to message this expert",
+                    "Are you sure you want to message this expert",
                     serviceType: "chat",
                     icon: Icon(Icons.chat_bubble_outline, size: 120));
               },
@@ -285,8 +279,8 @@ class _ContactExpert extends State<ContactExpert> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (
-                  BuildContext context,
-                ) {
+                    BuildContext context,
+                    ) {
                   return expert_feedback.Feedback(expert);
                 }),
               );

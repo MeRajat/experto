@@ -7,12 +7,13 @@ import "package:experto/home_page/home_page.dart";
 class InputField extends StatelessWidget {
   final String hintText, initailValue;
   final TextInputType inputType;
-  final bool isPassword;
+  final bool isPassword,isSignUp;
   final void Function(String) fn;
   final VoidCallback func;
   final int minLines, maxLines, maxLength;
   final TextInputAction inputAction;
   final FocusNode nextTextField, focusNode;
+  static String password;
 
   InputField(
     this.hintText,
@@ -27,6 +28,7 @@ class InputField extends StatelessWidget {
     this.focusNode,
     this.nextTextField,
     this.func,
+        this.isSignUp=false
   });
 
   @override
@@ -70,6 +72,10 @@ class InputField extends StatelessWidget {
               if (maxLength != 0 && value.length > maxLength) {
                 return 'max length exceeded';
               }
+              if(isSignUp&&isPassword&&hintText=="Password")
+                password=value;
+              else if(isSignUp&&isPassword&&value!=password)
+                return 'Passwords don\'t match';
             },
             onEditingComplete: () {
               if (inputAction == TextInputAction.done) func();

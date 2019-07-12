@@ -26,10 +26,10 @@ class SplashState extends State<Splash> {
   Future<void> startUp()async{
     await Future.wait([
       getPermissions(),
-      getSkypeAvailability(),
       Future.delayed(Duration(seconds: 1)),
     ]);
-    autoLogin();
+    await autoLogin();
+    getSkypeAvailability();
   }
 
   Future<void> autoLogin() async {
@@ -57,6 +57,7 @@ class SplashState extends State<Splash> {
 
   Future<void> _showSkypeDialog() async {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -71,7 +72,7 @@ class SplashState extends State<Splash> {
               },
             ),
             FlatButton(
-              child: const Text('OPEN PLAY STORE'),
+              child: const Text('OPEN APP STORE'),
               onPressed: () {
                 try {
                   launch("market://details?id=com.skype.raider");
@@ -97,6 +98,7 @@ class SplashState extends State<Splash> {
                 }
               },
             )
+
           ],
         );
       },

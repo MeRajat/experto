@@ -41,7 +41,7 @@ class Authenticate {
     try {
       if (userData.profileData == null) {
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, '/user_login');
+        Navigator.pushNamed(context, '/home_page');
         return false;
       } else {
         userData.detailsData =
@@ -50,8 +50,6 @@ class Authenticate {
         Navigator.pushNamedAndRemoveUntil(
             context, '/user_home', ModalRoute.withName(':'),
             arguments: userData);
-        HttpsCallable callable= CloudFunctions.instance.getHttpsCallable(functionName: "helloWorld");
-        callable.call();
 
         return true;
       }
@@ -62,7 +60,7 @@ class Authenticate {
     }
   }
 
-  Future<void> _ackAlert(BuildContext context, String title, String content) {
+  Future<void> _ackAlert(BuildContext context, String title, String content,{bool signup=false}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -73,7 +71,10 @@ class Authenticate {
             FlatButton(
               child: Text('Ok'),
               onPressed: () {
-                Navigator.of(context).pop();
+                if(signup)
+                  Navigator.of(context).popUntil(ModalRoute.withName('/user_login'));
+                else
+                  Navigator.of(context).pop();
               },
             ),
           ],
@@ -116,6 +117,7 @@ class Authenticate {
           name: details[0],
           m: details[3],
         );
+
         //userUpdateInfo.photoUrl=
         await userData.profileData.updateProfile(userUpdateInfo);
         await Firestore.instance.runTransaction((Transaction t) async {
@@ -137,9 +139,9 @@ class Authenticate {
         _ackAlert(
             context,
             e=="Verify"?"Verification Required":"SignUp Failed!",
-            e == "Mobile"
+            e.contains("Mobile")
                 ? e:e=="Verify"?"Verify email and then signIn"
-                : e.toString().split(',')[1]);
+                : e.toString().split(',')[1],signup: true);
       }
     }
   }
