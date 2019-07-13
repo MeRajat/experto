@@ -19,6 +19,8 @@ class ExpertDetail extends StatelessWidget {
           Detail(expert: expert),
         ],
       ),
+      //floatingActionButton: FAB(color: Colors.green),
+      //bottomNavigationBar: SizedBox(height: 50,),
     );
   }
 }

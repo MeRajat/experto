@@ -4,11 +4,12 @@ import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
 
 import './search_result_cards.dart';
-import '../bloc/search_bloc.dart';
-import '../bloc/reload.dart';
-import '../bloc/is_searching.dart';
-import './no_result.dart';
-import './timed_out.dart';
+import "package:experto/utils/bloc/search_bloc.dart";
+import "package:experto/utils/bloc/reload.dart";
+import "package:experto/utils/bloc/is_searching.dart";
+import 'package:experto/utils/no_result.dart';
+import 'package:experto/utils/timed_out.dart';
+//import "package:cached_network_image/cached_network_image.dart";
 
 class Cards extends StatefulWidget {
   @override
@@ -16,13 +17,15 @@ class Cards extends StatefulWidget {
 }
 
 class _Cards extends State<Cards> {
-  List results = [];
-  List allExperts;
-  int searchingStatus = 0;
-  bool timedOut = false;
+  List<DocumentSnapshot> querySetResult = [], tempResult = [];
+  String searchString;
+  bool timedOut = false,
+      resultAvailable = false,
+      loading = false,
+      searchingStatus = false,
+      isInitialSearch = true;
   CollectionReference expert;
   QuerySnapshot expertSnapshot, searchSnapshot;
-  Widget loading;
 
   @override
   void dispose() {
@@ -31,78 +34,128 @@ class _Cards extends State<Cards> {
     super.dispose();
   }
 
-  void listenReload() async { 
-    userSearchExpert.getStatus.listen((value){
-      if (value == true){
-        setState(() {
-          timedOut = false;
-          expert = null;
-          expertSnapshot = null;
-          searchSnapshot = null;
-          getExpert();
-        });
+  void listenReload() async {
+    userSearchExpert.getStatus.listen((value) {
+      if (value == true) {
+        reload();
       }
-  });
+    });
+  }
+
+  void reload() {
+    setState(() {
+      timedOut = false;
+      searchingStatus = false;
+      expert = null;
+      expertSnapshot = null;
+      searchSnapshot = null;
+      getExpert();
+    });
   }
 
   @override
   void initState() {
     timedOut = false;
-    loading = CircularProgressIndicator();
+    getSearchingStatus();
+    getSearch();
+    listenReload();
     getExpert();
     super.initState();
   }
 
   Future<void> getExpert() async {
+    setState(() {
+      loading = true;
+    });
+
     expert = Firestore.instance.collection("Experts");
-    expertSnapshot = await expert.where("Status",isEqualTo: true).getDocuments().timeout(Duration(seconds: 10),
-        onTimeout: () {
+    expertSnapshot = await expert
+        .where("Status", isEqualTo: true)
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {
       timedOut = true;
     });
-    setState(() {});
+
+    setState(() {
+      loading = false;
+    });
   }
 
   void getSearchingStatus() async {
     isSearchingExpert.getStatus.listen((result) {
       setState(() {
-        getExpert();
         timedOut = false;
         searchingStatus = result;
+        if (result == false) {
+          searchString = '';
+          isInitialSearch = true;
+        }
       });
     });
   }
 
-  Future<void> search(searchQuery) async {
-    int flag = 0;
-    searchSnapshot = null;
-    setState(() {});
-    searchSnapshot = await expert
-        .where("Name", isEqualTo: searchQuery)
+  void getQuerySet(String searchQuery) async {
+    QuerySnapshot searchSnapshot = await expert
+        .where("Index", isEqualTo: searchQuery.toUpperCase())
+        .where("Status", isEqualTo: true)
         .getDocuments()
-        .timeout(Duration(seconds: 10), onTimeout: () {
-      timedOut = true;
+        .timeout(Duration(seconds: 10), onTimeout: () {});
+
+    searchSnapshot.documents.forEach((snapshot) {
+      querySetResult.add(snapshot);
+      tempResult.add(snapshot);
     });
-    searchSnapshot.documents.clear();
-    expertSnapshot.documents.forEach((expert) {
-      if (expert["Name"].toLowerCase().contains(searchQuery)) {
-        flag = 1;
-        setState(() {
-          searchSnapshot.documents.add(expert);
-        });
+
+    (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
+
+    setState(() {
+      loading = false;
+      isInitialSearch = false;
+    });
+  }
+
+  void getTempSet(String searchQuery) async {
+    querySetResult.forEach((snapshot) {
+      if (snapshot['Name'].toLowerCase().contains(searchQuery.toLowerCase())) {
+        tempResult.add(snapshot);
       }
     });
-    if (flag == 0) {
-      setState(() {
-        loading = NoResultCard();
-      });
+
+    (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
+
+    setState(() {
+      loading = false;
+    });
+  }
+
+  Future<void> search(searchQuery) async {
+    setState(() {
+      loading = true;
+    });
+    searchSnapshot = null;
+    tempResult = [];
+    if (isInitialSearch) {
+      querySetResult = [];
+      getQuerySet(searchQuery[0]);
+    } else {
+      getTempSet(searchQuery);
+    }
+  }
+
+  void retrySearch() async {
+    timedOut = false;
+    if (searchingStatus == false) {
+      reload();
+    } else {
+      search(searchString);
     }
   }
 
   void getSearch() async {
     expertSearchBloc.value.listen((searchQuery) {
-      searchingStatus = 1;
+      searchingStatus = true;
       timedOut = false;
-      loading = CircularProgressIndicator();
+      searchString = searchQuery;
       search(searchQuery);
     });
   }
@@ -110,49 +163,39 @@ class _Cards extends State<Cards> {
   @override
   Widget build(BuildContext context) {
     {
-      getSearchingStatus();
-      getSearch();
-      listenReload();
       String allExpertHeaderText = "All Experts";
       String searchHeaderText = "Results";
+
       if (timedOut) {
-        return SliverToBoxAdapter(child: TimedOut());
+        return SliverToBoxAdapter(child: TimedOut(retrySearch));
       }
-      if (searchingStatus == 0) {
-        if (expertSnapshot != null)
-          return SearchResults(expertSnapshot, allExpertHeaderText);
-        else
-          return SliverPadding(
-            padding: EdgeInsets.all(20.0),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Center(
-                    child: loading,
-                  );
-                },
-                childCount: 1,
-              ),
+
+      if (loading) {
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
-          );
-      } else {
-        if (searchSnapshot != null && searchSnapshot.documents.length != 0)
-          return SearchResults(searchSnapshot, searchHeaderText);
-        else
-          return SliverPadding(
-            padding: EdgeInsets.all(20.0),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Center(
-                    child: loading,
-                  );
-                },
-                childCount: 1,
-              ),
-            ),
-          );
+          ),
+        );
       }
+
+      if (searchingStatus == false) {
+        return SearchResults(
+          expertSnapshot.documents,
+          allExpertHeaderText,
+        );
+      }
+
+      if (searchingStatus == true && resultAvailable) {
+        return SearchResults(tempResult, searchHeaderText);
+      }
+
+      if (searchingStatus == true && !resultAvailable) {
+        return SliverToBoxAdapter(child: NoResultCard());
+      } else
+        return Container();
     }
   }
 }

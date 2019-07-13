@@ -1,36 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
 
-import './search_result_cards.dart';
-import '../bloc/search_bloc.dart';
-import '../bloc/is_searching.dart';
-import '../bloc/reload.dart';
+import './categories_list.dart';
+import "package:experto/utils/bloc/search_bloc.dart";
+import "package:experto/utils/bloc/reload.dart";
+import "package:experto/utils/bloc/is_searching.dart";
+import 'package:experto/utils/timed_out.dart';
+import 'package:experto/utils/no_result.dart';
 
 class Cards extends StatefulWidget {
-  final List recommendedSkills = [
-    "Fashion",
-        "Mathematics",
-        "Data science"
-  ];
-
-  final List skills = [
-    "Fashion",
-        "Mathematics",
-        "Data science",
-        "OS",
-        "DS and Algorithms"
-  ];
-
-
   @override
   _Cards createState() => _Cards();
 }
 
 class _Cards extends State<Cards> {
-  List results = [];
-  List recommendedSkills;
-  int searchingStatus = 0;
+  String searchString = '';
+  bool resultAvailable = false,
+      timedOut = false,
+      loading = false,
+      isInitialSearch = true,
+      searchingStatus = false;
+  List<DocumentSnapshot> querySetResult = [], tempResult = [], topSkills = [];
+  QuerySnapshot searchSnapshot, categorySnapshot;
+  DocumentReference skillReference;
 
   @override
   void dispose() {
@@ -39,48 +33,133 @@ class _Cards extends State<Cards> {
     super.dispose();
   }
 
-  void reload() async {
-    userSearchSkill.getStatus.listen((value){
-      if(value == true){
-        setState(() {
-          
-        });
-      }
-    });
+  @override
+  void initState() {
+    getTopSkills();
+    listenReload();
+    getSearchingStatus();
+    getSearch();
+    super.initState();
   }
-  
-  void getSearchingStatus() async {
-    isSearching.getStatus.listen((result) {
-      setState((){
-        searchingStatus = result;
+
+  void getTopSkills() async {
+    setState(() {
+      loading = true;
+    });
+
+    categorySnapshot = await Firestore.instance
+        .collection('Categories')
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {
+      setState(() {
+        timedOut = true;
       });
-      
+    }).then((snapshot) async {
+      for (int i = 0; i < snapshot.documents.length; i++) {
+        skillReference = snapshot.documents[i].data['Skill'];
+        topSkills.add(snapshot.documents[i]);
+      }
+      setState(() {
+        loading = false;
+      });
     });
   }
 
-  void search(searchQuery){
-    List tempResultList = [];
-    int flag = 0;
-    widget.skills.forEach((expert) {
-      if (expert.toLowerCase().contains(searchQuery)) {
-        flag = 1 ;
-        tempResultList.add(expert);
-        setState(() {
-          results = tempResultList;
-        });
+  void listenReload() async {
+    userSearchSkill.getStatus.listen((value) {
+      if (value == true) {
+        reload();
       }
     });
-    if(flag==0){
-      setState(() {
-        results=[];
-      });
+  }
+
+  void reload() {
+    setState(() {
+      timedOut = false;
+      searchingStatus = false;
+      topSkills = [];
+      searchSnapshot = null;
+      getTopSkills();
+    });
+  }
+
+  void retrySearch() {
+    timedOut = false;
+    if (searchingStatus == false) {
+      reload();
+    } else {
+      search(searchString);
     }
   }
 
+  void getSearchingStatus() async {
+    isSearching.getStatus.listen((result) {
+      setState(() {
+        timedOut = false;
+        searchingStatus = result;
+        if (result == false) {
+          isInitialSearch = true;
+          searchString = '';
+        }
+      });
+    });
+  }
+
+  void getQuerySet(String searchQuery) async {
+    QuerySnapshot searchSnapshot = await Firestore.instance
+        .collection("Skills")
+        .where("Index", arrayContains: searchQuery.toUpperCase())
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {});
+
+    searchSnapshot.documents.forEach((snapshot) {
+      querySetResult.add(snapshot);
+      tempResult.add(snapshot);
+    });
+
+    (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
+
+    setState(() {
+      isInitialSearch = false;
+      loading = false;
+    });
+  }
+
+  void getTempSet(String searchQuery) async {
+    querySetResult.forEach((snapshot) {
+      if (snapshot.data['Name']
+          .toLowerCase()
+          .contains(searchQuery.toLowerCase())) {
+        tempResult.add(snapshot);
+      }
+    });
+
+    (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
+
+    setState(() {
+      loading = false;
+    });
+  }
+
+  Future<void> search(searchQuery) async {
+    setState(() {
+      loading = true;
+    });
+    searchSnapshot = null;
+    tempResult = [];
+    if (isInitialSearch) {
+      querySetResult = [];
+      getQuerySet(searchQuery);
+    } else {
+      getTempSet(searchQuery);
+    }
+  }
 
   void getSearch() async {
     searchBloc.value.listen((searchQuery) {
-      searchingStatus = 1;
+      searchingStatus = true;
+      timedOut = false;
+      searchString = searchQuery;
       search(searchQuery);
     });
   }
@@ -88,17 +167,42 @@ class _Cards extends State<Cards> {
   @override
   Widget build(BuildContext context) {
     {
-      reload();
-      getSearchingStatus();
-      getSearch();
-      String recommendationHeaderText = "Top Skills";
+      String recommendationHeaderText = "Top Categories";
       String searchHeaderText = "Results";
-      if (searchingStatus == 0) {
-        return SearchResults(
-            widget.recommendedSkills, recommendationHeaderText);
-      } else {
-        return SearchResults(results, searchHeaderText);
+
+      if (timedOut) {
+        return SliverToBoxAdapter(child: TimedOut(retrySearch));
       }
+
+      if (loading) {
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        );
+      }
+
+      if (searchingStatus == false) {
+        return SearchResults(topSkills, recommendationHeaderText, false);
+      }
+
+      if (searchingStatus == true && resultAvailable) {
+        return WillPopScope(
+          onWillPop: () => Future.value(false),
+          child: SearchResults(tempResult, searchHeaderText, true),
+        );
+      }
+
+      if (searchingStatus == true && !resultAvailable) {
+        return WillPopScope(
+          onWillPop: () => Future.value(false),
+          child: SliverToBoxAdapter(child: NoResultCard()),
+        );
+      } else
+        return SliverToBoxAdapter(child: Container());
     }
   }
 }

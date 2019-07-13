@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-
 import './card.dart';
+import './category_card.dart';
 
 class SearchResults extends StatelessWidget {
-  final List results;
+  final List<DocumentSnapshot> results;
   final String headerText;
-  SearchResults(this.results, this.headerText);
+  final bool status;
+  SearchResults(this.results, this.headerText,this.status);
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +17,12 @@ class SearchResults extends StatelessWidget {
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            Icon icon = Icon(CupertinoIcons.settings_solid,size:70);
             if (index == 0) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(left: 15),
+                    padding: EdgeInsets.only(left: 15,bottom: 10),
                     child: Text(
                       headerText,
                       style: Theme.of(context)
@@ -30,11 +31,11 @@ class SearchResults extends StatelessWidget {
                           .copyWith(fontSize: 15),
                     ),
                   ),
-                  CustomCard(results[index],icon),
+                  status?CustomCard(results[index]):CustomCategoryCard(results[index]),
                 ],
               );
             } else {
-              return CustomCard(results[index],icon);
+              return status?CustomCard(results[index]):CustomCategoryCard(results[index]);
             }
           },
           childCount: results.length,

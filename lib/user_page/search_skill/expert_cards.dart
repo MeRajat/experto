@@ -3,12 +3,13 @@ import 'package:experto/user_page/search_expert/card.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
-import '../bloc/reload.dart';
+import "package:experto/utils/bloc/reload.dart";
+import 'package:experto/utils/timed_out.dart';
 
 class Cards extends StatefulWidget {
-  final String name;
+  final DocumentSnapshot skill;
 
-  Cards({this.name});
+  Cards({this.skill});
 
   @override
   _CardsState createState() => _CardsState();
@@ -17,33 +18,46 @@ class Cards extends StatefulWidget {
 class _CardsState extends State<Cards> {
   QuerySnapshot expert;
   CollectionReference experts;
-  bool load;
+  bool load, timedOut = false;
 
   @override
   void initState() {
     experts = Firestore.instance.collection("Experts");
     load = false;
-    reload();
+    listenReload();
+    timedOut = false;
     getExperts();
     super.initState();
   }
 
-  void reload() async {
+  void listenReload() async {
     userSearchSkillExpertList.getStatus.listen((value) {
       if (value == true) {
-        setState(() {
-          expert = null;
-          load = false;
-          getExperts();
-        });
+        reload();
       }
     });
   }
 
+  void reload() {
+    setState(() {
+      expert = null;
+      timedOut = false;
+      load = false;
+      getExperts();
+    });
+  }
+
   Future<void> getExperts() async {
+    timedOut = false;
     expert = await experts
-        .where("Skills", arrayContains: widget.name)
-        .getDocuments();
+        .where("Skills", arrayContains: widget.skill.reference)
+        .where("Status",isEqualTo: true)
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {
+      setState(() {
+        timedOut = true;
+      });
+    });
     setState(() {
       load = true;
     });
@@ -51,6 +65,11 @@ class _CardsState extends State<Cards> {
 
   @override
   Widget build(BuildContext context) {
+    if (timedOut == true) {
+      return SliverToBoxAdapter(
+        child: TimedOut(reload, text: "Timed Out", iconSize: 130),
+      );
+    }
     if (!load)
       return SliverPadding(
         sliver: SliverList(

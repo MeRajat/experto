@@ -1,9 +1,13 @@
+import 'package:experto/user_authentication/signUpReq.dart' as user;
+import 'package:experto/expert_authentication/signUpReq.dart' as expert;
+
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
 class CardInfo {
   String text, greetingText, navigatorLink;
   Icon icon;
+
   CardInfo(this.icon, this.text, this.greetingText, this.navigatorLink);
 }
 
@@ -12,16 +16,19 @@ class Cards extends StatelessWidget {
     CardInfo(
       Icon(Icons.person, size: 100),
       'User',
-      'sub text welcome gret',
+      '',
       '/user_login',
     ),
     CardInfo(
       Icon(CupertinoIcons.person_solid, size: 100),
       'Expert',
-      'sub text welcome gret',
+      '',
       '/expert_login',
     )
   ];
+
+  final user.Authenticate authenticateUser = new user.Authenticate();
+  final expert.Authenticate authenticateExpert = new expert.Authenticate();
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +39,11 @@ class Cards extends StatelessWidget {
           (BuildContext context, int index) {
             return Card(
               child: InkWell(
-                onTap: () {
+                onTap: () async {
                   Navigator.pushNamed(context, card[index].navigatorLink);
                 },
                 child: SizedBox(
-                  height: 150,
+                  height: 130,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -60,9 +67,6 @@ class Cards extends StatelessWidget {
                                 style: Theme.of(context).textTheme.subhead,
                                 textScaleFactor: 1.3,
                               ),
-                            ),
-                            Text(
-                              card[index].greetingText,
                             ),
                           ],
                         ),

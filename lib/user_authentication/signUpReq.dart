@@ -1,76 +1,66 @@
-import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/user_authentication/userData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../user_page/bloc/is_loading.dart';
-
-class InputField extends StatelessWidget {
-  final String hintText;
-  final TextInputType inputType;
-  final bool isPassword;
-  final void Function(String) fn;
-
-  InputField(this.hintText, this.fn,
-      {this.inputType: TextInputType.text, this.isPassword: false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      child: Material(
-        elevation: 3,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
-          child: TextFormField(
-            obscureText: isPassword,
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'please enter this field';
-              }
-            },
-
-            onSaved:(input)=>fn(input),
-            textInputAction: TextInputAction.next,
-            keyboardType: inputType,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(0),
-              filled: true,
-              hintText: hintText,
-              hintStyle: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+import "package:experto/utils/bloc/is_loading.dart";
+import 'package:experto/global_data.dart';
+import "package:shared_preferences/shared_preferences.dart";
+import 'package:cloud_functions/cloud_functions.dart';
 
 class Authenticate {
   CollectionReference userReference;
-  QuerySnapshot userSnapshot;
   AuthException exception;
-  FirebaseUser usr;
   List<String> details;
-  bool _isSignIn;
   Future<void> Function(BuildContext context) fn;
   String msg;
+  Data userData;
 
   Authenticate() {
-    _isSignIn = false;
+    //_isSignIn = false;
+    userData = new Data();
     details = new List<String>();
     getUser();
-    msg="Invalid details";
+    msg = "Invalid details";
   }
 
-  Future<void> _ackAlert(BuildContext context, String title, String content) {
+  void clear() {
+    details = new List<String>();
+    getUser();
+    msg = "Invalid details";
+    userData.profileData = null;
+  }
+
+  void updateConfig() async {
+    final pref = await SharedPreferences.getInstance();
+    final String key = "account_type";
+    pref.setString(key, "user");
+  }
+
+  Future<bool> isSignIn(context) async {
+    userData.profileData = await FirebaseAuth.instance.currentUser();
+    try {
+      if (userData.profileData == null) {
+        Navigator.of(context).pop();
+        Navigator.pushNamed(context, '/home_page');
+        return false;
+      } else {
+        userData.detailsData =
+            await userReference.document(userData.profileData.uid).get();
+        if (!userData.detailsData.exists) throw ("error");
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/user_home', ModalRoute.withName(':'),
+            arguments: userData);
+
+        return true;
+      }
+    } catch (e) {
+      Navigator.of(context).pop();
+      Navigator.pushNamed(context, '/home_page');
+      return false;
+    }
+  }
+
+  Future<void> _ackAlert(BuildContext context, String title, String content,{bool signup=false}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -81,7 +71,10 @@ class Authenticate {
             FlatButton(
               child: Text('Ok'),
               onPressed: () {
-                Navigator.of(context).pop();
+                if(signup)
+                  Navigator.of(context).popUntil(ModalRoute.withName('/user_login'));
+                else
+                  Navigator.of(context).pop();
               },
             ),
           ],
@@ -100,83 +93,93 @@ class Authenticate {
   getMobile(String x) => details.add(x);
   getEmail(String x) => details.add(x);
 
-  Widget signInButton(String x) {
-    if (_isSignIn)
-      return Center(child: CircularProgressIndicator());
-    else
-      return Text(
-        x,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      );
-  }
-
   Future<void> signUp(
       GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
+    details.clear();
+    UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
     if (formState.validate()) {
       formState.save();
       try {
         isLoadingSignup.updateStatus(true);
-        _isSignIn = true;
-        usr=await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: details[1], password: details[4]);
-
-        user = new Users(
-            email: details[1],
-            city: details[2],
-            name: details[0],
-            m: details[3]);
-        Firestore.instance.runTransaction((Transaction t) async {
-          await userReference.add(user.toJson());
-        });
-        userSnapshot = await userReference
-            .where('emailID', isEqualTo: details[1])
+        //_isSignIn = true;
+        QuerySnapshot val = await userReference
+            .where("Mobile", isEqualTo: int.parse(details[3]))
             .getDocuments();
-        currentUser=userSnapshot.documents[0];
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
-        formState.reset();
+        if (val.documents.length != 0) throw ("Mobile Number already in use");
+        userData.profileData = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: details[1], password: details[4]);
+        userUpdateInfo.displayName = details[0];
+        currentUser = new Users(
+          //   email: details[1],
+          city: details[2],
+          name: details[0],
+          m: details[3],
+        );
+
+        //userUpdateInfo.photoUrl=
+        await userData.profileData.updateProfile(userUpdateInfo);
+        await Firestore.instance.runTransaction((Transaction t) async {
+          await userReference
+              .document(userData.profileData.uid)
+              .setData(currentUser.toJson());
+        });
+        userData.profileData = await FirebaseAuth.instance.currentUser();
+        userData.detailsData =
+            await userReference.document(userData.profileData.uid).get();
+        updateConfig();
+        await userData.profileData.sendEmailVerification();
+        await FirebaseAuth.instance.signOut();
+        throw("Verify");
       } catch (e) {
-        _isSignIn = false;
-        print (e);
-        //formState.reset();
+        //_isSignIn = false;
         details.clear();
-        user=null;
         isLoadingSignup.updateStatus(false);
-        _ackAlert(context, "SignUp Failed!", e.toString().split(',')[1]);
+        _ackAlert(
+            context,
+            e=="Verify"?"Verification Required":"SignUp Failed!",
+            e.contains("Mobile")
+                ? e:e=="Verify"?"Verify email and then signIn"
+                : e.toString().split(',')[1],signup: true);
       }
     }
   }
 
   Future<void> signIn(
       GlobalKey<FormState> _formKey, BuildContext context) async {
+    details.clear();
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
-      _isSignIn = true;
+      Future.delayed(Duration(seconds: 5));
       formState.save();
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: details[0], password: details[1]);
-        userSnapshot = await userReference
-            .where('emailID', isEqualTo: details[0])
-            .getDocuments();
-        //print(userSnapshot.documents[0]["emailID"]);
-        currentUser=userSnapshot.documents[0];
+        userData.profileData = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: details[0], password: details[1]);
+        if(!userData.profileData.isEmailVerified)
+        {
+          await userData.profileData.sendEmailVerification();
+          await FirebaseAuth.instance.signOut();
+          throw("Verify");
+        }
+        userData.detailsData =
+            await userReference.document(userData.profileData.uid).get();
+        updateConfig();
+        HttpsCallable callable= CloudFunctions.instance.getHttpsCallable(functionName: "helloWorld");
+        callable.call();
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+          context,
+          '/user_home',
+          ModalRoute.withName(':'),
+          arguments: userData,
+        );
         formState.reset();
       } catch (e) {
-        _isSignIn = false;
-        //formState.reset();
         details.clear();
         isLoadingLogin.updateStatus(false);
-        _ackAlert(
-            context, "Login Failed!", e.toString().split(',')[1]);
+        _ackAlert(context, "Login Failed!",e=="Verify"?"Verify email and then signIn": e.toString().split(',')[1]);
       }
     }
   }
