@@ -88,7 +88,7 @@ class Theme {
             style: BorderStyle.none,
           ),
         ),
-        contentPadding: EdgeInsets.all(13),
+        contentPadding: EdgeInsets.all(0),
       ),
       textTheme: TextTheme(
         title: TextStyle(

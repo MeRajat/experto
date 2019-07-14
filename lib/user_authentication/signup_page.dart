@@ -91,12 +91,14 @@ class _CustomFormField extends State<CustomFormField> {
                       InputField(
                         "Name",
                         authenticate.getName,
+                        prefix: Icons.person,
                         focusNode: focusNode[0],
                         nextTextField: focusNode[1],
                       ),
                       InputField(
                         "Email",
                         authenticate.getEmail,
+                        prefix: Icons.email,
                         focusNode: focusNode[1],
                         nextTextField: focusNode[2],
                         inputType: TextInputType.emailAddress,
@@ -104,16 +106,19 @@ class _CustomFormField extends State<CustomFormField> {
                       InputField(
                         "City",
                         authenticate.getCity,
+                        prefix: Icons.location_city,
                         focusNode: focusNode[2],
                         nextTextField: focusNode[3],
                       ),
                       InputField("Mobile", authenticate.getMobile,
+                          prefix: Icons.phone,
                           focusNode: focusNode[3],
                           nextTextField: focusNode[4],
                           inputType: TextInputType.phone),
                       InputField(
                         "Password",
                         authenticate.getPass,
+                        prefix: Icons.vpn_key,
                         isSignUp: true,
                         isPassword: true,
                         focusNode: focusNode[4],
@@ -122,6 +127,7 @@ class _CustomFormField extends State<CustomFormField> {
                       InputField(
                         "Re-enter Password",
                         authenticate.getPass,
+                        prefix: Icons.vpn_key,
                         focusNode: focusNode[5],
                         isPassword: true,
                         isSignUp: true,
