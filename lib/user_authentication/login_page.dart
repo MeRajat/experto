@@ -98,7 +98,7 @@ class _CustomForm extends State<CustomForm> {
                     children: <Widget>[
                       InputField(
                         "Enter Your Email",
-                        authenticate.getName,
+                        authenticate.getEmail,
                         focusNode: focusNode[0],
                         inputType: TextInputType.emailAddress,
                         nextTextField: focusNode[1],

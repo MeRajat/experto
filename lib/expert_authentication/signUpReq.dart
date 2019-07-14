@@ -85,7 +85,7 @@ class Authenticate {
     }
   }
 
-  Future<void> _ackAlert(BuildContext context, String title, String content,{bool signup=false}) {
+  Future<void> _ackAlert(BuildContext context, String title, String content,{bool signup=false,bool forgot=false}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -94,20 +94,48 @@ class Authenticate {
           content: Text(content),
           actions: <Widget>[
             FlatButton(
-              child: Text('Ok'),
-              onPressed: () {
+              child: Text(forgot?'Yes':'Ok'),
+              onPressed: forgot?(){
+                forgotPass(context);
+              }:() {
                 if(signup)
                   Navigator.of(context).popUntil(ModalRoute.withName('/expert_login'));
                 else
                   Navigator.of(context).pop();
               },
             ),
+            (title.compareTo("Login Failed!")==0&&content.toLowerCase().contains("wrong"))?
+            FlatButton(
+              child: Text('Forgot Password'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _ackAlert(context, "Password reset","Do you want to send password reset link to ${details['email']}?",forgot: true);
+              },
+            ):SizedBox(),
+            forgot?FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ):SizedBox(),
           ],
         );
       },
     );
   }
-
+  Future<void> forgotPass(BuildContext context)async{
+    try{
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: details['email']).then((val){
+        Navigator.of(context).pop();
+        _ackAlert(context, "Reset Success!","Password reset link sent. Reset password and sign in again!");
+      });
+    }
+    catch(e){
+      print(e.toString().split(','));
+      Navigator.of(context).pop();
+      _ackAlert(context, "Reset Failed!",e.toString().split(',')[1]);
+    }
+  }
   getExpert() async {
     expertReference = Firestore.instance.collection("Experts");
   }
@@ -173,8 +201,8 @@ class Authenticate {
       expertData.detailsData = null;
       isLoadingSignupExpert.updateStatus(false);
       
-      _ackAlert(context, e == "Not Active" ? "In Review, please verify your email" : "SignUp failed",
-          e == "Not Active" ? e : e.toString().split(',')[1],signup: true);
+      _ackAlert(context, e == "Not Active" ? "Not Active" : "SignUp failed",
+          e == "In Review, please verify your email" ? e : e.toString().split(',')[1],signup: true);
     }
   }
 
@@ -217,7 +245,6 @@ class Authenticate {
         );
         formState.reset();
       } catch (e) {
-        details.clear();
         isLoadingLoginExpert.updateStatus(false);
         _ackAlert(
             context,

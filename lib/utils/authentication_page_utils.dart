@@ -37,7 +37,7 @@ class InputField extends StatelessWidget {
       margin: EdgeInsets.only(top: 10),
       child: Material(
         elevation: 3,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(5),
         child: Padding(
           padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
           child: TextFormField(
@@ -47,7 +47,7 @@ class InputField extends StatelessWidget {
             textInputAction: inputAction,
             keyboardType: inputType,
             minLines: minLines,
-            maxLines: maxLines,
+            maxLines: isPassword?1:maxLines,
             maxLength: (maxLength == 0) ? null : maxLength,
             onSaved: (input) => fn(input),
             decoration: InputDecoration(

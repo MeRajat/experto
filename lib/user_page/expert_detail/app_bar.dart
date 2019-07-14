@@ -132,6 +132,11 @@ class _ContactExpert extends State<ContactExpert> {
   DocumentSnapshot expert;
   Data user;
   CollectionReference interaction;
+  @override
+  void initState(){
+    super.initState();
+    checkAvail();
+  }
 
   @override
   void didChangeDependencies() {
@@ -207,18 +212,6 @@ class _ContactExpert extends State<ContactExpert> {
     @required Widget icon,
     @required String serviceType,
   }) async {
-    checkingAvail = true;
-
-    if (checkingAvail) {
-      bottomSheet.showBottomSheet(
-        context: context,
-        icon: CircularProgressIndicator(),
-        secondaryText: "Checking Availablity",
-        callback: null,
-      );
-    }
-
-    await checkAvail();
 
     if (expertAvailable) {
       bottomSheet.showBottomSheet(
@@ -235,14 +228,15 @@ class _ContactExpert extends State<ContactExpert> {
           );
         },
       );
-    } else if (!expertAvailable) {
-      bottomSheet.showBottomSheet(
-        context: context,
-        icon: Icon(Icons.not_interested, size: 120),
-        secondaryText: "Expert is not available right now!",
-        callback: null,
-      );
     }
+//    else if (!expertAvailable) {
+//      bottomSheet.showBottomSheet(
+//        context: context,
+//        icon: Icon(Icons.not_interested, size: 120),
+//        secondaryText: "Expert is not available right now!",
+//        callback: null,
+//      );
+//    }
   }
 
   @override
@@ -251,32 +245,55 @@ class _ContactExpert extends State<ContactExpert> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         InkWell(
-          onTap: () {
+          onTap:  !expertAvailable?null:() {
             contactOnTap(
                 secondaryText: "Are you sure you want to call this expert",
                 serviceType: "call",
                 icon: Icon(Icons.face, size: 120));
           },
-          child: Icon(
-            Icons.video_call,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: checkingAvail?Colors.grey:expertAvailable?Colors.grey[800]:Colors.grey,
+            ),
+            height: 30,
+            width: 30,
+            child: Icon(
+              Icons.video_call,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
-              onTap: () {
+              onTap: !expertAvailable?null:() {
                 contactOnTap(
                     secondaryText:
                     "Are you sure you want to message this expert",
                     serviceType: "chat",
                     icon: Icon(Icons.chat_bubble_outline, size: 120));
               },
-              child: Icon(Icons.chat, size: 20)),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: checkingAvail?Colors.grey:expertAvailable?Colors.grey[800]:Colors.grey,
+                ),
+                height: 30,
+                width: 30,
+                child: Icon(
+                  Icons.chat,
+                  color: Colors.white,
+                  size: 18,
+                ),
+              ),
+          ),
         ),
         Padding(
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
-            onTap: () {
+            onTap:  !expertAvailable?null:() {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (
                     BuildContext context,
@@ -285,9 +302,18 @@ class _ContactExpert extends State<ContactExpert> {
                 }),
               );
             },
-            child: Icon(
-              Icons.feedback,
-              size: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: checkingAvail?Colors.grey:expertAvailable?Colors.grey[800]:Colors.grey,
+              ),
+              height: 30,
+              width: 30,
+              child: Icon(
+                Icons.feedback,
+                color: Colors.white,
+                size: 17,
+              ),
             ),
           ),
         ),
