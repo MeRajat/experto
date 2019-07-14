@@ -47,7 +47,7 @@ class InputField extends StatelessWidget {
             textInputAction: inputAction,
             keyboardType: inputType,
             minLines: minLines,
-            maxLines: maxLines,
+            maxLines: isPassword?1:maxLines,
             maxLength: (maxLength == 0) ? null : maxLength,
             onSaved: (input) => fn(input),
             decoration: InputDecoration(
