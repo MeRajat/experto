@@ -136,6 +136,15 @@ class _ContactExpert extends State<ContactExpert> {
   void initState(){
     super.initState();
     checkAvail();
+    checkPeriodic();
+  }
+
+  checkPeriodic(){
+    Future.delayed(Duration(minutes: 10)).then((val)async {
+      await checkAvail();
+      print("done");
+      checkPeriodic();
+    });
   }
 
   @override
@@ -212,6 +221,7 @@ class _ContactExpert extends State<ContactExpert> {
     @required Widget icon,
     @required String serviceType,
   }) async {
+
 
     if (expertAvailable) {
       bottomSheet.showBottomSheet(
