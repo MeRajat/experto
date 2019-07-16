@@ -104,6 +104,7 @@ class _CustomForm extends State<CustomForm> {
                       InputField(
                         "Enter Your Username",
                         authenticate.getEmail,
+                        prefix: Icons.email,
                         focusNode: focusNode[0],
                         nextTextField: focusNode[1],
                       ),
@@ -111,6 +112,7 @@ class _CustomForm extends State<CustomForm> {
                         "Enter Your Password",
                         authenticate.getPass,
                         isPassword: true,
+                        prefix: Icons.vpn_key,
                         focusNode: focusNode[1],
                         inputAction: TextInputAction.done,
                         func: startAuthentication,

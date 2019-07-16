@@ -19,7 +19,8 @@ class _VerticalListState extends State<VerticalList> {
   List<DocumentSnapshot> experts;
   Data user;
   CollectionReference interaction, expert;
-  bool timedout, load, checkingAvail = false, expertAvailable = true;
+  bool timedout, load;
+  List<bool> checkingAvail , expertAvailable;
   bool stateMounted;
 
   @override
@@ -40,6 +41,8 @@ class _VerticalListState extends State<VerticalList> {
     experts = new List<DocumentSnapshot>();
     timedout = false;
     load = false;
+    checkingAvail=new List<bool>();
+    expertAvailable=new List<bool>();
     listenReload();
     super.initState();
   }
@@ -80,6 +83,9 @@ class _VerticalListState extends State<VerticalList> {
     interactionSnapshot.documents.forEach((d) async {
       DocumentSnapshot doc = await expert.document(d["expert"]).get();
       experts.add(doc);
+      expertAvailable.add(false);
+      checkingAvail.add(false);
+      checkAvail(experts.length-1);
       setState(() {
         load = true;
       });
@@ -91,10 +97,14 @@ class _VerticalListState extends State<VerticalList> {
   }
 
   Future<void> checkAvail(int index) async {
-    expertAvailable = await contactExpert.checkAvail(experts[index]);
+    setState(() {
+
+      checkingAvail[index]= true;
+    });
+    expertAvailable[index] = await contactExpert.checkAvail(experts[index]);
 
     setState(() {
-      checkingAvail = false;
+      checkingAvail[index]= false;
     });
   }
 
@@ -103,9 +113,8 @@ class _VerticalListState extends State<VerticalList> {
       @required Widget icon,
       @required String serviceType,
       @required int index}) async {
-    checkingAvail = true;
 
-    if (checkingAvail) {
+    if (checkingAvail[index]) {
       bottomSheet.showBottomSheet(
         context: context,
         icon: CircularProgressIndicator(),
@@ -114,9 +123,7 @@ class _VerticalListState extends State<VerticalList> {
       );
     }
 
-    await checkAvail(index);
-
-    if (expertAvailable) {
+    if (expertAvailable[index]) {
       bottomSheet.showBottomSheet(
         context: context,
         icon: icon,
@@ -129,14 +136,15 @@ class _VerticalListState extends State<VerticalList> {
               afterLaunchFunc: () {});
         },
       );
-    } else if (!expertAvailable) {
-      bottomSheet.showBottomSheet(
-        context: context,
-        icon: Icon(Icons.not_interested, size: 120),
-        secondaryText: "Expert is not available right now!",
-        callback: null,
-      );
     }
+//    else if (!expertAvailable[index]) {
+//      bottomSheet.showBottomSheet(
+//        context: context,
+//        icon: Icon(Icons.not_interested, size: 120),
+//        secondaryText: "Expert is not available right now!",
+//        callback: null,
+//      );
+//    }
   }
 
   @override
@@ -199,7 +207,19 @@ class _VerticalListState extends State<VerticalList> {
                           children: <Widget>[
                             Spacer(flex: 10),
                             InkWell(
-                              child: Icon(Icons.info, size: 17),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey[800],
+                                ),
+                                height: 25,
+                                width: 25,
+                                child: Icon(
+                                  Icons.info,
+                                  color: Colors.white,
+                                  size: 17,
+                                ),
+                              ),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -213,8 +233,20 @@ class _VerticalListState extends State<VerticalList> {
                             ),
                             Spacer(flex: 1),
                             InkWell(
-                              child: Icon(Icons.video_call, size: 20),
-                              onTap: () {
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: checkingAvail[index]?Colors.grey:expertAvailable[index]?Colors.grey[800]:Colors.grey,
+                                ),
+                                height: 25,
+                                width: 25,
+                                child: Icon(
+                                  Icons.video_call,
+                                  color: Colors.white,
+                                  size: 17,
+                                ),
+                              ),
+                              onTap: !expertAvailable[index]?null:() {
                                 contactOnTap(
                                     secondaryText:
                                         "Are you sure you want to call this expert",
@@ -225,8 +257,20 @@ class _VerticalListState extends State<VerticalList> {
                             ),
                             Spacer(flex: 1),
                             InkWell(
-                              child: Icon(Icons.chat, size: 16),
-                              onTap: () {
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: checkingAvail[index]?Colors.grey:expertAvailable[index]?Colors.grey[800]:Colors.grey,
+                                ),
+                                height: 25,
+                                width: 25,
+                                child: Icon(
+                                  Icons.chat,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                              onTap:!expertAvailable[index]?null: () {
                                 contactOnTap(
                                     secondaryText:
                                         "Are you sure you want to messsage this expert",

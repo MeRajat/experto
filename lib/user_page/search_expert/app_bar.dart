@@ -15,7 +15,7 @@ class CustomFlexibleSpace extends StatelessWidget {
           margin: EdgeInsets.only(right: 17, left: 17, bottom: 20),
           child: Material(
             elevation: 5,
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
             child: ExpertTextField(),
           ),
         ),

@@ -98,7 +98,8 @@ class _CustomForm extends State<CustomForm> {
                     children: <Widget>[
                       InputField(
                         "Enter Your Email",
-                        authenticate.getName,
+                        authenticate.getEmail,
+                        prefix: Icons.email,
                         focusNode: focusNode[0],
                         inputType: TextInputType.emailAddress,
                         nextTextField: focusNode[1],
@@ -106,6 +107,7 @@ class _CustomForm extends State<CustomForm> {
                       InputField(
                         "Enter Your Password",
                         authenticate.getPass,
+                        prefix:Icons.vpn_key,
                         isPassword: true,
                         focusNode: focusNode[1],
                         inputAction: TextInputAction.done,

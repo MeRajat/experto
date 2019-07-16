@@ -42,7 +42,7 @@ class Theme {
         height: 45,
         disabledColor: Color.fromRGBO(243, 242, 244, 1),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(5),
         ),
       ),
       appBarTheme: AppBarTheme(
@@ -56,11 +56,6 @@ class Theme {
         ),
         color: Color.fromRGBO(240, 240, 240, 1),
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
-        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         fillColor: Color.fromRGBO(250, 250, 250, 1),
@@ -71,24 +66,24 @@ class Theme {
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
-        contentPadding: EdgeInsets.all(13),
+        contentPadding: EdgeInsets.all(0),
       ),
       textTheme: TextTheme(
         title: TextStyle(
@@ -149,7 +144,7 @@ class Theme {
         height: 45,
         disabledColor: Color.fromRGBO(28, 28, 28, 1),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(5),
         ),
       ),
       appBarTheme: AppBarTheme(
@@ -171,7 +166,7 @@ class Theme {
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(5),
           ),
         ),
       ),
@@ -184,19 +179,19 @@ class Theme {
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),

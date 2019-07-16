@@ -192,12 +192,14 @@ class _CustomFormField extends State<CustomFormField> {
                       InputField(
                         "Name",
                         authenticate.getName,
+                        prefix: Icons.person,
                         focusNode: focusNode[0],
                         nextTextField: focusNode[1],
                       ),
                       InputField(
                         "Email",
                         authenticate.getEmail,
+                        prefix: Icons.email,
                         focusNode: focusNode[1],
                         nextTextField: focusNode[2],
                         inputType: TextInputType.emailAddress,
@@ -205,18 +207,21 @@ class _CustomFormField extends State<CustomFormField> {
                       InputField(
                         "Skype username",
                         authenticate.getSkype,
+                        prefix: Icons.supervised_user_circle,
                         focusNode: focusNode[2],
                         nextTextField: focusNode[3],
                       ),
                       InputField(
                         "City",
                         authenticate.getCity,
+                        prefix: Icons.location_city,
                         focusNode: focusNode[3],
                         nextTextField: focusNode[4],
                       ),
                       InputField(
                         "Mobile",
                         authenticate.getMobile,
+                        prefix: Icons.phone,
                         inputType: TextInputType.phone,
                         focusNode: focusNode[4],
                         nextTextField: focusNode[5],
@@ -224,6 +229,7 @@ class _CustomFormField extends State<CustomFormField> {
                       InputField(
                         "Password",
                         authenticate.getPass,
+                        prefix: Icons.vpn_key,
                         isPassword: true,
                         focusNode: focusNode[5],
                         nextTextField: focusNode[6],
@@ -231,6 +237,7 @@ class _CustomFormField extends State<CustomFormField> {
                       InputField(
                         "Re-enter Password",
                         authenticate.getPass,
+                        prefix: Icons.vpn_key,
                         isPassword: true,
                         focusNode: focusNode[6],
 
@@ -249,6 +256,7 @@ class _CustomFormField extends State<CustomFormField> {
                         "About Me",
                         authenticate.getDescription,
                         inputType: TextInputType.multiline,
+                        prefix: Icons.assignment_ind,
                         minLines: 2,
                         maxLines: null,
                         maxLength: 150,
@@ -258,6 +266,7 @@ class _CustomFormField extends State<CustomFormField> {
                         "Work Experience",
                         authenticate.getWorkExperience,
                         inputType: TextInputType.multiline,
+                        prefix: Icons.work,
                         minLines: 2,
                         maxLines: null,
                         maxLength: 250,
