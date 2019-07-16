@@ -56,11 +56,6 @@ class Theme {
         ),
         color: Color.fromRGBO(240, 240, 240, 1),
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(5),
-          ),
-        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         fillColor: Color.fromRGBO(250, 250, 250, 1),
