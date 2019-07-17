@@ -30,11 +30,11 @@ class SearchResults extends StatelessWidget {
                           .copyWith(fontSize: 15),
                     ),
                   ),
-                  CustomCard(expert:results[index]),
+                  CustomCard(expert: results[index]),
                 ],
               );
             } else {
-              return CustomCard(expert:results[index]);
+              return CustomCard(expert: results[index]);
             }
           },
           childCount: results.length,

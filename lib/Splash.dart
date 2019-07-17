@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
@@ -10,6 +10,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:experto/video_call/local_notification.dart';
 import 'package:experto/main.dart';
+import 'package:experto/user_authentication/signUpReq.dart' as user;
+import 'package:experto/expert_authentication/signUpReq.dart' as expert;
 
 class Splash extends StatefulWidget {
   @override
@@ -21,43 +23,46 @@ class Splash extends StatefulWidget {
 class SplashState extends State<Splash> {
   @override
   void initState() {
-    //print(MediaQuery.of(context).size.height);
-    //print(MediaQuery.of(context).size.width);
-    getPermissions();
-    initNotification();
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacementNamed('/home_page');
-      getSkypeAvailability();
-    });
     super.initState();
+    startUp();
   }
 
-  void getSkypeAvailability() async {
-    try {
-      await AppAvailability.checkAvailability("com.skype.raider");
-      if(!(await AppAvailability.isAppEnabled("com.skype.raider")))
-        _showSkypeDialog();
-    } on PlatformException {
-      _showSkypeDialog();
+  Future<void> startUp()async{
+    await Future.wait([
+      getPermissions(),
+      Future.delayed(Duration(seconds: 1)),
+    ]);
+    await autoLogin();
+    getSkypeAvailability();
+  }
+
+  Future<void> autoLogin() async {
+    final user.Authenticate authenticateUser = new user.Authenticate();
+    final expert.Authenticate authenticateExpert = new expert.Authenticate();
+    final pref = await SharedPreferences.getInstance();
+    if (pref.getString("account_type") == null) {
+      Navigator.of(context).pushReplacementNamed('/home_page');
+    } else {
+      pref.getString("account_type") == "user"
+          ? await authenticateUser.isSignIn(context)
+          : await authenticateExpert.isSignIn(context);
     }
   }
 
-  Future onSelectNotification(String payload) async {
-    MyApp.navigatorKey.currentState.pushNamedAndRemoveUntil(
-        "/video_call",
-        //(route) => route.settings.name == "/video_call" ? false : true); TODO: why does this not work
-        ModalRoute.withName("/user_home"));
-//    await Navigator.of(context, rootNavigator: true).push(
-//      MaterialPageRoute(
-//        builder: (BuildContext context) {
-//          return notificationStartVideo;
-//        },
-//      ),
-//    );
+  Future<void> getSkypeAvailability() async {
+    try {
+      await AppAvailability.checkAvailability("com.skype.raider");
+      if (!(await AppAvailability.isAppEnabled("com.skype.raider")))
+        await _showSkypeDialog();
+    } on PlatformException {
+      await _showSkypeDialog();
+    }
   }
 
-  void _showSkypeDialog() async {
+
+  Future<void> _showSkypeDialog() async {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -72,22 +77,19 @@ class SplashState extends State<Splash> {
               },
             ),
             FlatButton(
-              child: const Text('OPEN PLAY STORE'),
+              child: const Text('OPEN APP STORE'),
               onPressed: () {
                 try {
-                  AppAvailability.checkAvailability("com.android.vending");
                   launch("market://details?id=com.skype.raider");
                 } on PlatformException {
                   Navigator.of(context).pop();
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      // return object of type Dialog
                       return AlertDialog(
-                        title: new Text("Play Store not found"),
+                        title: new Text("Could not open App Store"),
                         content: new Text("Please install Skype manually"),
                         actions: <Widget>[
-                          // usually buttons at the bottom of the dialog
                           new FlatButton(
                             child: new Text("Close"),
                             onPressed: () {
@@ -101,6 +103,7 @@ class SplashState extends State<Splash> {
                 }
               },
             )
+
           ],
         );
       },
@@ -119,8 +122,8 @@ class SplashState extends State<Splash> {
 
   Future<void> getPermissions() async {
     List<PermissionGroup> permission = [
-      PermissionGroup.camera,
-      PermissionGroup.microphone,
+//      PermissionGroup.camera,
+//      PermissionGroup.microphone,
       PermissionGroup.storage
     ];
     Map<PermissionGroup, PermissionStatus> permissions =
@@ -140,12 +143,16 @@ class SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(50.0),
-        child: new Center(
-          child:
-          Hero(tag: "logo", child:  Image.asset("assets/logo_transparent.png",)),
+        child: Center(
+          child: Hero(
+            tag: "logo",
+            child: Image.asset(
+              "assets/logo_transparent.png",
+            ),
+          ),
         ),
       ),
     );

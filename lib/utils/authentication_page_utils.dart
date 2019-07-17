@@ -1,81 +1,258 @@
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
+import "package:shared_preferences/shared_preferences.dart";
+import "package:firebase_auth/firebase_auth.dart";
+import "package:experto/home_page/home_page.dart";
 
-class InputField extends StatelessWidget {
-  final String hintText;
+// ignore: must_be_immutable
+class InputField extends StatefulWidget{
+  final String hintText, initailValue;
   final TextInputType inputType;
-  final bool isPassword;
+  final bool isPassword,isSignUp;
   final void Function(String) fn;
+  final VoidCallback func;
   final int minLines, maxLines, maxLength;
   final TextInputAction inputAction;
+  final FocusNode nextTextField, focusNode;
+  static String password;
+  final IconData prefix;
+  final Widget suffix;
 
   InputField(
-    this.hintText,
-    this.fn, {
-    this.inputType: TextInputType.text,
-    this.isPassword: false,
-    this.minLines: 1,
-    this.maxLines: 2,
-    this.inputAction: TextInputAction.next,
-    this.maxLength: 0,
-  });
+      this.hintText,
+      this.fn, {
+        this.inputType,
+        this.isPassword:false,
+        this.minLines: 1,
+        this.maxLines: 2,
+        this.inputAction,
+        this.maxLength,
+        this.initailValue,
+        this.focusNode,
+        this.nextTextField,
+        this.func,
+        this.isSignUp=false,
+        this.prefix=null,
+        this.suffix,
+      });
+  @override
+  InputFieldState createState() => InputFieldState(hintText,fn,inputType: inputType,isPassword: isPassword,minLines: minLines,maxLines: maxLines,
+      initailValue: initailValue,focusNode: focusNode,nextTextField: nextTextField,func: func,isSignUp: isSignUp,prefix:prefix,suffix:suffix);
+}
 
+class InputFieldState extends State<InputField> {
+  final String hintText, initailValue;
+  final TextInputType inputType;
+  final bool isPassword,isSignUp;
+  final void Function(String) fn;
+  final VoidCallback func;
+  final int minLines, maxLines, maxLength;
+  final TextInputAction inputAction;
+  final FocusNode nextTextField, focusNode;
+  static String password;
+  final IconData prefix;
+  final Widget suffix;
+  bool obscureText;
+
+  InputFieldState(
+      this.hintText,
+      this.fn, {
+        this.inputType: TextInputType.text,
+        this.isPassword: false,
+        this.minLines: 1,
+        this.maxLines: 2,
+        this.inputAction: TextInputAction.next,
+        this.maxLength: 0,
+        this.initailValue: '',
+        this.focusNode,
+        this.nextTextField,
+        this.func,
+        this.isSignUp=false,
+        this.prefix=null,
+        this.suffix,
+      }){
+    obscureText=isPassword;
+  }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
+    return Padding(
+      padding: EdgeInsets.only(left: prefix==null?13:0, right: 13, top: 13, bottom: 13),
       child: Material(
-        elevation: 3,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
-          child: TextFormField(
-            obscureText: isPassword,
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'please enter this field';
-              }
-              if (maxLength != 0 && value.length > maxLength) {
-                return 'max length exceeded';
-              }
-            },
-            onSaved: (input) => fn(input),
-            textInputAction: inputAction,
-            keyboardType: inputType,
-            minLines: minLines,
-            maxLines: maxLines,
-            maxLength: (maxLength == 0) ? null : maxLength,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(0),
-              filled: true,
-              hintText: hintText,
-              hintStyle: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                letterSpacing: -.6,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 16,
+        elevation: 2,
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        child: TextFormField(
+          obscureText: obscureText,
+          focusNode: focusNode,
+          initialValue: initailValue,
+          textInputAction: inputAction,
+          keyboardType: inputType,
+          minLines: minLines,
+          maxLines: isPassword?1:maxLines,
+          maxLength: (maxLength == 0) ? null : maxLength,
+          onSaved: (input) => fn(input),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(10.0),
+            prefixIcon: prefix==null?prefix: Icon(prefix,size: 20,),
+            alignLabelWithHint: true,
+            hintText: hintText,
+            suffixIcon: isPassword?GestureDetector(
+              onLongPressStart: (d){
+                setState(() {
+                  obscureText=!obscureText;
+                });
+              },
+              onLongPressEnd: (f){
+                setState(() {
+                  obscureText=!obscureText;
+                });
+              },
+
+              child: Icon(obscureText?Icons.remove_red_eye:Icons.remove),
+            ):suffix,
+            hintStyle: TextStyle(
+              fontSize: 13,
               fontWeight: FontWeight.bold,
+              letterSpacing: -.6,
             ),
           ),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'please enter this field';
+            }
+            print(value.length);
+            print(maxLength);
+            if (maxLength != 0 && value.length > maxLength) {
+              return 'max length exceeded';
+            }
+            if(isSignUp&&isPassword&&hintText=="Password")
+              password=value;
+            else if(isSignUp&&isPassword&&value!=password)
+              return 'Passwords don\'t match';
+          },
+          onEditingComplete: () {
+            if (inputAction == TextInputAction.done) func();
+          },
+          onFieldSubmitted: (nextTextField == null)
+              ? null
+              : (_) {
+            FocusScope.of(context).requestFocus(nextTextField);
+          },
         ),
       ),
     );
   }
 }
+//class InputField extends StatelessWidget {
+//  final String hintText, initailValue;
+//  final TextInputType inputType;
+//  final bool isPassword,isSignUp;
+//  final void Function(String) fn;
+//  final VoidCallback func;
+//  final int minLines, maxLines, maxLength;
+//  final TextInputAction inputAction;
+//  final FocusNode nextTextField, focusNode;
+//  static String password;
+//  bool obscureText;
+//
+//  InputField(
+//    this.hintText,
+//    this.fn, {
+//    this.inputType: TextInputType.text,
+//    this.isPassword: false,
+//    this.minLines: 1,
+//    this.maxLines: 2,
+//    this.inputAction: TextInputAction.next,
+//    this.maxLength: 0,
+//    this.initailValue: '',
+//    this.focusNode,
+//    this.nextTextField,
+//    this.func,
+//        this.isSignUp=false
+//  }){
+//    obscureText=isPassword;
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Container(
+//      margin: EdgeInsets.only(top: 10),
+//      child: Material(
+//        elevation: 3,
+//        borderRadius: BorderRadius.circular(5),
+//        child: Padding(
+//          padding: EdgeInsets.only(left: 13, right: 13, top: 13, bottom: 13),
+//          child: Container(
+//            height: 20.0,
+//            child: TextFormField(
+//              obscureText: obscureText,
+//              focusNode: focusNode,
+//              initialValue: initailValue,
+//              textInputAction: inputAction,
+//              keyboardType: inputType,
+//              minLines: minLines,
+//              maxLines: isPassword?1:maxLines,
+//              maxLength: (maxLength == 0) ? null : maxLength,
+//              onSaved: (input) => fn(input),
+//              decoration: InputDecoration(
+//                contentPadding: EdgeInsets.all(0),
+//                //filled: true,
+//                //fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+//                hintText: hintText,
+//                suffixIcon: InkWell(
+//                  onTap: (){
+//                    obscureText=!obscureText;
+//                  },
+//                  child: Icon(Icons.remove_red_eye),
+//                ),
+//                hintStyle: TextStyle(
+//                  fontSize: 13,
+//                  fontWeight: FontWeight.bold,
+//                  letterSpacing: -.6,
+//                ),
+//              ),
+//              style: TextStyle(
+//                fontSize: 16,
+//                fontWeight: FontWeight.bold,
+//              ),
+//              validator: (value) {
+//                if (value.isEmpty) {
+//                  return 'please enter this field';
+//                }
+//                if (maxLength != 0 && value.length > maxLength) {
+//                  return 'max length exceeded';
+//                }
+//                if(isSignUp&&isPassword&&hintText=="Password")
+//                  password=value;
+//                else if(isSignUp&&isPassword&&value!=password)
+//                  return 'Passwords don\'t match';
+//              },
+//              onEditingComplete: () {
+//                if (inputAction == TextInputAction.done) func();
+//              },
+//              onFieldSubmitted: (nextTextField == null)
+//                  ? null
+//                  : (_) {
+//                      FocusScope.of(context).requestFocus(nextTextField);
+//                    },
+//            ),
+//          ),
+//        ),
+//      ),
+//    );
+//  }
+//}
 
 class CustomFlatButton extends StatelessWidget {
   final String text;
   final onPressedFunction;
   final Color color;
 
-  CustomFlatButton({
-    @required this.text,
-    @required this.onPressedFunction,
-    this.color: Colors.white,
-  });
+  CustomFlatButton(
+      {@required this.text, @required this.onPressedFunction, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +260,11 @@ class CustomFlatButton extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          color: color,
-        ),
+            color: (color == null)
+                ? Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black
+                : color),
       ),
       onPressed: onPressedFunction,
     );
@@ -133,47 +313,53 @@ class SignupPageRedirect extends StatelessWidget {
   }
 }
 
-void showAuthSnackBar({
-  @required BuildContext context,
-  @required String title,
-  @required leading,
-}) {
-  Scaffold.of(context).removeCurrentSnackBar();
-  Scaffold.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.black87,
-      content: Align(
-        alignment: Alignment.centerLeft,
-        heightFactor: 1,
-        child: Padding(
-          child: Row(
-            children: <Widget>[
-              leading,
-              Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Text(
-                  title,
-                  style: Theme.of(context)
-                      .primaryTextTheme
-                      .body2
-                      .copyWith(color: Colors.white, fontSize: 15),
+void showAuthSnackBar(
+    {@required BuildContext context,
+      @required String title,
+      @required leading,
+      bool persistant: true}) {
+  try {
+    Scaffold.of(context).removeCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.black87,
+        content: Align(
+          alignment: Alignment.centerLeft,
+          heightFactor: 1,
+          child: Padding(
+            child: Row(
+              children: <Widget>[
+                leading,
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 130,
+                    child: Text(
+                      title,
+                      softWrap: true,
+                      style: Theme.of(context)
+                          .primaryTextTheme
+                          .body2
+                          .copyWith(color: Colors.white, fontSize: 15),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            padding: EdgeInsets.all(5),
           ),
-          padding: EdgeInsets.all(5),
         ),
+        duration: (persistant) ? Duration(hours: 1) : Duration(seconds: 3),
       ),
-      duration: Duration(hours: 1),
-    ),
-  );
+    );
+  } catch (e) {}
 }
 
 class SignupTimeSelector extends StatelessWidget {
   final Function callbackFunc;
   final String headingText, slot;
   final Color selector1Color, selector2Color;
-  final Map<String, Map<String, DateTime>> availablity;
+  final Map availablity;
 
   SignupTimeSelector({
     @required this.callbackFunc,
@@ -186,14 +372,13 @@ class SignupTimeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String timeStart = (availablity == null ||
-            availablity[slot]['start'] == null)
+    String timeStart = (availablity == null || availablity['start'] == null)
         ? "Start"
-        : '${availablity[slot]['start'].hour.toString()}:${availablity[slot]['start'].minute.toString()}';
+        : '${availablity['start'].toDate().hour.toString()}:${availablity['start'].toDate().minute.toString()}';
 
-    String timeEnd = (availablity == null || availablity[slot]['end'] == null)
+    String timeEnd = (availablity == null || availablity['end'] == null)
         ? "End"
-        : '${availablity[slot]['end'].hour.toString()}:${availablity[slot]['end'].minute.toString()}';
+        : '${availablity['end'].toDate().hour.toString()}:${availablity['end'].toDate().minute.toString()}';
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -202,8 +387,9 @@ class SignupTimeSelector extends StatelessWidget {
           style: Theme.of(context)
               .primaryTextTheme
               .body2
-              .copyWith(color: Colors.white),
+              .copyWith(color: Colors.grey[400]),
         ),
+        Padding(padding: EdgeInsets.only(left: 20)),
         CustomFlatButton(
           text: timeStart,
           color: selector1Color,
@@ -247,11 +433,36 @@ class SignupSkillSelector extends StatelessWidget {
         ),
         Text(
             (skillsSelected[correspondingSkill]['name'] == ''
-                ? "Required"
+                ? (correspondingSkill == 'skill1') ? "Required" : "Optional"
                 : skillsSelected[correspondingSkill]['name']),
             style:
-                Theme.of(context).primaryTextTheme.body2.copyWith(color: color))
+            Theme.of(context).primaryTextTheme.body2.copyWith(color: color))
       ],
+    );
+  }
+}
+
+Future<void> logOut(BuildContext context) async {
+  showAuthSnackBar(
+    context: context,
+    title: "Logging Out...",
+    leading: CircularProgressIndicator(),
+  );
+
+  final pref = await SharedPreferences.getInstance();
+  await pref.setString("account_type", null);
+
+  await Future.delayed(Duration(seconds: 2));
+  try {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (buildContext) => HomePage()),
+        ModalRoute.withName(':'));
+  } catch (e) {
+    showAuthSnackBar(
+      context: context,
+      title: "Error...",
+      leading: Icon(Icons.error, size: 23, color: Colors.green),
     );
   }
 }

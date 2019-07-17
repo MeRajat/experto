@@ -29,6 +29,8 @@ class _CustomFormField extends State<CustomFormField> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final Authenticate authenticate = new Authenticate();
   bool loading = false;
+  final List<FocusNode> focusNode =
+      List.generate(6, (_) => FocusNode(), growable: false);
 
   @override
   void dispose() {
@@ -78,6 +80,7 @@ class _CustomFormField extends State<CustomFormField> {
               physics: BouncingScrollPhysics(),
               type: StepperType.vertical,
               currentStep: 0,
+              onStepCancel: Navigator.of(context).pop,
               onStepTapped: (int tapped) {},
               onStepContinue: (loading) ? null : startAuthentication,
               steps: [
@@ -85,20 +88,59 @@ class _CustomFormField extends State<CustomFormField> {
                   title: Text("Enter Information"),
                   content: Column(
                     children: <Widget>[
-                      InputField("Name", authenticate.getName),
-                      InputField("Email", authenticate.getEmail),
-                      InputField("City", authenticate.getCity),
+                      InputField(
+                        "Name",
+                        authenticate.getName,
+                        prefix: Icons.person,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
+                      ),
+                      InputField(
+                        "Email",
+                        authenticate.getEmail,
+                        prefix: Icons.email,
+                        focusNode: focusNode[1],
+                        nextTextField: focusNode[2],
+                        inputType: TextInputType.emailAddress,
+                      ),
+                      InputField(
+                        "City",
+                        authenticate.getCity,
+                        prefix: Icons.location_city,
+                        focusNode: focusNode[2],
+                        nextTextField: focusNode[3],
+                      ),
                       InputField("Mobile", authenticate.getMobile,
-                          inputType: TextInputType.number),
-                      InputField("Password", authenticate.getPass,
-                          isPassword: true),
+                          prefix: Icons.phone,
+                          focusNode: focusNode[3],
+                          nextTextField: focusNode[4],
+                          inputType: TextInputType.phone),
+                      InputField(
+                        "Password",
+                        authenticate.getPass,
+                        prefix: Icons.vpn_key,
+                        isSignUp: true,
+                        isPassword: true,
+                        focusNode: focusNode[4],
+                        nextTextField: focusNode[5],
+                      ),
+                      InputField(
+                        "Re-enter Password",
+                        authenticate.getPass,
+                        prefix: Icons.vpn_key,
+                        focusNode: focusNode[5],
+                        isPassword: true,
+                        isSignUp: true,
+                        inputAction: TextInputAction.done,
+                        func: startAuthentication,
+                      ),
                     ],
                   ),
                 ),
-                Step(
-                  title: Text("Press Continue To SignUp"),
-                  content: Container(),
-                ),
+                // Step(
+                //   title: Text("Press Continue To SignUp"),
+                //   content: Container(),
+                // ),
               ],
             ),
           ),

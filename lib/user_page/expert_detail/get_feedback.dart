@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import "package:experto/utils/bloc/is_loading.dart";
 import "package:experto/utils/bloc/loading_completed.dart";
-import "package:experto/user_authentication/userAdd.dart";
+import 'package:experto/global_data.dart';
 
 class ValidateFeedback {
   int rating;
@@ -14,7 +14,7 @@ class ValidateFeedback {
   CollectionReference feedbackCollection;
   QuerySnapshot feedbackSnapshot;
   Feedback feedback;
-  DocumentReference expertReference;
+  String expertReference;
 
   ValidateFeedback(DocumentSnapshot expertSnapshot) {
     getexpert(expertSnapshot);
@@ -78,7 +78,7 @@ class ValidateFeedback {
             elevation: 5,
             highlightElevation: 5,
             color: (Theme.of(context).brightness == Brightness.dark)
-                ? Color.fromRGBO(42, 123, 249, 1)
+                ? Colors.blue[800]
                 : Colors.blue,
           ),
         ),
@@ -103,11 +103,12 @@ class ValidateFeedback {
   }
 
   void getexpert(DocumentSnapshot expertSnapshot) {
-    expertReference = expertSnapshot.reference;
+    expertReference = expertSnapshot.documentID;
   }
 
   void saveFeedback(GlobalKey<FormState> key, BuildContext context) async {
     FormState feedbackFormState = key.currentState;
+    Data user = DocumentSync.of(context).account;
     if (feedbackFormState.validate()) {
       feedbackFormState.save();
       submiting = true;
@@ -118,11 +119,11 @@ class ValidateFeedback {
           rating: rating,
           review: review,
           expertReference: expertReference,
-          userReference: UserData.currentUser.reference,
+          userReference: user.detailsData.documentID,
         );
         await Firestore.instance
             .collection("Feedback")
-            .where("User", isEqualTo: UserData.currentUser.reference)
+            .where("User", isEqualTo: user.detailsData.documentID)
             .where("Expert", isEqualTo: expertReference)
             .getDocuments()
             .timeout(Duration(seconds: 10), onTimeout: () {
@@ -130,7 +131,7 @@ class ValidateFeedback {
         }).catchError((e) {
           throw TimeoutException;
         }).then((QuerySnapshot feedbackSnapshot) async {
-          if (feedbackSnapshot.documents.length == 0) {
+          if (feedbackSnapshot.documents.isEmpty) {
             updatedPreviousFeedback = false;
             await Firestore.instance.runTransaction((Transaction t) async {
               await feedbackCollection.add(feedback.toJson());
@@ -142,7 +143,6 @@ class ValidateFeedback {
             );
           }
         });
-
         submitted = true;
         feedbackSubmissionCompleted.updateStatus(true);
       } catch (e) {
@@ -160,9 +160,7 @@ class ValidateFeedback {
 
 class Feedback {
   int rating;
-  String review;
-  DocumentReference expertReference;
-  DocumentReference userReference;
+  String review, expertReference, userReference;
   Feedback({
     @required this.rating,
     @required this.review,

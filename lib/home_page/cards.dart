@@ -1,4 +1,6 @@
-import 'package:experto/user_authentication/signUpReq.dart';
+import 'package:experto/user_authentication/signUpReq.dart' as user;
+import 'package:experto/expert_authentication/signUpReq.dart' as expert;
+
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 
@@ -8,6 +10,7 @@ class CardInfo {
 
   CardInfo(this.icon, this.text, this.greetingText, this.navigatorLink);
 }
+
 class Cards extends StatelessWidget {
   final List<CardInfo> card = [
     CardInfo(
@@ -24,7 +27,8 @@ class Cards extends StatelessWidget {
     )
   ];
 
-  final Authenticate authenticate = new Authenticate();
+  final user.Authenticate authenticateUser = new user.Authenticate();
+  final expert.Authenticate authenticateExpert = new expert.Authenticate();
 
   @override
   Widget build(BuildContext context) {
@@ -32,34 +36,11 @@ class Cards extends StatelessWidget {
       padding: EdgeInsets.only(top: 10, bottom: 40),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
+          (BuildContext context, int index) {
             return Card(
               child: InkWell(
                 onTap: () async {
-                  bool loading = true;
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return WillPopScope(
-                          child: Center(
-                            heightFactor: .2,
-                            widthFactor: .2,
-                            child: CircularProgressIndicator(),
-                          ),
-                          onWillPop: () => (loading)
-                              ? Future.value(false)
-                              : Future.value(true),
-                        );
-                      });
-                  await Future.delayed(Duration(seconds: 1));
-                  bool signin = await authenticate.isSignIn();
-                  loading = true;
-                  Navigator.of(context).pop();
-                  if (index == 0 && signin)
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/user_home', ModalRoute.withName(':'));
-                  else
-                    Navigator.pushNamed(context, card[index].navigatorLink);
+                  Navigator.pushNamed(context, card[index].navigatorLink);
                 },
                 child: SizedBox(
                   height: 130,
@@ -87,9 +68,6 @@ class Cards extends StatelessWidget {
                                 textScaleFactor: 1.3,
                               ),
                             ),
-                            //Text(
-                            //  card[index].greetingText,
-                            //),
                           ],
                         ),
                       ),

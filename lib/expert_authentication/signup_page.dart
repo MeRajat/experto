@@ -1,15 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:experto/expert_authentication/get_all_skills.dart';
-import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
+import 'package:flutter/cupertino.dart';
 
 import './signUpReq.dart';
 import "package:flutter/material.dart";
-import 'package:flutter/cupertino.dart';
-
 import "package:experto/utils/bloc/is_loading.dart";
-import "package:experto/utils/authentication_page_utils.dart";
 
 import './app_bar.dart' as login_page_appbar;
+import "package:experto/utils/authentication_page_utils.dart";
 
 class SignupPage extends StatelessWidget {
   @override
@@ -36,29 +34,17 @@ class _CustomFormField extends State<CustomFormField> {
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
-    GlobalKey<FormState>(),
   ];
-  static final Authenticate authenticate = new Authenticate();
+  final Authenticate authenticate = new Authenticate();
   bool loading = false;
+  List<FocusNode> focusNode =
+  List.generate(7, (_) => FocusNode(), growable: false);
+
+  Map<String, DateTime> avail;
   int step = 0;
   bool isExperienced = false;
   bool hasCertificate = false;
   GetSkills skills = GetSkills();
-
-  Map<String, Map<String, DateTime>> availablity = {
-    "slot1": {
-      "start": null,
-      "end": null,
-    },
-    "slot2": {
-      "start": null,
-      "end": null,
-    },
-    "slot3": {
-      "start": null,
-      "end": null,
-    }
-  };
 
   Map<String, Map<String, dynamic>> skillsSelected = {
     "skill1": {
@@ -78,16 +64,16 @@ class _CustomFormField extends State<CustomFormField> {
   //List<DocumentReference> skillReference=[];
 
   @override
+  void dispose() {
+    //isLoadingSignupExpert.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     checkLoadingStatus();
     skills.getSkills();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    //isLoadingSignupExpert.dispose();
-    super.dispose();
   }
 
   void checkLoadingStatus() async {
@@ -113,21 +99,6 @@ class _CustomFormField extends State<CustomFormField> {
     return formkey.currentState.validate();
   }
 
-  void onCstmBtnPressedAvail(String slotSelected, String secondarySlot) {
-    DatePicker.showDatePicker(context, pickerMode: DateTimePickerMode.time,
-        onChange: (timeSelected, values) {
-      setState(() {
-        availablity[slotSelected][secondarySlot] = timeSelected;
-      });
-    },
-        pickerTheme: DateTimePickerTheme(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          itemTextStyle:
-              Theme.of(context).primaryTextTheme.body2.copyWith(fontSize: 15),
-          confirmTextStyle: Theme.of(context).primaryTextTheme.body2,
-        ));
-  }
-
   void onCustomButtonPressed(String selected) {
     showModalBottomSheet(
       context: context,
@@ -142,7 +113,7 @@ class _CustomFormField extends State<CustomFormField> {
               setState(() {
                 skillsSelected[selected]['name'] = skills.skillName[item];
                 skillsSelected[selected]['reference'] =
-                    skills.skillReference[item];
+                skills.skillReference[item];
               });
             },
             itemExtent: 30,
@@ -151,6 +122,7 @@ class _CustomFormField extends State<CustomFormField> {
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -180,25 +152,36 @@ class _CustomFormField extends State<CustomFormField> {
             onStepContinue: (loading == true)
                 ? null
                 : () {
-                    if (step < formKeyExpert.length - 1) {
-                      if (validateFormStep(formKeyExpert[step])) {
-                        setState(() {
-                          step += 1;
-                        });
-                      }
-                    } else {
-                      if (skillsSelected['skill1']['name'] == '') {
-                        showAuthSnackBar(
-                          context: context,
-                          title: "Skill 1 is required",
-                          leading:
-                              Icon(Icons.error, size: 25, color: Colors.red),
-                        );
-                      } else {
-                        startAuthentication();
-                      }
-                    }
-                  },
+              if (step < formKeyExpert.length - 1) {
+                if (validateFormStep(formKeyExpert[step])) {
+                  setState(() {
+                    step += 1;
+                  });
+                }
+              } else {
+                if (skillsSelected['skill1']['name'] == '') {
+                  showAuthSnackBar(
+                    context: context,
+                    title: "Skill 1 is required",
+                    leading:
+                    Icon(Icons.error, size: 25, color: Colors.red),
+                  );
+                } else {
+                  startAuthentication();
+                }
+              }
+            },
+            onStepCancel: (loading == true)
+                ? null
+                : () {
+              if (step > 0) {
+                setState(() {
+                  step -= 1;
+                });
+              } else {
+                Navigator.of(context).pop();
+              }
+            },
             steps: [
               Step(
                 title: Text("Basic Information"),
@@ -206,14 +189,59 @@ class _CustomFormField extends State<CustomFormField> {
                   key: formKeyExpert[0],
                   child: Column(
                     children: <Widget>[
-                      InputField("Name", authenticate.getName),
-                      InputField("Email", authenticate.getEmail),
-                      InputField("Skype username", authenticate.getSkype),
-                      InputField("City", authenticate.getCity),
-                      InputField("Mobile", authenticate.getMobile,
-                          inputType: TextInputType.number),
-                      InputField("Password", authenticate.getPass,
-                          isPassword: true),
+                      InputField(
+                        "Name",
+                        authenticate.getName,
+                        prefix: Icons.person,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
+                      ),
+                      InputField(
+                        "Email",
+                        authenticate.getEmail,
+                        prefix: Icons.email,
+                        focusNode: focusNode[1],
+                        nextTextField: focusNode[2],
+                        inputType: TextInputType.emailAddress,
+                      ),
+                      InputField(
+                        "Skype username",
+                        authenticate.getSkype,
+                        prefix: Icons.supervised_user_circle,
+                        focusNode: focusNode[2],
+                        nextTextField: focusNode[3],
+                      ),
+                      InputField(
+                        "City",
+                        authenticate.getCity,
+                        prefix: Icons.location_city,
+                        focusNode: focusNode[3],
+                        nextTextField: focusNode[4],
+                      ),
+                      InputField(
+                        "Mobile",
+                        authenticate.getMobile,
+                        prefix: Icons.phone,
+                        inputType: TextInputType.phone,
+                        focusNode: focusNode[4],
+                        nextTextField: focusNode[5],
+                      ),
+                      InputField(
+                        "Password",
+                        authenticate.getPass,
+                        prefix: Icons.vpn_key,
+                        isPassword: true,
+                        focusNode: focusNode[5],
+                        nextTextField: focusNode[6],
+                      ),
+                      InputField(
+                        "Re-enter Password",
+                        authenticate.getPass,
+                        prefix: Icons.vpn_key,
+                        isPassword: true,
+                        focusNode: focusNode[6],
+
+                      )
                     ],
                   ),
                 ),
@@ -225,21 +253,23 @@ class _CustomFormField extends State<CustomFormField> {
                   child: Column(
                     children: <Widget>[
                       InputField(
-                        "Breif Discription",
+                        "About Me",
                         authenticate.getDescription,
                         inputType: TextInputType.multiline,
+                        prefix: Icons.assignment_ind,
                         minLines: 2,
                         maxLines: null,
                         maxLength: 150,
                         inputAction: TextInputAction.newline,
                       ),
                       InputField(
-                        "Previous Experience",
+                        "Work Experience",
                         authenticate.getWorkExperience,
                         inputType: TextInputType.multiline,
+                        prefix: Icons.work,
                         minLines: 2,
                         maxLines: null,
-                        maxLength: 150,
+                        maxLength: 250,
                         inputAction: TextInputAction.newline,
                       ),
                     ],
@@ -247,92 +277,10 @@ class _CustomFormField extends State<CustomFormField> {
                 ),
               ),
               Step(
-                subtitle: Text("Select timings when a user can contact you"),
-                title: Text("Availablity"),
-                content: Form(
-                  key: formKeyExpert[2],
-                  child: FormField(
-                    onSaved: (_) {
-                      authenticate.getAvailablity(availablity);
-                    },
-                    validator: (_) {
-                      bool error = false;
-                      String title;
-                      if (availablity['slot1']['start'] == null ||
-                          availablity['slot1']['end'] == null) {
-                        title = "Time Slot 1 is required";
-                        error = true;
-                      } else {
-                        availablity.forEach((key, value) {
-                          if ((value['start'] == null &&
-                                  value['end'] != null) ||
-                              value['end'] == null && value['start'] != null) {
-                            title = "Incomplete time slot encountered";
-                            error = true;
-                          }
-                        });
-                      }
-                      if (error == true) {
-                        showAuthSnackBar(
-                          context: context,
-                          title: title,
-                          leading: Icon(
-                            Icons.error,
-                            size: 25,
-                            color: Colors.red,
-                          ),
-                        );
-                        return 'error';
-                      }
-                    },
-                    //onSaved: (state) {
-                    //  List<DocumentReference> skillSelectedReference = [];
-                    //  skillsSelected.forEach((key, value) {
-                    //    if (value['reference'] != null) {
-                    //      skillSelectedReference.add(value['reference']);
-                    //    }
-                    //  });
-                    //  authenticate.getSkills(skillSelectedReference);
-                    //},
-                    builder: (state) {
-                      return Row(
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SignupTimeSelector(
-                                headingText: "Time Slot 1",
-                                availablity: availablity,
-                                slot: "slot1",
-                                callbackFunc: onCstmBtnPressedAvail,
-                                selector1Color: Colors.red,
-                                selector2Color: Colors.red,
-                              ),
-                              SignupTimeSelector(
-                                headingText: "Time Slot 2",
-                                availablity: availablity,
-                                callbackFunc: onCstmBtnPressedAvail,
-                                slot: "slot2",
-                              ),
-                              SignupTimeSelector(
-                                headingText: "Time Slot 3",
-                                availablity: availablity,
-                                callbackFunc: onCstmBtnPressedAvail,
-                                slot: "slot3",
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Step(
                 title: Text("Skills"),
                 subtitle: Text("What domain about a user can contact you"),
                 content: Form(
-                  key: formKeyExpert[3],
+                  key: formKeyExpert[2],
                   child: FormField(
                     onSaved: (state) {
                       List<DocumentReference> skillSelectedReference = [];

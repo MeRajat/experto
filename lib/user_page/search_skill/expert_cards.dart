@@ -51,6 +51,7 @@ class _CardsState extends State<Cards> {
     timedOut = false;
     expert = await experts
         .where("Skills", arrayContains: widget.skill.reference)
+        .where("Status",isEqualTo: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {

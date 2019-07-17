@@ -1,14 +1,17 @@
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
-import "./expert_home/expert_home.dart";
+import "./search_skill/search_skill.dart";
+import "./search_expert/search_expert.dart";
+import "./user_home/user_home.dart";
 import "./settings_page/settings_page.dart";
-import './navigation_bar_items.dart';
+import "./navigation_bar_items.dart";
 import 'package:experto/global_data.dart';
 
 class HomePage extends StatefulWidget {
-  final Data expert;
-  HomePage(this.expert);
+  final Data user;
+
+  HomePage(this.user);
   @override
   _HomePage createState() => _HomePage();
 }
@@ -16,12 +19,14 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   int currentIndex = 0;
 
-  final List<NavigatorObserver> observers = List.generate(2,(_)=>NavigatorObserver());
+  final List<NavigatorObserver> observers = List.generate(4,(_)=>NavigatorObserver());
 
-  final List<HeroController> heroControllers = List.generate(2,(_)=>HeroController());
+  final List<HeroController> heroControllers = List.generate(4,(_)=>HeroController());
 
   final List<Widget> pages = [
-    ExpertHome(),
+    UserHome(),
+    SearchSkill(),
+    SearchExpert(),
     SettingsPage(),
   ];
 
@@ -36,7 +41,7 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DocumentSync(
-      widget.expert,
+      widget.user,
       Scaffold(
         bottomNavigationBar: Theme(
           data: Theme.of(context)

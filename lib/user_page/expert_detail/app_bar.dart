@@ -1,11 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:experto/user_authentication/userAdd.dart';
 import "package:experto/utils/bloc/reload.dart";
-import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
-import 'package:experto/utils/contact_expert.dart' as contactExpert;
-import 'package:experto/utils/floating_action_button.dart';
 import 'package:experto/video_call/init.dart';
 import 'package:experto/video_call/local_notification.dart';
+import 'package:experto/global_data.dart';
+import 'package:experto/utils/bloc/syncDocuments.dart';
+
+import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
+import 'package:experto/utils/contact_expert.dart' as contactExpert;
+import 'package:experto/utils/placeholder.dart';
 import 'package:flutter/material.dart';
 import "package:flutter/cupertino.dart";
 
@@ -43,9 +46,32 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
             tag: expert['emailID'],
             child: Padding(
               padding: EdgeInsets.only(left: 10, top: 80),
-              child: Icon(
+              child: (expert["profilePicThumb"] == null)
+                  ? Icon(
                 Icons.person,
                 size: 110,
+              )
+                  : CachedNetworkImage(
+                imageBuilder: (context, imageProvider) => Container(
+                  margin: EdgeInsets.only(left: 10, right: 5),
+                  width: 90.0,
+                  height: 90.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[400],
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                imageUrl: expert["profilePicThumb"],
+                height: 110,
+                width: 110,
+                placeholder: (context, a) => Container(
+                  margin: EdgeInsets.only(left: 10, right: 5),
+                  width: 90,
+                  height: 90,
+                  child: CustomPlaceholder(),
+                ),
               ),
             ),
           ),
@@ -61,10 +87,10 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     expert["Name"],
                     style: Theme.of(context).textTheme.title.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          letterSpacing: -.5,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      letterSpacing: -.5,
+                    ),
                   ),
                 ),
                 Container(
@@ -72,15 +98,15 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                   child: Text(
                     expert["emailID"],
                     style: Theme.of(context).primaryTextTheme.body1.copyWith(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 12,
-                        ),
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 8),
                   child: Hero(
-                    tag: "contact",
+                    tag: "contact${expert['emailID']}",
                     child: ContactExpert(expert),
                   ),
                 )
@@ -95,7 +121,6 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
 
 class ContactExpert extends StatefulWidget {
   final DocumentSnapshot expert;
-
   ContactExpert(this.expert);
 
   @override
@@ -103,8 +128,31 @@ class ContactExpert extends StatefulWidget {
 }
 
 class _ContactExpert extends State<ContactExpert> {
-  final DocumentSnapshot expert;
+  bool checkingAvail = true;
+  bool expertAvailable = true;
+  DocumentSnapshot expert;
+  Data user;
   CollectionReference interaction;
+  @override
+  void initState(){
+    super.initState();
+    checkAvail();
+    checkPeriodic();
+  }
+
+  checkPeriodic(){
+    Future.delayed(Duration(minutes: 10)).then((val)async {
+      await checkAvail();
+      print("done");
+      checkPeriodic();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    user = DocumentSync.of(context).account;
+    super.didChangeDependencies();
+  }
 
   _ContactExpert(this.expert) {
     getInteraction();
@@ -115,94 +163,95 @@ class _ContactExpert extends State<ContactExpert> {
   }
 
   Future<void> updateInteraction() async {
-    int id;
-    QuerySnapshot tempsnap;
-    CollectionReference temp = Firestore.instance.collection("Users"),
-        temp2 = Firestore.instance.collection("Experts");
-    try {
-      for (int i = 0; i < UserData.currentUser["interactionID"].length; i++) {
-        tempsnap = await interaction
-            .where("id", isEqualTo: UserData.currentUser["interactionID"][i])
-            .getDocuments();
-        if (tempsnap.documents[0]["expert"] == expert["emailID"])
-          break;
-        else
-          tempsnap = null;
-      }
-    } catch (e) {
-      tempsnap = null;
-      print("doesnt exist");
-    }
+//    int id;
+//    bool interactionAlreadyAvailable = false;
+//    QuerySnapshot tempsnap;
+//    try {
+//      tempsnap = await interaction
+//          .where("user", isEqualTo: user.detailsData.documentID)
+//          .getDocuments();
+//      tempsnap.documents.forEach((document) {
+//        if (document["expert"] == expert.documentID) {
+//          interactionAlreadyAvailable = true;
+//        }
+//      });
+//      if (!interactionAlreadyAvailable) {
+//        tempsnap = null;
+//      }
+//    } catch (e) {
+//      tempsnap = null;
+//    }
+//
+//
+//    if (tempsnap != null) {
+//      await tempsnap.documents[0].reference.updateData({
+//        "interactionTime": FieldValue.arrayUnion([DateTime.now()])
+//      });
+//    } else {
+//      await interaction.add({
+//        'expert': expert.documentID,
+//        'user': user.detailsData.documentID,
+//      });
+//    }
 
-    await Firestore.instance.runTransaction((Transaction t) async {
-      await interaction.getDocuments().then((QuerySnapshot snapshot) {
-        id = snapshot.documents.length;
-      });
-      if (tempsnap != null) {
-        await interaction
-            .document(tempsnap.documents[0].documentID)
-            .updateData({
-          "interactionTime": FieldValue.arrayUnion([DateTime.now()])
-        });
-      } else {
-        await temp.document(UserData.currentUser.documentID).updateData({
-          "interactionID": FieldValue.arrayUnion([id])
-        });
-        print(expert["emailID"]);
-        await temp2.document(expert.documentID).updateData({
-          "interactionID": FieldValue.arrayUnion([id])
-        });
-        await interaction.add({
-          'expert': expert["emailID"],
-          'user': UserData.currentUser["emailID"],
-          'id': id,
-          'interactionTime': FieldValue.arrayUnion([DateTime.now()])
-        });
-      }
-      await temp
-          .where("emailID", isEqualTo: UserData.currentUser["emailID"])
-          .getDocuments()
-          .then((QuerySnapshot q) {
-        UserData.currentUser = q.documents[0];
-      });
+    await interaction.add({
+      'expert': expert.documentID,
+      'user': user.detailsData.documentID,
     });
+    Data newUser = Data();
+    newUser.profileData = user.profileData;
+    newUser.detailsData = await user.detailsData.reference.get();
+    syncDocument.updateStatus(newUser);
     userSearchExpert.updateStatus(true);
   }
 
-  // void _showDialog(context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: new Text("Skype Required",
-  //             style: Theme.of(context).primaryTextTheme.title),
-  //         content: new Text(
-  //           "Skype is Required to use this service",
-  //           style: Theme.of(context).primaryTextTheme.body2,
-  //         ),
-  //         actions: <Widget>[
-  //           new FlatButton(
-  //             child: new Text("Close"),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> checkAvail() async {
+    setState(() {
+      checkingAvail = true;
+    });
 
-  // void _launchSkype(
-  //     BuildContext context, String skypeUsername, String serviceType) async {
-  //   final url = "skype:$skypeUsername?$serviceType";
-  //   if (await canLaunch(url)) {
-  //     await updateInteraction();
-  //     await launch(url);
-  //   } else {
-  //     _showDialog(context);
-  //   }
-  // }
+    expertAvailable = await contactExpert.checkAvail(expert);
+
+    setState(() {
+      checkingAvail = false;
+    });
+  }
+
+
+  void contactOnTap({
+    @required String secondaryText,
+    @required Widget icon,
+    @required String serviceType,
+  }) async {
+
+
+    if (expertAvailable) {
+      bottomSheet.showBottomSheet(
+        context: context,
+        icon: icon,
+        secondaryText: secondaryText,
+        callback: () {
+          updateInteraction();
+
+          contactExpert.videoCall(context: context);
+//          contactExpert.launchSkype(
+//              context: context,
+//              skypeUsername: expert['SkypeUser'],
+//              serviceType: serviceType,
+//              afterLaunchFunc: () {},
+//          );
+        },
+      );
+    }
+//    else if (!expertAvailable) {
+//      bottomSheet.showBottomSheet(
+//        context: context,
+//        icon: Icon(Icons.not_interested, size: 120),
+//        secondaryText: "Expert is not available right now!",
+//        callback: null,
+//      );
+//    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -210,97 +259,80 @@ class _ContactExpert extends State<ContactExpert> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         InkWell(
-          onTap: () {
-            if (checkAvail()) {
-              bottomSheet.showBottomSheet(
-                context: context,
-                icon: Icon(Icons.face, size: 120),
-                secondaryText: "Are you sure you want to call this expert ?",
-                callback: () {
-                  contactExpert.videoCall(context: context);
-                },
-              );
-            } else {
-              bottomSheet.showBottomSheet(
-                context: context,
-                icon: Icon(Icons.not_interested, size: 120),
-                secondaryText: "Expert is not available right now!",
-                callback: null,
-              );
-            }
+
+          onTap:  !expertAvailable?null:() {
+            contactOnTap(
+                secondaryText: "Are you sure you want to call this expert",
+                serviceType: "call",
+                icon: Icon(Icons.face, size: 120));
           },
-          child: Icon(
-            Icons.video_call,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: checkingAvail?Colors.grey:expertAvailable?Colors.grey[800]:Colors.grey,
+            ),
+            height: 30,
+            width: 30,
+            child: Icon(
+              Icons.video_call,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
-            onTap: () {
-              bottomSheet.showBottomSheet(
-                  context: context,
-                  icon: Icon(Icons.chat_bubble_outline, size: 120),
-                  secondaryText: "Are you sure you want to message this expert",
-                  callback: () {
-                    contactExpert.launchSkype(
-                        context: context,
-                        skypeUsername: expert['SkypeUser'],
-                        serviceType: "chat",
-                        afterLaunchFunc: updateInteraction);
-                  });
-            },
-            child: Icon(Icons.chat, size: 20),
+              onTap: !expertAvailable?null:() {
+                contactOnTap(
+                    secondaryText:
+                    "Are you sure you want to message this expert",
+                    serviceType: "chat",
+                    icon: Icon(Icons.chat_bubble_outline, size: 120));
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: checkingAvail?Colors.grey:expertAvailable?Colors.grey[800]:Colors.grey,
+                ),
+                height: 30,
+                width: 30,
+                child: Icon(
+                  Icons.chat,
+                  color: Colors.white,
+                  size: 18,
+                ),
+              ),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(left: 10),
           child: InkWell(
-            onTap: () {
+            onTap:  !expertAvailable?null:() {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (
-                  BuildContext context,
-                ) {
+                    BuildContext context,
+                    ) {
                   return expert_feedback.Feedback(expert);
                 }),
               );
             },
-            child: Icon(
-              Icons.feedback,
-              size: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: checkingAvail?Colors.grey:expertAvailable?Colors.grey[800]:Colors.grey,
+              ),
+              height: 30,
+              width: 30,
+              child: Icon(
+                Icons.feedback,
+                color: Colors.white,
+                size: 17,
+              ),
             ),
           ),
         ),
       ],
     );
-  }
-
-  bool checkAvail() {
-//    List<Map<String,Timestamp>> map=
-    //    map.forEach((Map<String,DateTime> x){
-    //      if(now.compareTo(x["start"])<=(now.compareTo(x["end"])*-1))
-    //        return true;
-    //      else
-//        return false;
-    //}
-    //);
-    DateTime now = DateTime.now();
-    bool avail = true;
-    var expertAvailability = expert["Availablity"];
-    expertAvailability.forEach((_, timeSlot) {
-      if (timeSlot['start'] != null || timeSlot['end'] != null) {
-        DateTime start = timeSlot['start'].toDate();
-        DateTime end = timeSlot['end'].toDate();
-        if (now.hour > start.hour && now.hour < end.hour) {
-          avail = true;
-        } else if (now.hour == start.hour || now.hour == end.hour) {
-          if (now.minute > start.minute && now.minute < start.minute) {
-            avail = true;
-          }
-        } else {
-          avail = false;
-        }
-      }
-    });
-    return avail;
   }
 }

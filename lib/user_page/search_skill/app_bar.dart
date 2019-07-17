@@ -15,7 +15,7 @@ class CustomFlexibleSpace extends StatelessWidget {
           margin: EdgeInsets.only(right: 17, left: 17, bottom: 20),
           child: Material(
             elevation: 5,
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
             child: SkillTextField(),
           ),
         ),
@@ -29,9 +29,9 @@ class AppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomAppBar(
       130,
-      'Domains',
+      'Categories',
       CustomFlexibleSpace(),
-      isFloating:true,
+      isFloating: true,
     );
   }
 }
@@ -46,6 +46,13 @@ class _SkillTextField extends State<SkillTextField> {
   final TextEditingController _controller =
       TextEditingController(text: initialValue);
   final List results = [];
+  bool isSearchingStatus = false;
+
+  @override
+  void initState() {
+    getSearchingStatus();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -53,27 +60,55 @@ class _SkillTextField extends State<SkillTextField> {
     super.dispose();
   }
 
+  void getSearchingStatus() async {
+    isSearching.getStatus.listen((value) {
+      if (value != isSearchingStatus) {
+        setState(() {
+          isSearchingStatus = value;
+        });
+      }
+    });
+  }
+
   void search(string) {
     initialValue = _controller.text;
     if (_controller.text == '') {
-      isSearching.updateStatus(0);
-      return;
+      isSearching.updateStatus(false);
     } else {
+      isSearching.updateStatus(true);
       searchBloc.updateResult(_controller.text.toLowerCase());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      textInputAction: TextInputAction.search,
-      onChanged: search,
-      onSubmitted: search,
-      style: TextStyle(fontSize: 17),
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.search, size: 20),
-        hintText: 'search by domain',
+    return Theme(
+      data: Theme.of(context)
+          .copyWith(primaryColor: Theme.of(context).accentColor),
+      child: TextField(
+        controller: _controller,
+        textInputAction: TextInputAction.search,
+        onChanged: search,
+        onSubmitted: search,
+        style: TextStyle(fontSize: 17),
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.search,
+            size: 20,
+          ),
+          suffixIcon: (isSearchingStatus)
+              ? InkWell(
+                  onTap: () {
+                    _controller.clear();
+                    isSearching.updateStatus(false);
+                  },
+                  child: Icon(
+                    CupertinoIcons.clear_thick_circled,
+                  ),
+                )
+              : null,
+          hintText: 'search by Category',
+        ),
       ),
     );
   }

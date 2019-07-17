@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
 
-import './search_result_cards.dart';
+import './categories_list.dart';
 import "package:experto/utils/bloc/search_bloc.dart";
 import "package:experto/utils/bloc/reload.dart";
 import "package:experto/utils/bloc/is_searching.dart";
@@ -16,11 +16,14 @@ class Cards extends StatefulWidget {
 }
 
 class _Cards extends State<Cards> {
-  int searchingStatus = 0;
   String searchString = '';
-  bool resultAvailable = false, timedOut = false, loading = false;
+  bool resultAvailable = false,
+      timedOut = false,
+      loading = false,
+      isInitialSearch = true,
+      searchingStatus = false;
   List<DocumentSnapshot> querySetResult = [], tempResult = [], topSkills = [];
-  QuerySnapshot searchSnapshot, topSkillSnapshot;
+  QuerySnapshot searchSnapshot, categorySnapshot;
   DocumentReference skillReference;
 
   @override
@@ -44,8 +47,8 @@ class _Cards extends State<Cards> {
       loading = true;
     });
 
-    topSkillSnapshot = await Firestore.instance
-        .collection('TopSkills')
+    categorySnapshot = await Firestore.instance
+        .collection('Categories')
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {
@@ -54,14 +57,13 @@ class _Cards extends State<Cards> {
     }).then((snapshot) async {
       for (int i = 0; i < snapshot.documents.length; i++) {
         skillReference = snapshot.documents[i].data['Skill'];
-        topSkills.add(await skillReference.get());
+        topSkills.add(snapshot.documents[i]);
       }
       setState(() {
         loading = false;
       });
     });
   }
-  
 
   void listenReload() async {
     userSearchSkill.getStatus.listen((value) {
@@ -74,7 +76,7 @@ class _Cards extends State<Cards> {
   void reload() {
     setState(() {
       timedOut = false;
-      searchingStatus = 0;
+      searchingStatus = false;
       topSkills = [];
       searchSnapshot = null;
       getTopSkills();
@@ -83,7 +85,7 @@ class _Cards extends State<Cards> {
 
   void retrySearch() {
     timedOut = false;
-    if (searchingStatus == 0) {
+    if (searchingStatus == false) {
       reload();
     } else {
       search(searchString);
@@ -94,10 +96,11 @@ class _Cards extends State<Cards> {
     isSearching.getStatus.listen((result) {
       setState(() {
         timedOut = false;
-        if (result == 0) {
+        searchingStatus = result;
+        if (result == false) {
+          isInitialSearch = true;
           searchString = '';
         }
-        searchingStatus = result;
       });
     });
   }
@@ -105,7 +108,7 @@ class _Cards extends State<Cards> {
   void getQuerySet(String searchQuery) async {
     QuerySnapshot searchSnapshot = await Firestore.instance
         .collection("Skills")
-        .where("Index", isEqualTo: searchQuery.toUpperCase())
+        .where("Index", arrayContains: searchQuery.toUpperCase())
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {});
 
@@ -117,13 +120,16 @@ class _Cards extends State<Cards> {
     (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
 
     setState(() {
+      isInitialSearch = false;
       loading = false;
     });
   }
 
   void getTempSet(String searchQuery) async {
     querySetResult.forEach((snapshot) {
-      if (snapshot.data['Name'].toLowerCase().contains(searchQuery.toLowerCase())) {
+      if (snapshot.data['Name']
+          .toLowerCase()
+          .contains(searchQuery.toLowerCase())) {
         tempResult.add(snapshot);
       }
     });
@@ -141,7 +147,7 @@ class _Cards extends State<Cards> {
     });
     searchSnapshot = null;
     tempResult = [];
-    if (querySetResult.length == 0 || searchQuery.length == 1) {
+    if (isInitialSearch) {
       querySetResult = [];
       getQuerySet(searchQuery);
     } else {
@@ -151,17 +157,17 @@ class _Cards extends State<Cards> {
 
   void getSearch() async {
     searchBloc.value.listen((searchQuery) {
-      searchingStatus = 1;
+      searchingStatus = true;
       timedOut = false;
-        searchString = searchQuery;
-        search(searchQuery);
+      searchString = searchQuery;
+      search(searchQuery);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     {
-      String recommendationHeaderText = "Top Domains";
+      String recommendationHeaderText = "Top Categories";
       String searchHeaderText = "Results";
 
       if (timedOut) {
@@ -179,16 +185,22 @@ class _Cards extends State<Cards> {
         );
       }
 
-      if (searchingStatus == 0) {
-        return SearchResults(topSkills, recommendationHeaderText);
+      if (searchingStatus == false) {
+        return SearchResults(topSkills, recommendationHeaderText, false);
       }
 
-      if (searchingStatus == 1 && resultAvailable) {
-        return SearchResults(tempResult, searchHeaderText);
+      if (searchingStatus == true && resultAvailable) {
+        return WillPopScope(
+          onWillPop: () => Future.value(false),
+          child: SearchResults(tempResult, searchHeaderText, true),
+        );
       }
 
-      if (searchingStatus == 1 && !resultAvailable) {
-        return SliverToBoxAdapter(child: NoResultCard());
+      if (searchingStatus == true && !resultAvailable) {
+        return WillPopScope(
+          onWillPop: () => Future.value(false),
+          child: SliverToBoxAdapter(child: NoResultCard()),
+        );
       } else
         return SliverToBoxAdapter(child: Container());
     }

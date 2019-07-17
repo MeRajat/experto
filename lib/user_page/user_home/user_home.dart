@@ -8,7 +8,8 @@ import "package:experto/utils/bloc/reload.dart";
 class UserHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
+    return Scaffold(
+      body: CustomScrollView(
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: <Widget>[
           Appbar(),
@@ -22,6 +23,7 @@ class UserHome extends StatelessWidget {
           ),
           VerticalList(),
         ],
+      ),
     );
   }
 }

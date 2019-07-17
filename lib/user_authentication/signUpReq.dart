@@ -1,57 +1,66 @@
-import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/user_authentication/userData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import "package:experto/utils/bloc/is_loading.dart";
+import 'package:experto/global_data.dart';
+import "package:shared_preferences/shared_preferences.dart";
+import 'package:cloud_functions/cloud_functions.dart';
 
 class Authenticate {
   CollectionReference userReference;
-  QuerySnapshot userSnapshot;
   AuthException exception;
-  List<String> details;
+  Map<String,dynamic> details;
   Future<void> Function(BuildContext context) fn;
   String msg;
+  Data userData;
 
   Authenticate() {
     //_isSignIn = false;
-    details = new List<String>();
+    userData = new Data();
+    details =new Map<String,dynamic> ();
     getUser();
     msg = "Invalid details";
-  }
-  void clear() {
-    details = new List<String>();
-    getUser();
-    msg = "Invalid details";
-    UserData.currentUser = null;
-    UserData.usr = null;
   }
 
-  Future<bool> isSignIn() async {
-    UserData.usr = await FirebaseAuth.instance.currentUser();
+  void clear() {
+    details = new Map<String,dynamic>();
+    getUser();
+    msg = "Invalid details";
+    userData.profileData = null;
+  }
+
+  void updateConfig() async {
+    final pref = await SharedPreferences.getInstance();
+    final String key = "account_type";
+    pref.setString(key, "user");
+  }
+
+  Future<bool> isSignIn(context) async {
+    userData.profileData = await FirebaseAuth.instance.currentUser();
     try {
-      if (UserData.usr == null)
+      if (userData.profileData == null) {
+        Navigator.of(context).pop();
+        Navigator.pushNamed(context, '/home_page');
         return false;
-      else if (UserData.currentUser == null) {
-        userSnapshot = await userReference
-            .where('emailID', isEqualTo: UserData.usr.email)
-            .getDocuments();
-        UserData.currentUser = userSnapshot.documents[0];
-        return true;
-      } else if (UserData.usr.email == UserData.currentUser["emailID"])
-        return true;
-      else {
-        userSnapshot = await userReference
-            .where('emailID', isEqualTo: UserData.usr.email)
-            .getDocuments();
-        UserData.currentUser = userSnapshot.documents[0];
+      } else {
+        userData.detailsData =
+            await userReference.document(userData.profileData.uid).get();
+        if (!userData.detailsData.exists) throw ("error");
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/user_home', ModalRoute.withName(':'),
+            arguments: userData);
+
         return true;
       }
     } catch (e) {
+      Navigator.of(context).pop();
+      Navigator.pushNamed(context, '/home_page');
       return false;
     }
   }
 
-  Future<void> _ackAlert(BuildContext context, String title, String content) {
+  Future<void> _ackAlert(BuildContext context, String title, String content,{bool signup=false,bool forgot=false}) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -60,11 +69,28 @@ class Authenticate {
           content: Text(content),
           actions: <Widget>[
             FlatButton(
-              child: Text('Ok'),
+              child: Text(forgot?'Yes':'Ok'),
+              onPressed: forgot?(){forgotPass(context);}:() {
+                if(signup)
+                  Navigator.of(context).popUntil(ModalRoute.withName('/user_login'));
+                else
+                  Navigator.of(context).pop();
+              },
+            ),
+            (title.compareTo("Login Failed!")==0&&!content.contains("Verify"))?
+            FlatButton(
+              child: Text('Forgot Password'),
+              onPressed: () {
+                  Navigator.of(context).pop();
+                  _ackAlert(context, "Password reset","Do you want to send password reset link to ${details['email']}?",forgot: true);
+              },
+            ):SizedBox(),
+            forgot?FlatButton(
+              child: Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
-            ),
+            ):SizedBox(),
           ],
         );
       },
@@ -75,102 +101,109 @@ class Authenticate {
     userReference = Firestore.instance.collection("Users");
   }
 
-  getName(String x) => details.add(x);
-  getPass(String x) => details.add(x);
-  getCity(String x) => details.add(x);
-  getMobile(String x) => details.add(x);
-  getEmail(String x) => details.add(x);
+  getName(String x) => details.addAll({'name':x});
+  getPass(String x) => details.addAll({'pass':x});
+  getCity(String x) => details.addAll({'city':x});
+  getMobile(String x) => details.addAll({'mob':x});
+  getEmail(String x) => details.addAll({'email':x});
 
-  // Widget signInButton(String x) {
-  //   if (//_isSignIn)
-  //     return Center(child: CircularProgressIndicator());
-  //   else
-  //     return Text(
-  //       x,
-  //       style: TextStyle(
-  //         fontSize: 16,
-  //         fontWeight: FontWeight.bold,
-  //         color: Colors.black,
-  //       ),
-  //     );
-  // }
-
+  Future<void> forgotPass(BuildContext context)async{
+    try{
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: details['email']).then((val){
+        Navigator.of(context).pop();
+        _ackAlert(context, "Reset Success!","Password reset link sent. Reset password and sign in again!");
+      });
+    }
+    catch(e){
+      print(e.toString().split(','));
+      Navigator.of(context).pop();
+      _ackAlert(context, "Reset Failed!",e.toString().split(',')[1]);
+    }
+  }
   Future<void> signUp(
       GlobalKey<FormState> _formKey, BuildContext context) async {
     FormState formState = _formKey.currentState;
-    details.clear();
+    UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
     if (formState.validate()) {
       formState.save();
       try {
         isLoadingSignup.updateStatus(true);
         //_isSignIn = true;
         QuerySnapshot val = await userReference
-            .where("Mobile", isEqualTo: int.parse(details[3]))
+            .where("Mobile", isEqualTo: int.parse(details['mob']))
             .getDocuments();
         if (val.documents.length != 0) throw ("Mobile Number already in use");
-        UserData.usr = await FirebaseAuth.instance
+        userData.profileData = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
-                email: details[1], password: details[4]);
-
-        user = new Users(
-          email: details[1],
-          city: details[2],
-          name: details[0],
-          m: details[3],
+                email: details['email'], password: details['pass']);
+        userUpdateInfo.displayName = details['name'];
+        currentUser = new Users(
+          //   email: details[1],
+          city: details['city'],
+          name: details['name'],
+          m: details['mob'],
         );
-        Firestore.instance.runTransaction((Transaction t) async {
-          await userReference.add(user.toJson());
+
+        //userUpdateInfo.photoUrl=
+        await userData.profileData.updateProfile(userUpdateInfo);
+        await Firestore.instance.runTransaction((Transaction t) async {
+          await userReference
+              .document(userData.profileData.uid)
+              .setData(currentUser.toJson());
         });
-        userSnapshot = await userReference
-            .where('emailID', isEqualTo: details[1])
-            .getDocuments();
-        UserData.currentUser = userSnapshot.documents[0];
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
-        formState.reset();
+        userData.profileData = await FirebaseAuth.instance.currentUser();
+        userData.detailsData =
+            await userReference.document(userData.profileData.uid).get();
+        updateConfig();
+        await userData.profileData.sendEmailVerification();
+        await FirebaseAuth.instance.signOut();
+        throw("Verify");
       } catch (e) {
         //_isSignIn = false;
-        print(e);
-        //formState.reset();
-        details.clear();
-        user = null;
         isLoadingSignup.updateStatus(false);
         _ackAlert(
             context,
-            "SignUp Failed!",
-            e == "Mobile Number already in use"
-                ? e
-                : e.toString().split(',')[1]);
+            e=="Verify"?"Verification Required":"SignUp Failed!",
+            e.contains("Mobile")
+                ? e:e=="Verify"?"Verify email and then signIn"
+                : e.toString().split(',')[1],signup: true);
       }
     }
   }
 
   Future<void> signIn(
       GlobalKey<FormState> _formKey, BuildContext context) async {
-    details.clear();
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       isLoadingLogin.updateStatus(true);
       Future.delayed(Duration(seconds: 5));
-      //_isSignIn = true;
       formState.save();
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: details[0], password: details[1]);
-        userSnapshot = await userReference
-            .where('emailID', isEqualTo: details[0])
-            .getDocuments();
-        //print(userSnapshot.documents[0]["emailID"]);
-        UserData.currentUser = userSnapshot.documents[0];
+        print(details);
+        userData.profileData = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: details['email'], password: details['pass']);
+        if(!userData.profileData.isEmailVerified)
+        {
+          await userData.profileData.sendEmailVerification();
+          await FirebaseAuth.instance.signOut();
+          throw("Verify");
+        }
+        userData.detailsData =
+            await userReference.document(userData.profileData.uid).get();
+        updateConfig();
+        HttpsCallable callable= CloudFunctions.instance.getHttpsCallable(functionName: "helloWorld");
+        callable.call();
         Navigator.pushNamedAndRemoveUntil(
-            context, '/user_home', ModalRoute.withName(':'));
+          context,
+          '/user_home',
+          ModalRoute.withName(':'),
+          arguments: userData,
+        );
         formState.reset();
       } catch (e) {
-        //_isSignIn = false;
-        //formState.reset();
-        details.clear();
         isLoadingLogin.updateStatus(false);
-        _ackAlert(context, "Login Failed!", e.toString().split(',')[1]);
+        _ackAlert(context, "Login Failed!",e=="Verify"?"Verify email and then signIn": e.toString().split(',')[1]);
       }
     }
   }

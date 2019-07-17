@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:experto/utils/placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import "package:cached_network_image/cached_network_image.dart";
-
 import './expert_list.dart';
 
 class CustomCard extends StatelessWidget {
@@ -56,11 +56,8 @@ class CustomCard extends StatelessWidget {
                 height: 55,
                 child: CachedNetworkImage(
                   imageUrl: skill["IconURL"],
-                  placeholder: (BuildContext context, string) => Center(
-                        heightFactor: 1.1,
-                        widthFactor: 1.1,
-                        child: CircularProgressIndicator(),
-                      ),
+                  fadeOutDuration: Duration.zero,
+                  placeholder: (BuildContext context, string) => CustomPlaceholder(),
                   color: (Theme.of(context).brightness == Brightness.dark)
                       ? colorsDarkMode[random.nextInt(colorsDarkMode.length)]
                       : colorsLightMode[random.nextInt(colorsLightMode.length)],

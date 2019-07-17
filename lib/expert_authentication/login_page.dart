@@ -33,19 +33,20 @@ class CustomForm extends StatefulWidget {
 
 class _CustomForm extends State<CustomForm> {
   final GlobalKey<FormState> _formKeyExpert = GlobalKey<FormState>();
-  Authenticate authenticate = new Authenticate();
+  final Authenticate authenticate = new Authenticate();
   bool loading = false;
-
-  @override
-  void dispose() {
-    //isLoadingLoginExpert.dispose();
-    super.dispose();
-  }
+  final List<FocusNode> focusNode = [FocusNode(), FocusNode()];
 
   @override
   void initState() {
     checkLoadingStatus();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    //isLoadingLoginExpert.dispose();
+    super.dispose();
   }
 
   void checkLoadingStatus() async {
@@ -55,6 +56,7 @@ class _CustomForm extends State<CustomForm> {
       });
       Scaffold.of(context).removeCurrentSnackBar();
       if (status) {
+        loading = true;
         showAuthSnackBar(
             context: context,
             title: "Logging In",
@@ -64,7 +66,7 @@ class _CustomForm extends State<CustomForm> {
   }
 
   void startAuthentication() {
-    //authenticate.Clear();
+    authenticate.clear();
     authenticate.signIn(_formKeyExpert, context);
   }
 
@@ -88,15 +90,33 @@ class _CustomForm extends State<CustomForm> {
               type: StepperType.vertical,
               currentStep: 0,
               onStepTapped: (int tapped) {},
-              onStepContinue: (loading) ? null : startAuthentication,
+              onStepContinue: (loading == true) ? null : startAuthentication,
+              onStepCancel: (loading == true)
+                  ? null
+                  : () {
+                      Navigator.of(context).pop();
+                    },
               steps: [
                 Step(
                   title: Text("Enter Credentials"),
                   content: Column(
                     children: <Widget>[
-                      InputField("Enter Your Username", authenticate.getName),
-                      InputField("Enter Your Password", authenticate.getPass,
-                          isPassword: true),
+                      InputField(
+                        "Enter Your Username",
+                        authenticate.getEmail,
+                        prefix: Icons.email,
+                        focusNode: focusNode[0],
+                        nextTextField: focusNode[1],
+                      ),
+                      InputField(
+                        "Enter Your Password",
+                        authenticate.getPass,
+                        isPassword: true,
+                        prefix: Icons.vpn_key,
+                        focusNode: focusNode[1],
+                        inputAction: TextInputAction.done,
+                        func: startAuthentication,
+                      ),
                       SignupPageRedirect(
                         text: "Don't have an account?",
                         redirectLink: "SignUp",
@@ -105,10 +125,10 @@ class _CustomForm extends State<CustomForm> {
                     ],
                   ),
                 ),
-                Step(
-                  title: Text("Press Continue To LogIn"),
-                  content: Container(),
-                ),
+                // Step(
+                //   title: Text("Press Continue To LogIn"),
+                //   content: Container(),
+                // ),
               ],
             ),
           ),

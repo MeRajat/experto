@@ -4,14 +4,15 @@ import 'package:flutter/cupertino.dart';
 class Theme {
   ThemeData lightTheme() {
     return ThemeData(
-      brightness: Brightness.light,
-      bottomAppBarTheme: BottomAppBarTheme(
-        color: Colors.transparent,
-      ),
+      primaryColor: Color(0xFFF2F4ED),
       canvasColor: Color.fromRGBO(250, 250, 250, 1),
       scaffoldBackgroundColor: Color.fromRGBO(243, 242, 244, 1),
+      bottomAppBarColor: Colors.transparent,
+      errorColor: Colors.red,
+      buttonColor: Colors.blue,
+      brightness: Brightness.light,
       fontFamily: 'Ubuntu',
-      primaryColor: Color(0xFFF2F4ED),
+      accentColor: Colors.blue,
       primaryTextTheme: TextTheme(
         title: TextStyle(
           wordSpacing: 1,
@@ -29,7 +30,6 @@ class Theme {
           wordSpacing: 1,
         ),
       ),
-      bottomAppBarColor: Colors.transparent,
       dialogTheme: DialogTheme(
         backgroundColor: Color.fromRGBO(250, 250, 250, 1),
         shape: RoundedRectangleBorder(
@@ -42,7 +42,7 @@ class Theme {
         height: 45,
         disabledColor: Color.fromRGBO(243, 242, 244, 1),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(5),
         ),
       ),
       appBarTheme: AppBarTheme(
@@ -54,13 +54,8 @@ class Theme {
           left: 15,
           top: 10,
         ),
-        color: Color.fromRGBO(245, 245, 245, 1),
-        elevation: 3,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
-        ),
+        color: Color.fromRGBO(240, 240, 240, 1),
+        elevation: 2,
       ),
       inputDecorationTheme: InputDecorationTheme(
         fillColor: Color.fromRGBO(250, 250, 250, 1),
@@ -71,24 +66,24 @@ class Theme {
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
-        contentPadding: EdgeInsets.all(13),
+        contentPadding: EdgeInsets.all(0),
       ),
       textTheme: TextTheme(
         title: TextStyle(
@@ -107,8 +102,13 @@ class Theme {
   ThemeData darkTheme() {
     Color textColor = Color.fromRGBO(236, 236, 236, 1);
     return ThemeData(
+      primaryColor: Colors.black,
       brightness: Brightness.dark,
       canvasColor: Color.fromRGBO(50, 50, 50, 1),
+      scaffoldBackgroundColor: Color.fromRGBO(28, 28, 28, 1),
+      buttonColor: Colors.blue[800],
+      errorColor: Colors.red[800],
+      bottomAppBarColor: Color(0xFFfcfffe),
       dialogTheme: DialogTheme(
         backgroundColor: Color.fromRGBO(45, 45, 45, 1),
         shape: RoundedRectangleBorder(
@@ -139,16 +139,12 @@ class Theme {
           wordSpacing: 1,
         ),
       ),
-      scaffoldBackgroundColor:
-          Color.fromRGBO(28, 28, 28, 1), //Color.fromRGBO(243, 242, 244, 1),
       fontFamily: 'Ubuntu',
-      primaryColor: Colors.black,
-      bottomAppBarColor: Color(0xFFfcfffe),
       buttonTheme: ButtonThemeData(
         height: 45,
         disabledColor: Color.fromRGBO(28, 28, 28, 1),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(5),
         ),
       ),
       appBarTheme: AppBarTheme(
@@ -166,11 +162,11 @@ class Theme {
           left: 15,
           top: 10,
         ),
-        color: Color.fromRGBO(45, 45, 45, 1),
+        color: Color.fromRGBO(42, 42, 42, 1),
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(10),
+            Radius.circular(5),
           ),
         ),
       ),
@@ -183,19 +179,19 @@ class Theme {
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),

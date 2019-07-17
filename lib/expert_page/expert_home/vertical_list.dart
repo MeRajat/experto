@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:experto/expert_authentication/expertAdd.dart';
+
+import 'package:experto/global_data.dart';
 import 'package:flutter/material.dart';
 
 import 'package:experto/utils/timed_out.dart';
@@ -13,16 +14,28 @@ class VerticalList extends StatefulWidget {
 class _VerticalListState extends State<VerticalList> {
   QuerySnapshot interactionSnapshot;
   List<DocumentSnapshot> users;
+  Data expert;
   CollectionReference interaction, user;
   bool timedout, load;
+  bool stateMounted;
+
+  @override
+  void didChangeDependencies() {
+    expert = DocumentSync.of(context).account;
+    if (stateMounted == true) {
+      getInteraction();
+      stateMounted = false;
+    }
+    super.didChangeDependencies();
+  }
 
   void initState() {
+    stateMounted = true;
     user = Firestore.instance.collection("Users");
     interaction = Firestore.instance.collection("Interactions");
     users = new List<DocumentSnapshot>();
     timedout = false;
     load = false;
-    getInteraction();
     listenReload();
     super.initState();
   }
@@ -53,7 +66,8 @@ class _VerticalListState extends State<VerticalList> {
 
   Future<void> getInteraction() async {
     interactionSnapshot = await interaction
-        .where("expert", isEqualTo: currentExpert["emailID"])
+        .where("expert", isEqualTo: expert.profileData.uid)
+        .orderBy("interactionTime", descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       setState(() {
@@ -63,14 +77,18 @@ class _VerticalListState extends State<VerticalList> {
     users.clear();
     //print(interactionSnapshot.documents.length);
     for (int i = 0; i < interactionSnapshot.documents.length; i++) {
-      QuerySnapshot q = await user
-          .where("emailID", isEqualTo: interactionSnapshot.documents[0]["user"])
-          .getDocuments();
-      users.add(q.documents[0]);
+      DocumentSnapshot q =
+          await user.document(interactionSnapshot.documents[i]["user"]).get();
+      users.add(q);
+      setState(() {
+        load = true;
+      });
     }
-    setState(() {
-      load = true;
-    });
+    print(interactionSnapshot.documents.length);
+    if (interactionSnapshot.documents.length == 0)
+      setState(() {
+        load = true;
+      });
   }
 
   @override
@@ -81,33 +99,43 @@ class _VerticalListState extends State<VerticalList> {
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
+              int lastInteractionIndex = interactionSnapshot
+                      .documents[index]['interactionTime'].length -
+                  1;
+              DateTime lastInteractionDate = interactionSnapshot
+                  .documents[index]['interactionTime'][lastInteractionIndex]
+                  .toDate(); //.toString();
+              String lastInteraction =
+                  lastInteractionDate.toString().split('.')[0];
               return Card(
                 child: Container(
                   padding:
-                      EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 0),
+                      EdgeInsets.only(top: 15, left: 20, right: 20, bottom: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Noname",
+                        users[index]["Name"],
                         style: Theme.of(context)
                             .textTheme
                             .title
-                            .copyWith(fontSize: 19),
+                            .copyWith(fontSize: 20),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 12, bottom: 5),
-                        child: Row(
-                          children: <Widget>[
-                            Text("User : ",
-                                style:
-                                    Theme.of(context).primaryTextTheme.body2),
-                            Text(
-                              users[index]["Name"],
-                              style: Theme.of(context).primaryTextTheme.body2,
-                            ),
-                          ],
-                        ),
+                        padding: EdgeInsets.only(top: 12, bottom: 10),
+                        child: Text(
+                                "Last interaction : $lastInteraction",
+                                style: Theme.of(context)
+                                    .primaryTextTheme
+                                    .body2
+                                    .copyWith(
+                                      fontSize: 12,
+                                      color: (Theme.of(context).brightness ==
+                                              Brightness.dark)
+                                          ? Colors.grey[400]
+                                          : Colors.grey[800],
+                                    ),
+                              ),
                       ),
                     ],
                   ),
@@ -146,15 +174,16 @@ class _VerticalListState extends State<VerticalList> {
       );
     } else {
       return SliverPadding(
-          padding: EdgeInsets.all(20),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Center(child: CircularProgressIndicator());
-              },
-              childCount: 1,
-            ),
-          ));
+        padding: EdgeInsets.all(20),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              return Center(child: CircularProgressIndicator());
+            },
+            childCount: 1,
+          ),
+        ),
+      );
     }
   }
 }

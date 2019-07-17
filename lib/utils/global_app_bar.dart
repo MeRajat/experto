@@ -1,5 +1,3 @@
-import 'package:experto/home_page/home_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import "package:flutter/cupertino.dart";
 
@@ -12,30 +10,30 @@ class CustomAppBar extends StatelessWidget {
   CustomAppBar(this.expandedHeight, this.title, this.flexibleSpaceWidget,
       {this.isFloating: false, this.logout: true});
 
-  List<Widget> logOut(BuildContext context) {
-    List<Widget> list = new List<Widget>();
-    list.add(
-      FlatButton(
-        padding: EdgeInsets.only(right: 20),
-        onPressed: () async {
-          await FirebaseAuth.instance.signOut();
-          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (buildContext) => HomePage()),
-              ModalRoute.withName(':'));
-        },
-        child: Text("Logout",
-            style: Theme.of(context)
-                .primaryTextTheme
-                .body2
-                .copyWith(color: Colors.red)),
-        //color: Colors.redAccent,
-      ),
-    );
-    if (logout)
-      return list;
-    else
-      return null;
-  }
+  // List<Widget> logOut(BuildContext context) {
+  //   List<Widget> list = new List<Widget>();
+  //   list.add(
+  //     FlatButton(
+  //       padding: EdgeInsets.only(right: 20),
+  //       onPressed: () async {
+  //         await FirebaseAuth.instance.signOut();
+  //         Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+  //             MaterialPageRoute(builder: (buildContext) => HomePage()),
+  //             ModalRoute.withName(':'));
+  //       },
+  //       child: Text("Logout",
+  //           style: Theme.of(context)
+  //               .primaryTextTheme
+  //               .body2
+  //               .copyWith(color: Colors.red)),
+  //       //color: Colors.redAccent,
+  //     ),
+  //   );
+  //   if (logout)
+  //     return list;
+  //   else
+  //     return null;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +44,8 @@ class CustomAppBar extends StatelessWidget {
       floating: isFloating,
       leading: Container(
         padding: EdgeInsets.only(
-          left: 6,
-          right: 6,
+          left: 12,
+          right: 12,
         ),
         child: Image.asset(
           "assets/logo_transparent.png",
@@ -57,7 +55,7 @@ class CustomAppBar extends StatelessWidget {
         title,
         style: Theme.of(context).textTheme.title.copyWith(letterSpacing: -.7),
       ),
-      actions: logOut(context),
+      //actions: logOut(context),
       flexibleSpace: flexibleSpaceWidget,
     );
   }

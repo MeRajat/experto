@@ -1,4 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:experto/utils/placeholder.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -28,10 +31,30 @@ class CustomCard extends StatelessWidget {
             children: <Widget>[
               Hero(
                 tag: expert["emailID"],
-                child: Icon(
-                  CupertinoIcons.person_solid,
-                  size: 70,
-                ),
+                child: expert["profilePicThumb"] == null
+                    ? Icon(
+                        Icons.person,
+                        size: 80,
+                      )
+                    : CachedNetworkImage(
+                        imageBuilder: (context, imageProvider) => Container(
+                              width: 80.0,
+                              height: 80.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey[400],
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover),
+                              ),
+                            ),
+                        imageUrl: expert["profilePicThumb"],
+                        height: 80,
+                        width: 80,
+                        placeholder: (context, a) => Container(
+                            width: 80.0,
+                            height: 80.0,
+                            child: CustomPlaceholder()),
+                      ),
               ),
               Container(
                 padding:

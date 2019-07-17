@@ -61,38 +61,39 @@ class _FeedbackForm extends State<FeedbackForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-        key: feedbackFormKey,
-        child: ListView(
-          physics: BouncingScrollPhysics(),
-          children: <Widget>[
-            Container(
-              color: Theme.of(context).appBarTheme.color,
-              padding: EdgeInsets.only(left: 25, top: 50, bottom: 30),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Feedback",
-                  style:
-                      Theme.of(context).textTheme.title.copyWith(fontSize: 35),
-                ),
+      key: feedbackFormKey,
+      child: ListView(
+        physics: BouncingScrollPhysics(),
+        children: <Widget>[
+          Container(
+            color: Theme.of(context).appBarTheme.color,
+            padding: EdgeInsets.only(left: 25, top: 50, bottom: 30),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Feedback",
+                style: Theme.of(context).textTheme.title.copyWith(fontSize: 35),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 25, top: 30, bottom: 20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "How do you rate this expert ?",
-                  style: Theme.of(context)
-                      .primaryTextTheme
-                      .body2
-                      .copyWith(fontSize: 15),
-                ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 25, top: 30, bottom: 20),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "How do you rate this expert ?",
+                style: Theme.of(context)
+                    .primaryTextTheme
+                    .body2
+                    .copyWith(fontSize: 15),
               ),
             ),
-            FormField(onSaved: (int value) {
+          ),
+          FormField(
+            onSaved: (int value) {
               providedFeedback.getRating(rating);
-            }, builder: (key) {
+            },
+            builder: (key) {
               return SizedBox(
                 height: 80,
                 child: ListView.builder(
@@ -132,36 +133,38 @@ class _FeedbackForm extends State<FeedbackForm> {
                   itemCount: 5,
                 ),
               );
-            }),
-            Container(
-              margin: EdgeInsets.only(left: 15, right: 15, bottom: 40, top: 20),
-              child: Material(
-                elevation:5,
-                borderRadius: BorderRadius.circular(5),
-                child: TextFormField(
-                  style: Theme.of(context)
-                      .primaryTextTheme
-                      .body2
-                      .copyWith(letterSpacing: .4),
-                  onSaved: (String review) {
-                    providedFeedback.getReview(review);
-                  },
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter this field';
-                    }
-                  },
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
-                    hintText: "Any appreciation or Improvement suggestion?",
-                  ),
-                  maxLines: null,
-                  minLines: 15,
+            },
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 15, right: 15, bottom: 40, top: 20),
+            child: Material(
+              elevation: 5,
+              borderRadius: BorderRadius.circular(5),
+              child: TextFormField(
+                style: Theme.of(context)
+                    .primaryTextTheme
+                    .body2
+                    .copyWith(letterSpacing: .4),
+                onSaved: (String review) {
+                  providedFeedback.getReview(review);
+                },
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter this field';
+                  }
+                },
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  hintText: "Any appreciation or Improvement suggestion?",
                 ),
+                maxLines: null,
+                minLines: 15,
               ),
             ),
-            providedFeedback.submitButton(feedbackFormKey,context),
-          ],
-        ));
+          ),
+          providedFeedback.submitButton(feedbackFormKey, context),
+        ],
+      ),
+    );
   }
 }
