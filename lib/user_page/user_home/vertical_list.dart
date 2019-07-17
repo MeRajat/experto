@@ -128,11 +128,12 @@ class _VerticalListState extends State<VerticalList> {
         icon: icon,
         secondaryText: secondaryText,
         callback: () {
-          contactExpert.launchSkype(
-              context: context,
-              skypeUsername: experts[index]['SkypeUser'],
-              serviceType: serviceType,
-              afterLaunchFunc: () {});
+          contactExpert.videoCall(context: context, user: user);
+//          contactExpert.launchSkype(
+//              context: context,
+//              skypeUsername: experts[index]['SkypeUser'],
+//              serviceType: serviceType,
+//              afterLaunchFunc: () {});
         },
       );
     }
