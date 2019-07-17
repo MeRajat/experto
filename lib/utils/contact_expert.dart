@@ -35,7 +35,7 @@ void videoCall({@required BuildContext context}) {
   Navigator.of(context, rootNavigator: true).push(
     MaterialPageRoute(
       builder: (BuildContext context) {
-        return floatingButton.startVideo;
+        return StartVideo();
       },
     ),
   );

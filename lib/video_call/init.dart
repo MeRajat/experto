@@ -1,5 +1,5 @@
 import 'package:async/async.dart';
-import 'package:experto/user_authentication/userAdd.dart';
+import 'package:experto/global_data.dart';
 import 'package:experto/utils/floating_action_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -183,7 +183,7 @@ class _StartVideoState extends State<StartVideo> {
       _isInChannel = true;
       AgoraRtcEngine.startPreview();
       bool status = await AgoraRtcEngine.joinChannel(null, "demo", null,
-          int.parse(UserData.currentUser["Mobile"].toString().substring(2)));
+          5);
       print(status);
     }
     setState(() {});

@@ -116,8 +116,8 @@ class SplashState extends State<Splash> {
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
+//    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+//        onSelectNotification: onSelectNotification);
   }
 
   Future<void> getPermissions() async {
