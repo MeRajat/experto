@@ -3,28 +3,18 @@ import 'package:flutter/material.dart';
 
 StartVideo startVideo;
 
-class FAB extends StatefulWidget {
+class FAB extends StatelessWidget{
   final color;
 
   FAB({this.color = Colors.cyan});
-
-  @override
-  _FABState createState() => _FABState();
-}
-
-class _FABState extends State<FAB> {
-  void initState() {
-    //count=cartsnapshot.documents.length;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+    print(startVideo);
     if (startVideo != null)
       return FloatingActionButton.extended(
         heroTag: "dfgdfgdf",
         onPressed: () {
-          Navigator.of(context, rootNavigator: true).push(
+          Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
                 return startVideo;
@@ -34,7 +24,7 @@ class _FABState extends State<FAB> {
         },
         label: Text("Return"),
         icon: Icon(Icons.call),
-        backgroundColor: widget.color,
+        backgroundColor: color,
       );
     else
       return Container(

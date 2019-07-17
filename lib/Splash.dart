@@ -6,10 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'package:experto/video_call/local_notification.dart';
-import 'package:experto/main.dart';
 import 'package:experto/user_authentication/signUpReq.dart' as user;
 import 'package:experto/expert_authentication/signUpReq.dart' as expert;
 
@@ -110,20 +108,20 @@ class SplashState extends State<Splash> {
     );
   }
 
-  void initNotification() {
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-//    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-//        onSelectNotification: onSelectNotification);
-  }
+//  void initNotification() {
+//    var initializationSettingsAndroid =
+//        new AndroidInitializationSettings('@mipmap/ic_launcher');
+//    var initializationSettingsIOS = new IOSInitializationSettings();
+////    var initializationSettings = new InitializationSettings(
+////        initializationSettingsAndroid, initializationSettingsIOS);
+////    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+////        onSelectNotification: onSelectNotification);
+//  }
 
   Future<void> getPermissions() async {
     List<PermissionGroup> permission = [
-//      PermissionGroup.camera,
-//      PermissionGroup.microphone,
+      PermissionGroup.camera,
+      PermissionGroup.microphone,
       PermissionGroup.storage
     ];
     Map<PermissionGroup, PermissionStatus> permissions =

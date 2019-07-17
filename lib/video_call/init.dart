@@ -7,11 +7,15 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:experto/video_call/local_notification.dart';
 
 class StartVideo extends StatefulWidget {
+  final Data user;
+  StartVideo({@required this.user});
   @override
-  _StartVideoState createState() => _StartVideoState();
+  _StartVideoState createState() => _StartVideoState(user:user);
 }
 
 class _StartVideoState extends State<StartVideo> {
+  _StartVideoState({@required this.user});
+  final Data user;
   bool _isInChannel = false, _toggleView = true;
 
   final _infoStrings = <String>[];
@@ -33,6 +37,7 @@ class _StartVideoState extends State<StartVideo> {
       });
     });
     _toggleChannel();
+
   }
 
   @override
@@ -46,8 +51,8 @@ class _StartVideoState extends State<StartVideo> {
                       child: FlatButton(
                           shape: CircleBorder(),
                           onPressed: () {
-                            AgoraRtcEngine.disableVideo();
-                            AgoraRtcEngine.stopPreview();
+//                            AgoraRtcEngine.disableVideo();
+//                            AgoraRtcEngine.stopPreview();
                             Navigator.of(context).pop();
                           },
                           color: Color.fromARGB(100, 255, 227, 242),
@@ -62,12 +67,13 @@ class _StartVideoState extends State<StartVideo> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _buttonState
           ? FloatingActionButton(
+        heroTag: "ad",
               onPressed: () {
                 timer.reset();
                 _toggleChannel();
                 notificationStartVideo = startVideo = null;
                 Navigator.of(context).pop();
-                stateChangedInformNotification(false);
+//                stateChangedInformNotification(false);
               },
               child: Icon(Icons.call_end),
               backgroundColor: Colors.red,
@@ -363,18 +369,18 @@ class _StartVideoState extends State<StartVideo> {
 
   static TextStyle textStyle = TextStyle(fontSize: 18, color: Colors.blue);
 
-  Widget _buildInfoList() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(8.0),
-      itemExtent: 24,
-      itemBuilder: (context, i) {
-        return ListTile(
-          title: Text(_infoStrings[i]),
-        );
-      },
-      itemCount: _infoStrings.length,
-    );
-  }
+//  Widget _buildInfoList() {
+//    return ListView.builder(
+//      padding: const EdgeInsets.all(8.0),
+//      itemExtent: 24,
+//      itemBuilder: (context, i) {
+//        return ListTile(
+//          title: Text(_infoStrings[i]),
+//        );
+//      },
+//      itemCount: _infoStrings.length,
+//    );
+//  }
 }
 
 class VideoSession {

@@ -7,6 +7,7 @@ import "./user_home/user_home.dart";
 import "./settings_page/settings_page.dart";
 import "./navigation_bar_items.dart";
 import 'package:experto/global_data.dart';
+import 'package:experto/utils/floating_action_button.dart';
 
 class HomePage extends StatefulWidget {
   final Data user;
@@ -78,6 +79,7 @@ class _HomePage extends State<HomePage> {
             ),
           ),
         ),
+        floatingActionButton: FAB(),
       ),
     );
   }

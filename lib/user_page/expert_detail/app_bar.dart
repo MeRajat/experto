@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:experto/utils/bloc/reload.dart";
-import 'package:experto/video_call/init.dart';
-import 'package:experto/video_call/local_notification.dart';
 import 'package:experto/global_data.dart';
 import 'package:experto/utils/bloc/syncDocuments.dart';
 
@@ -42,36 +40,33 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
       background: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Hero(
-            tag: expert['emailID'],
-            child: Padding(
-              padding: EdgeInsets.only(left: 10, top: 80),
-              child: (expert["profilePicThumb"] == null)
-                  ? Icon(
-                Icons.person,
-                size: 110,
-              )
-                  : CachedNetworkImage(
-                imageBuilder: (context, imageProvider) => Container(
-                  margin: EdgeInsets.only(left: 10, right: 5),
-                  width: 90.0,
-                  height: 90.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey[400],
-                    image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover),
-                  ),
+          Padding(
+            padding: EdgeInsets.only(left: 10, top: 80),
+            child: (expert["profilePicThumb"] == null)
+                ? Icon(
+              Icons.person,
+              size: 110,
+            )
+                : CachedNetworkImage(
+              imageBuilder: (context, imageProvider) => Container(
+                margin: EdgeInsets.only(left: 10, right: 5),
+                width: 90.0,
+                height: 90.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey[400],
+                  image: DecorationImage(
+                      image: imageProvider, fit: BoxFit.cover),
                 ),
-                imageUrl: expert["profilePicThumb"],
-                height: 110,
-                width: 110,
-                placeholder: (context, a) => Container(
-                  margin: EdgeInsets.only(left: 10, right: 5),
-                  width: 90,
-                  height: 90,
-                  child: CustomPlaceholder(),
-                ),
+              ),
+              imageUrl: expert["profilePicThumb"],
+              height: 110,
+              width: 110,
+              placeholder: (context, a) => Container(
+                margin: EdgeInsets.only(left: 10, right: 5),
+                width: 90,
+                height: 90,
+                child: CustomPlaceholder(),
               ),
             ),
           ),
@@ -233,7 +228,7 @@ class _ContactExpert extends State<ContactExpert> {
         callback: () {
           updateInteraction();
 
-          contactExpert.videoCall(context: context);
+          contactExpert.videoCall(context: context,user: user);
 //          contactExpert.launchSkype(
 //              context: context,
 //              skypeUsername: expert['SkypeUser'],

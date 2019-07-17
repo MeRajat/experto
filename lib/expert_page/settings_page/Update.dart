@@ -32,25 +32,25 @@ class Update {
     expertReference = Firestore.instance.collection("Experts");
   }
 
-  Future<void> _ackAlert(BuildContext context, String title, String content) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+//  Future<void> _ackAlert(BuildContext context, String title, String content) {
+//    return showDialog<void>(
+//      context: context,
+//      builder: (BuildContext context) {
+//        return AlertDialog(
+//          title: Text(title),
+//          content: Text(content),
+//          actions: <Widget>[
+//            FlatButton(
+//              child: Text('Ok'),
+//              onPressed: () {
+//                Navigator.of(context).pop();
+//              },
+//            ),
+//          ],
+//        );
+//      },
+//    );
+//  }
 
   setPass(String x) => details['password'] = x;
 
