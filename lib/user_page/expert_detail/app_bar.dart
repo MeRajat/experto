@@ -1,16 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import "package:experto/utils/bloc/reload.dart";
 import 'package:experto/global_data.dart';
+import "package:experto/utils/bloc/reload.dart";
 import 'package:experto/utils/bloc/syncDocuments.dart';
-
 import 'package:experto/utils/bottomSheet.dart' as bottomSheet;
 import 'package:experto/utils/contact_expert.dart' as contactExpert;
-import 'package:experto/utils/placeholder.dart';
-import 'package:flutter/material.dart';
-import "package:flutter/cupertino.dart";
-
 import "package:experto/utils/global_app_bar.dart";
+import 'package:experto/utils/placeholder.dart';
+import "package:flutter/cupertino.dart";
+import 'package:flutter/material.dart';
+
 import './feedback.dart' as expert_feedback;
 
 class AppBar extends StatelessWidget {
@@ -100,10 +99,7 @@ class CustomFlexibleSpaceBar extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 8),
-                  child: Hero(
-                    tag: "contact${expert['emailID']}",
-                    child: ContactExpert(expert),
-                  ),
+                  child: ContactExpert(expert),
                 )
               ],
             ),

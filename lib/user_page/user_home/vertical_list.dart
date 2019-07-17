@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:experto/global_data.dart';
-import 'package:flutter/material.dart';
-import '../expert_detail/expert_detail.dart';
-
-import 'package:experto/utils/timed_out.dart';
 import "package:experto/utils/bloc/reload.dart";
-import "package:experto/utils/contact_expert.dart" as contactExpert;
 import "package:experto/utils/bottomSheet.dart" as bottomSheet;
+import "package:experto/utils/contact_expert.dart" as contactExpert;
+import 'package:experto/utils/timed_out.dart';
+import 'package:flutter/material.dart';
+
+import '../expert_detail/expert_detail.dart';
 
 class VerticalList extends StatefulWidget {
   @override
@@ -181,109 +180,113 @@ class _VerticalListState extends State<VerticalList> {
                         padding: EdgeInsets.only(top: 12, bottom: 10),
                         child: Row(
                           children: <Widget>[
-                            Hero(
-                              tag:"rer",
-//                              tag: experts[index]['emailID'],
-                              child: Text(
-                                "Last interaction : $lastInteraction",
-                                style: Theme.of(context)
-                                    .primaryTextTheme
-                                    .body2
-                                    .copyWith(
-                                      fontSize: 12,
-                                      color: (Theme.of(context).brightness ==
-                                              Brightness.dark)
-                                          ? Colors.grey[400]
-                                          : Colors.grey[800],
-                                    ),
+                            Text(
+                              "Last interaction : $lastInteraction",
+                              style: Theme
+                                  .of(context)
+                                  .primaryTextTheme
+                                  .body2
+                                  .copyWith(
+                                fontSize: 12,
+                                color: (Theme
+                                    .of(context)
+                                    .brightness ==
+                                    Brightness.dark)
+                                    ? Colors.grey[400]
+                                    : Colors.grey[800],
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Hero(
-                        tag: "contact${experts[index]["emailID"]}",
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Spacer(flex: 10),
-                            InkWell(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.grey[800],
-                                ),
-                                height: 25,
-                                width: 25,
-                                child: Icon(
-                                  Icons.info,
-                                  color: Colors.white,
-                                  size: 17,
-                                ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Spacer(flex: 10),
+                          InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey[800],
                               ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      return ExpertDetail(experts[index]);
-                                    },
-                                  ),
-                                );
-                              },
+                              height: 25,
+                              width: 25,
+                              child: Icon(
+                                Icons.info,
+                                color: Colors.white,
+                                size: 17,
+                              ),
                             ),
-                            Spacer(flex: 1),
-                            InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return ExpertDetail(experts[index]);
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                          Spacer(flex: 1),
+                          InkWell(
 
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: checkingAvail[index]?Colors.grey:expertAvailable[index]?Colors.grey[800]:Colors.grey,
-                                ),
-                                height: 25,
-                                width: 25,
-                                child: Icon(
-                                  Icons.video_call,
-                                  color: Colors.white,
-                                  size: 17,
-                                ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: checkingAvail[index]
+                                    ? Colors.grey
+                                    : expertAvailable[index]
+                                    ? Colors.grey[800]
+                                    : Colors.grey,
                               ),
-                              onTap: !expertAvailable[index]?null:() {
-                                contactOnTap(
-                                    secondaryText:
-                                        "Are you sure you want to call this expert",
-                                    serviceType: "chat",
-                                    index: index,
-                                    icon: Icon(Icons.face, size: 120));
-                              },
-                            ),
-                            Spacer(flex: 1),
-                            InkWell(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: checkingAvail[index]?Colors.grey:expertAvailable[index]?Colors.grey[800]:Colors.grey,
-                                ),
-                                height: 25,
-                                width: 25,
-                                child: Icon(
-                                  Icons.chat,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
+                              height: 25,
+                              width: 25,
+                              child: Icon(
+                                Icons.video_call,
+                                color: Colors.white,
+                                size: 17,
                               ),
-                              onTap:!expertAvailable[index]?null: () {
-                                contactOnTap(
-                                    secondaryText:
-                                        "Are you sure you want to messsage this expert",
-                                    serviceType: "chat",
-                                    index: index,
-                                    icon: Icon(Icons.chat_bubble_outline,
-                                        size: 120));
-                              },
                             ),
-                          ],
-                        ),
+                            onTap: !expertAvailable[index] ? null : () {
+                              contactOnTap(
+                                  secondaryText:
+                                  "Are you sure you want to call this expert",
+                                  serviceType: "chat",
+                                  index: index,
+                                  icon: Icon(Icons.face, size: 120));
+                            },
+                          ),
+                          Spacer(flex: 1),
+                          InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: checkingAvail[index]
+                                    ? Colors.grey
+                                    : expertAvailable[index]
+                                    ? Colors.grey[800]
+                                    : Colors.grey,
+                              ),
+                              height: 25,
+                              width: 25,
+                              child: Icon(
+                                Icons.chat,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ),
+                            onTap: !expertAvailable[index] ? null : () {
+                              contactOnTap(
+                                  secondaryText:
+                                  "Are you sure you want to messsage this expert",
+                                  serviceType: "chat",
+                                  index: index,
+                                  icon: Icon(Icons.chat_bubble_outline,
+                                      size: 120));
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
