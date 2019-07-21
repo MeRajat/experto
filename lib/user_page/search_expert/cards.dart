@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import "package:experto/utils/bloc/is_searching.dart";
+import "package:experto/utils/bloc/reload.dart";
+import "package:experto/utils/bloc/search_bloc.dart";
+import 'package:experto/utils/no_result.dart';
+import 'package:experto/utils/timed_out.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
 
 import './search_result_cards.dart';
-import "package:experto/utils/bloc/search_bloc.dart";
-import "package:experto/utils/bloc/reload.dart";
-import "package:experto/utils/bloc/is_searching.dart";
-import 'package:experto/utils/no_result.dart';
-import 'package:experto/utils/timed_out.dart';
 //import "package:cached_network_image/cached_network_image.dart";
 
 class Cards extends StatefulWidget {
@@ -70,7 +70,7 @@ class _Cards extends State<Cards> {
 
     expert = Firestore.instance.collection("Experts");
     expertSnapshot = await expert
-        .where("Status", isEqualTo: true)
+        .where("Status", isEqualTo: true).orderBy('Available', descending: true)
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {
       timedOut = true;
