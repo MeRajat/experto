@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class Theme {
   ThemeData lightTheme() {
@@ -76,6 +76,7 @@ class Theme {
           borderSide: BorderSide(
             style: BorderStyle.none,
           ),
+
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
