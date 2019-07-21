@@ -38,6 +38,7 @@ class CustomCard extends StatelessWidget {
           ),
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
         ),
+        padding: EdgeInsets.only(left: 3.0),
         child: InkWell(
           onTap: () {
             Navigator.push(
