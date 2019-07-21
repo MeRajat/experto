@@ -60,9 +60,16 @@ class _Cards extends State<Cards> {
     getSearch();
     listenReload();
     getExpert();
+    autoRefresh();
     super.initState();
   }
 
+  void autoRefresh() {
+    Future.delayed(Duration(minutes: 10)).then((val) async {
+      reload();
+      autoRefresh();
+    });
+  }
   Future<void> getExpert() async {
     setState(() {
       loading = true;
