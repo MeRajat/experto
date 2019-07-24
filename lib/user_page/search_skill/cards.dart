@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import "package:experto/utils/bloc/is_searching.dart";
+import "package:experto/utils/bloc/reload.dart";
+import "package:experto/utils/bloc/search_bloc.dart";
+import 'package:experto/utils/no_result.dart';
+import 'package:experto/utils/timed_out.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/widgets.dart';
 
 import './categories_list.dart';
-import "package:experto/utils/bloc/search_bloc.dart";
-import "package:experto/utils/bloc/reload.dart";
-import "package:experto/utils/bloc/is_searching.dart";
-import 'package:experto/utils/timed_out.dart';
-import 'package:experto/utils/no_result.dart';
 
 class Cards extends StatefulWidget {
   @override
@@ -106,12 +106,34 @@ class _Cards extends State<Cards> {
   }
 
   void getQuerySet(String searchQuery) async {
-    QuerySnapshot searchSnapshot = await Firestore.instance
+    searchSnapshot = await Firestore.instance
         .collection("Skills")
-        .where("Index", arrayContains: searchQuery.toUpperCase())
         .getDocuments()
         .timeout(Duration(seconds: 10), onTimeout: () {});
 
+    searchSnapshot.documents.forEach((snapshot) {
+      if (snapshot.data['Index'].contains(searchQuery.toUpperCase())) {
+        querySetResult.add(snapshot);
+        tempResult.add(snapshot);
+      }
+    });
+
+    (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
+
+    setState(() {
+      isInitialSearch = false;
+      loading = false;
+    });
+  }
+
+  Future<void> getNewQuerySet() async {
+    searchSnapshot = await Firestore.instance
+        .collection("Skills")
+        .getDocuments()
+        .timeout(Duration(seconds: 10), onTimeout: () {});
+    querySetResult.clear();
+    tempResult.clear();
+    print("get new query before doc");
     searchSnapshot.documents.forEach((snapshot) {
       querySetResult.add(snapshot);
       tempResult.add(snapshot);
@@ -125,7 +147,7 @@ class _Cards extends State<Cards> {
     });
   }
 
-  void getTempSet(String searchQuery) async {
+  Future<bool> getTempSet(String searchQuery) async {
     querySetResult.forEach((snapshot) {
       if (snapshot.data['Name']
           .toLowerCase()
@@ -133,7 +155,40 @@ class _Cards extends State<Cards> {
         tempResult.add(snapshot);
       }
     });
+    (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
 
+    if (!resultAvailable)
+      return resultAvailable;
+    setState(() {
+      loading = false;
+    });
+    return resultAvailable;
+  }
+
+  void getNewTempSet(String searchQuery) async {
+    tempResult.clear();
+    List<String> keyWords = searchQuery.split(' ');
+    Map<DocumentSnapshot, int> result = new Map<DocumentSnapshot, int>();
+    keyWords.removeWhere((word) => word.length <= 3);
+    if (keyWords.length >= 1) {
+      print("Keywords:" + keyWords.toString());
+    querySetResult.forEach((snapshot) {
+      int count = 0;
+      print(snapshot.data['Keywords'].toString());
+      keyWords.forEach((word) {
+        if (snapshot.data.containsKey('Keywords'))
+          if (snapshot.data['Keywords'].contains(word.toLowerCase())) {
+            count++;
+            if (!result.containsKey(snapshot))
+              tempResult.add(snapshot);
+            result.addAll({snapshot: count});
+          }
+      });
+      print(count);
+    });
+    }
+    tempResult.sort((d1, d2) => result[d2].compareTo(result[d1]));
+    print(tempResult);
     (tempResult.length == 0) ? resultAvailable = false : resultAvailable = true;
 
     setState(() {
@@ -151,7 +206,11 @@ class _Cards extends State<Cards> {
       querySetResult = [];
       getQuerySet(searchQuery);
     } else {
-      getTempSet(searchQuery);
+      bool ans = await getTempSet(searchQuery);
+      if (!ans) {
+        await getNewQuerySet();
+        getNewTempSet(searchQuery);
+      }
     }
   }
 
