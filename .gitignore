@@ -3,6 +3,11 @@
 *.log
 *.pyc
 *.swp
+android/local.properties
+android/key.properties
+android/app/*.json
+keystore.jks
+
 .DS_Store
 .atom/
 .buildlog/
