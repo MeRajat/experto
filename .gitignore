@@ -3,6 +3,7 @@
 *.log
 *.pyc
 *.swp
+#specific ignore
 android/local.properties
 android/key.properties
 android/app/*.json
